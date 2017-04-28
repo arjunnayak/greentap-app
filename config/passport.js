@@ -3,27 +3,28 @@ const passport = require('passport'),
   User = require('../models/user'),
   JwtStrategy = require('passport-jwt').Strategy,
   ExtractJwt = require('passport-jwt').ExtractJwt,
-  LocalStrategy = require('passport-local');
+  LocalStrategy = require('passport-local')
 
 // Setting username field to email rather than username
 const localOptions = {
   usernameField: 'email'
-};
+}
 
 // Setting up local login strategy
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+  console.log(email)
   User.findOne({ email }, (err, user) => {
-    if (err) { return done(err); }
-    if (!user) { return done(null, false, { error: 'Your login details could not be verified. Please try again.' }); }
+    if (err) { return done(err) }
+    if (!user) { return done(null, false, { error: 'Your login details could not be verified. Please try again.' }) }
 
     user.comparePassword(password, (err, isMatch) => {
-      if (err) { return done(err); }
-      if (!isMatch) { return done(null, false, { error: 'Your login details could not be verified. Please try again.' }); }
+      if (err) { return done(err) }
+      if (!isMatch) { return done(null, false, { error: 'Your login details could not be verified. Please try again.' }) }
 
-      return done(null, user);
-    });
-  });
-});
+      return done(null, user)
+    })
+  })
+})
 
 // Setting JWT strategy options
 const jwtOptions = {
@@ -33,20 +34,20 @@ const jwtOptions = {
   secretOrKey: 'secret'
 
   // TO-DO: Add issuer and audience checks
-};
+}
 
 // Setting up JWT login strategy
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   User.findById(payload._id, (err, user) => {
-    if (err) { return done(err, false); }
+    if (err) { return done(err, false) }
 
     if (user) {
-      done(null, user);
+      done(null, user)
     } else {
-      done(null, false);
+      done(null, false)
     }
-  });
-});
+  })
+})
 
-passport.use(jwtLogin);
-passport.use(localLogin);
+passport.use(jwtLogin)
+passport.use(localLogin)

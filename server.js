@@ -7,8 +7,8 @@ const router = require('./router')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
-const passport = require('passport');
-const passportService = require('./config/passport');
+const passport = require('passport')
+const passportService = require('./config/passport')
 
 var app = express()
 
@@ -26,9 +26,12 @@ app.use(logger('dev'))                                         // log every requ
 app.use(bodyParser.urlencoded({ 'extended': 'true' }))            // parse application/x-www-form-urlencoded
 app.use(bodyParser.json())                                     // parse application/json
 
-// listen (start app with node server.js) ======================================
-app.listen(port)
-console.log("App listening on port " + port)
-
 // Import routes to be served
-router(app);
+router(app)
+
+// start app
+const server = app.listen(port)
+console.log("Your app is listening on "+port)
+
+// for testing
+module.exports = server

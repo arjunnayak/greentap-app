@@ -6,7 +6,7 @@ exports.setUserInfo = function setUserInfo(request) {
     lastName: request.profile.lastName,
     email: request.email,
     role: request.role
-  };
+  }
 
-  return getUserInfo;
-};
+  return getUserInfo
+}
