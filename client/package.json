@@ -1,13 +1,13 @@
 {
-  "name": "mern-starter-client",
+  "name": "greentap-client",
   "version": "1.0.0",
-  "description": "Client-side of MERN Starter.",
+  "description": "Client-side of Greentap.",
   "main": "index.js",
   "scripts": {
     "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js"
   },
-  "author": "Joshua Slate",
-  "license": "MIT",
+  "license": "",
+  "author": "Arjun Nayak",
   "dependencies": {
     "axios": "^0.13.1",
     "lodash": "^4.6.1",
