@@ -1,8 +1,15 @@
 {
-  "name": "greentap",
+  "name": "greentap-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "scripts": {
+    "server": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "license": "",
+  "author": "Arjun Nayak",
   "dependencies": {
     "babel-cli": "6.14.0",
     "babel-core": "6.14.0",
@@ -28,12 +35,5 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
     "nodemon": "^1.11.0"
-  },
-  "scripts": {
-    "server": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }
