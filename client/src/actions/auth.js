@@ -13,7 +13,10 @@ export function loginUser({ email, password }) {
   return function (dispatch) {
     axios.post(`${API_URL}/auth/login`, { email, password })
     .then((response) => {
-      cookie.save('token', response.data.token, { path: '/' });
+      cookie.save('token', response.data.token, { 
+        path: '/',
+        maxAge: 3600
+      });
       cookie.save('user', response.data.user, { path: '/' });
       dispatch({ type: AUTH_USER });
       window.location.href = `${CLIENT_ROOT_URL}/dashboard`;
