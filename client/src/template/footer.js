@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class FooterTemplate extends Component {
   renderLinks() {
@@ -37,7 +36,7 @@ class FooterTemplate extends Component {
     const year = d.getFullYear();
 
     return (
-      <footer>
+      /*<footer>
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
@@ -50,15 +49,11 @@ class FooterTemplate extends Component {
             </div>
           </div>
         </div>
-      </footer>
-    );
+      </footer>*/
+      <div>
+      </div>
+    )
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    authenticated: state.auth.authenticated,
-  };
-}
-
-export default connect(mapStateToProps, null)(FooterTemplate);
+export default FooterTemplate

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { browserHistory } from 'react-router';
+import { browserHistory } from 'react-router-dom';
 import cookie from 'react-cookie';
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index';
 import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FORGOT_PASSWORD_REQUEST, RESET_PASSWORD_REQUEST, PROTECTED_TEST } from './types';
@@ -11,6 +11,7 @@ import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FORGOT_PASSWORD_REQUEST, RESET_PASS
 // TO-DO: Add expiration to cookie
 export function loginUser({ email, password }) {
   return function (dispatch) {
+    console.log("loginUser reached")
     axios.post(`${API_URL}/auth/login`, { email, password })
     .then((response) => {
       cookie.save('token', response.data.token, { 
@@ -31,7 +32,10 @@ export function registerUser({ email, firstName, lastName, password }) {
   return function (dispatch) {
     axios.post(`${API_URL}/auth/register`, { email, firstName, lastName, password })
     .then((response) => {
-      cookie.save('token', response.data.token, { path: '/' });
+      cookie.save('token', response.data.token, { 
+        path: '/',
+        maxAge: 3600
+      });
       cookie.save('user', response.data.user, { path: '/' });
       dispatch({ type: AUTH_USER });
       window.location.href = `${CLIENT_ROOT_URL}/dashboard`;

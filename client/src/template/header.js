@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 class HeaderTemplate extends Component {
   renderLinks() {
@@ -23,10 +22,10 @@ class HeaderTemplate extends Component {
           <Link to="/">Home</Link>
         </li>,
         <li key={2}>
-          <Link to="login">Login</Link>
+          <Link to="/login">Login</Link>
         </li>,
         <li key={3}>
-          <Link to="register">Register</Link>
+          <Link to="/register">Register</Link>
         </li>,
       ];
     }
@@ -43,7 +42,7 @@ class HeaderTemplate extends Component {
                 <span className="icon-bar" />
                 <span className="icon-bar" />
               </button>
-              <Link className="navbar-brand" to="/">{this.props.logo}</Link>
+              <div><Link className="navbar-brand" to="/">{this.props.logo}</Link></div>
             </div>
 
             <div className="collapse navbar-collapse" id="nav-collapse">
@@ -58,10 +57,4 @@ class HeaderTemplate extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    authenticated: state.auth.authenticated,
-  };
-}
-
-export default connect(mapStateToProps)(HeaderTemplate);
+export default HeaderTemplate

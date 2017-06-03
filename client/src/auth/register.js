@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
-import { registerUser } from '../../actions/auth';
-
-const form = reduxForm({
-  form: 'register',
-  validate,
-});
+import { registerUser } from '../actions/auth';
 
 const renderField = field => (
   <div>
@@ -39,7 +32,8 @@ function validate(formProps) {
 
 class Register extends Component {
   handleFormSubmit(formProps) {
-    this.props.registerUser(formProps);
+    console.log(formProps)
+    // this.props.registerUser(formProps);
   }
 
   renderAlert() {
@@ -56,28 +50,28 @@ class Register extends Component {
     const { handleSubmit } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+      <form onSubmit={this.handleFormSubmit.bind(this)}>
         {this.renderAlert()}
         <div className="row">
           <div className="col-md-6">
             <label>First Name</label>
-            <Field name="firstName" className="form-control" component={renderField} type="text" />
+            <input name="firstName" className="form-control" type="text" />
           </div>
           <div className="col-md-6">
             <label>Last Name</label>
-            <Field name="lastName" className="form-control" component={renderField} type="text" />
+            <input name="lastName" className="form-control" type="text" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-12">
             <label>Email</label>
-            <Field name="email" className="form-control" component={renderField} type="text" />
+            <input name="email" className="form-control" type="text" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-12">
             <label>Password</label>
-            <Field name="password" className="form-control" component={renderField} type="password" />
+            <input name="password" className="form-control" type="password" />
           </div>
         </div>
         <button type="submit" className="btn btn-primary">Register</button>
@@ -86,12 +80,4 @@ class Register extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    errorMessage: state.auth.error,
-    message: state.auth.message,
-    authenticated: state.auth.authenticated,
-  };
-}
-
-export default connect(mapStateToProps, { registerUser })(form(Register));
+export default Register
