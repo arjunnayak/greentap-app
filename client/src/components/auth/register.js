@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { registerUser } from '../actions/auth';
+import { registerUser } from '../../actions/auth';
 
 const renderField = field => (
   <div>

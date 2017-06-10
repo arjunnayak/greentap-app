@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { loginUser } from '../actions/auth';
+import { loginUser } from '../../actions/auth';
 
 class Login extends Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class Login extends Component {
 
   render() {
     return (
-      <div class="container">
+      <div>
         <form onSubmit={this.handleSubmit}>
           {this.renderAlert()}
           <div>

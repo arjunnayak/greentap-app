@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, browserHistory, Route } from 'react-router-dom';
 
 // Import miscellaneous routes and other requirements
-import App from './App';
+import App from './components/App';
 // import NotFoundPage from './pages/not_found_page';
 
 // Import static pages
@@ -11,9 +11,9 @@ import App from './App';
 // import ComponentSamplesPage from './components/pages/component-samples';
 
 // Import authentication related pages
-import Register from './auth/register';
-import Login from './auth/login';
-import Logout from './auth/logout';
+import Register from './components/auth/register';
+import Login from './components/auth/login';
+import Logout from './components/auth/logout';
 // import ForgotPassword from './components/auth/forgot_password';
 // import ResetPassword from './components/auth/reset_password';
 

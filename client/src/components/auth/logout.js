@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as actions from '../actions/auth';
+import * as actions from '../../actions/auth';
 
 class Logout extends Component {
   componentWillMount() {
