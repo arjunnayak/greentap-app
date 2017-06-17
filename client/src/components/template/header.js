@@ -27,6 +27,9 @@ class HeaderTemplate extends Component {
         <li key={3}>
           <Link to="/register">Register</Link>
         </li>,
+        <li key={4}>
+          <Link to="/products">Products</Link>
+        </li>
       ];
     }
   }

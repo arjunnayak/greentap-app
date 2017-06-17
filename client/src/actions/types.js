@@ -14,6 +14,13 @@ export const AUTH_USER = 'auth_user',
 export const FETCH_USER = 'fetch_user';
 
 //= =====================
+// Product Actions
+//= =====================
+export const FETCH_PRODUCTS = 'fetch_products',
+  FETCH_PRODUCT = 'fetch_product',
+  PRODUCT_ERROR = 'product_error';
+
+//= =====================
 // Messaging Actions
 //= =====================
 export const FETCH_CONVERSATIONS = 'fetch_conversations',

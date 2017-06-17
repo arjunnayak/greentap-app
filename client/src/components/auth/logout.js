@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import * as actions from '../../actions/auth';
 
 class Logout extends Component {
@@ -11,4 +12,4 @@ class Logout extends Component {
   }
 }
 
-export default Logout
+export default connect(null, actions)(Logout);

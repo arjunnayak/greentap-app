@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
 import { registerUser } from '../../actions/auth';
+
+const form = reduxForm({
+  form: 'register',
+  validate,
+});
 
 const renderField = field => (
   <div>
@@ -26,18 +33,18 @@ function validate(formProps) {
   if (!formProps.password) {
     errors.password = 'Please enter a password';
   }
-
+  console.log(errors)
   return errors;
 }
 
 class Register extends Component {
   handleFormSubmit(formProps) {
-    console.log(formProps)
-    // this.props.registerUser(formProps);
+    this.props.registerUser(formProps);
   }
 
   renderAlert() {
     if (this.props.errorMessage) {
+      console.log('render alert error exists')
       return (
         <div>
           <span><strong>Error!</strong> {this.props.errorMessage}</span>
@@ -50,28 +57,28 @@ class Register extends Component {
     const { handleSubmit } = this.props;
 
     return (
-      <form onSubmit={this.handleFormSubmit.bind(this)}>
+      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
         {this.renderAlert()}
         <div className="row">
           <div className="col-md-6">
             <label>First Name</label>
-            <input name="firstName" className="form-control" type="text" />
+            <Field name="firstName" className="form-control" component={renderField} type="text" />
           </div>
           <div className="col-md-6">
             <label>Last Name</label>
-            <input name="lastName" className="form-control" type="text" />
+            <Field name="lastName" className="form-control" component={renderField} type="text" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-12">
             <label>Email</label>
-            <input name="email" className="form-control" type="text" />
+            <Field name="email" className="form-control" component={renderField} type="text" />
           </div>
         </div>
         <div className="row">
           <div className="col-md-12">
             <label>Password</label>
-            <input name="password" className="form-control" type="password" />
+            <Field name="password" className="form-control" component={renderField} type="password" />
           </div>
         </div>
         <button type="submit" className="btn btn-primary">Register</button>
@@ -80,4 +87,12 @@ class Register extends Component {
   }
 }
 
-export default Register
+function mapStateToProps(state) {
+  return {
+    errorMessage: state.auth.error,
+    message: state.auth.message,
+    authenticated: state.auth.authenticated,
+  };
+}
+
+export default connect(mapStateToProps, { registerUser })(form(Register));

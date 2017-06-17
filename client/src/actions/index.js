@@ -1,21 +1,21 @@
 import axios from 'axios';
-import cookie from 'react-cookie';
+import { Cookies } from 'react-cookie';
 import { logoutUser } from './auth';
 import { SEND_CONTACT_FORM, STATIC_ERROR, FETCH_USER } from './types';
 export const API_URL = 'http://localhost:3001/api';
-export const CLIENT_ROOT_URL = 'http://localhost:8080';
+export const CLIENT_ROOT_URL = 'http://localhost:3000';
 
 //= ===============================
 // Utility actions
 //= ===============================
 
 export function fetchUser(uid) {
-  return function (dispatch) {
+  return dispatch => {
     axios.get(`${API_URL}/user/${uid}`, {
-      headers: { Authorization: cookie.load('token') },
+      headers: { Authorization: Cookies.get('token') },
     })
     .then((response) => {
-      dispatch({
+    dispatch({
         type: FETCH_USER,
         payload: response.data.user,
       });
@@ -27,11 +27,10 @@ export function fetchUser(uid) {
 export function errorHandler(dispatch, error, type) {
   console.log('Error type: ', type);
   console.log(error);
-
-  let errorMessage = error.response ? error.response.data : error;
+  let errorMessage = error.data ? error.data : error;
 
    // NOT AUTHENTICATED ERROR
-  if (error.status === 401 || error.response.status === 401) {
+  if (error.status === 401) {
     errorMessage = 'You are not authorized to do this.';
     return dispatch(logoutUser(errorMessage));
   }
@@ -48,7 +47,7 @@ export function postData(action, errorType, isAuthReq, url, dispatch, data) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: cookie.load('token') } };
+    headers = { headers: { Authorization: Cookies.get('token') } };
   }
 
   axios.post(requestUrl, data, headers)
@@ -69,7 +68,7 @@ export function getData(action, errorType, isAuthReq, url, dispatch) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: cookie.load('token') } };
+    headers = { headers: { Authorization: Cookies.get('token') } };
   }
 
   axios.get(requestUrl, headers)
@@ -90,7 +89,7 @@ export function putData(action, errorType, isAuthReq, url, dispatch, data) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: cookie.load('token') } };
+    headers = { headers: { Authorization: Cookies.get('token') } };
   }
 
   axios.put(requestUrl, data, headers)
@@ -111,7 +110,7 @@ export function deleteData(action, errorType, isAuthReq, url, dispatch) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: cookie.load('token') } };
+    headers = { headers: { Authorization: Cookies.get('token') } };
   }
 
   axios.delete(requestUrl, headers)
@@ -130,7 +129,7 @@ export function deleteData(action, errorType, isAuthReq, url, dispatch) {
 // Static Page actions
 //= ===============================
 export function sendContactForm({ name, emailAddress, message }) {
-  return function (dispatch) {
+  return dispatch => {
     axios.post(`${API_URL}/communication/contact`, { name, emailAddress, message })
     .then((response) => {
       dispatch({

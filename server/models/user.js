@@ -31,7 +31,7 @@ const UserSchema = new Schema({
 // User ORM Methods
 //= ===============================
 
-// Pre-save of user to database, hash password if password is modified or new
+// Befores saving user to database, hash password if password is modified or new
 UserSchema.pre('save', function (next) {
   const user = this,
     SALT_FACTOR = 5

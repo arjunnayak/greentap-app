@@ -1,38 +1,20 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../../actions/auth';
 
+const form = reduxForm({
+  form: 'login',
+});
+
 class Login extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      email: '',
-      password: ''
-    }
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleChange = this.handleChange.bind(this)
-    console.log(props)
-    console.log(this.state)
-  }
-
-  handleChange(event) {
-    const target = event.target
-    const name = target.name
-    const value = target.value
-    this.setState({
-      [name]: value
-    });
-  }
-
-  handleSubmit(event) {
-    // alert(this.state.email + " " + this.state.password);
-    console.log("submit")
-    loginUser(this.state.email, this.state.password)
+  handleFormSubmit(formProps) {
+    this.props.loginUser(formProps);
   }
 
   renderAlert() {
     if (this.props.errorMessage) {
-      console.log("error : " + this.props.errorMessage)
       return (
         <div>
           <span><strong>Error!</strong> {this.props.errorMessage}</span>
@@ -42,25 +24,34 @@ class Login extends Component {
   }
 
   render() {
+    const { handleSubmit } = this.props;
+
     return (
       <div>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           {this.renderAlert()}
           <div>
             <label>Email</label>
-            <input name="email" email={this.state.email} onChange={this.handleChange} className="form-control" type="text" />
+            <Field name="email" className="form-control" component="input" type="text" />
           </div>
           <div>
             <label>Password</label>
-            <input name="password" password={this.state.password} onChange={this.handleChange} className="form-control" type="password" />
+            <Field name="password" className="form-control" component="input" type="password" />
           </div>
           <button type="submit" className="btn btn-primary">Login</button>
         </form>
         <Link to="/forgot-password">Forgot Password?</Link>
       </div>
-    )
+    );
   }
 }
 
-export default Login
+function mapStateToProps(state) {
+  return {
+    errorMessage: state.auth.error,
+    message: state.auth.message,
+    authenticated: state.auth.authenticated,
+  };
+}
 
+export default connect(mapStateToProps, { loginUser })(form(Login));
