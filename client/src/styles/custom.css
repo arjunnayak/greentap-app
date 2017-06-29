@@ -1,0 +1,18 @@
+/* will be used to style bootstrap classes*/
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.jumbotron {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.jumbotron h1 {
+  font-size: 38px;
+}
+
+/*use to position content within jumbotron to left*/
+.Jumbotron-content {
+}

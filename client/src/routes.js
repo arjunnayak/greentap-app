@@ -46,8 +46,7 @@ class GreentapRouter extends Component {
     return (
       <Router history={browserHistory} >
         <div>
-          <HeaderTemplate logo="Greentap"/>
-          <div className="container">
+          {/*<HeaderTemplate logo="Greentap"/>*/}
             <Switch>
               <Route exact path="/" component={HomePage}/>
               <Route path="/register" component={Register} />
@@ -57,7 +56,7 @@ class GreentapRouter extends Component {
               <Route path="/product/:id" component={Product} />
               {/*<Route path="contact-us" component={ContactPage} />*/}
               {/*<Route path="component-samples" component={RequireAuth(ComponentSamplesPage)} />*/}
-              
+
               <Route path="/forgot-password" component={ForgotPassword} />
               <Route path="/reset-password/:resetToken" component={ResetPassword} />
 
@@ -68,10 +67,9 @@ class GreentapRouter extends Component {
 
               <Route component={NotFoundPage} />
             </Switch>
-          </div>
           <FooterTemplate/>
         </div>
-      </Router> 
+      </Router>
     )
   }
 }
