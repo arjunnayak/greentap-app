@@ -1,5 +1,9 @@
 /* will be used to style bootstrap classes*/
 
+.container {
+  max-width: 1170px;
+}
+
 .navbar {
   margin-bottom: 0px;
 }
@@ -15,4 +19,7 @@
 
 /*use to position content within jumbotron to left*/
 .Jumbotron-content {
+  background-size: cover;
+  min-height: 200px;
+  max-height: 500px;
 }
