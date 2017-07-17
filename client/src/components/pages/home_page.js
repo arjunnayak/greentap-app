@@ -53,7 +53,7 @@ class HomePage extends Component {
 
               <Navbar.Form>
                   <FormGroup>
-                    <FormControl type="text" placeholder="Get notified, enter e-mail" />
+                    <FormControl type="text" placeholder="Enter e-mail address" />
                     {' '}
                     <ControlLabel>You are a: </ControlLabel>
                     <FormControl componentClass='select' placeholder='select'>
@@ -61,7 +61,7 @@ class HomePage extends Component {
                       <option value='Retailer'>Retailer</option>
                     </FormControl>
 
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">Get Early Access</Button>
                   </FormGroup>
               </Navbar.Form>
             </div>
@@ -75,9 +75,54 @@ class HomePage extends Component {
 renderContent(){
   return(
     <Grid>
-      <Row className='show-grid'>
-        <Col cs={12} md={8}>Hellos</Col>
-      </Row>
+      <div className='main-content'>
+        <Row className='show-grid'>
+            <div className='main-content-top'>
+              <Col md={6} mdPush={6}>
+                <div className="image-content">
+                  <img src="https://res.cloudinary.com/hdj563isl/image/upload/v1483640639/weedshop2_mbndjx.png"></img>
+                </div>
+              </Col>
+
+              <Col md={6} mdPull={6}>
+                <h2>Dispensaries</h2>
+                <ul>
+                  <li>Discover new products and request samples</li>
+                  <li>Identify quality products with existing user reviews</li>
+                  <li>Simple proposal tool to streamline purchase</li>
+                  <li>Superior customer service to assist your every needs</li>
+                </ul>
+
+                <FormGroup>
+                  <Button type="submit">Get Early Access</Button>
+                </FormGroup>
+              </Col>
+            </div>
+        </Row>
+
+        <Row className='show-grid'>
+          <div className='main-content-bottom'>
+            <h2 id='subtitle'>Vendors</h2>
+            <Col md={6} mdPush={6}>
+              <h2>Building Blocks of a Vendor Business</h2>
+              <ul>
+                <li>Sales Order Management</li>
+                <li>Inventory Management</li>
+                <li>Customer Relationship Management</li>
+                <li>Supply Chain Management</li>
+              </ul>
+            </Col>
+            <Col md={6} mdPull={6}>
+              <ul>
+                <li>Scale sales within 24/7 exposure to retailers</li>
+                <li>Nurture relationships local and out-of-state stores</li>
+                <li>Manage product availability & backorders</li>
+                <li>Reduce time to market and improve execution and quality</li>
+              </ul>
+            </Col>
+          </div>
+        </Row>
+      </div>
     </Grid>
   )
 }

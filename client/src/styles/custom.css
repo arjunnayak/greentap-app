@@ -23,3 +23,12 @@
   min-height: 200px;
   max-height: 500px;
 }
+
+#subtitle {
+  text-align:center;
+}
+
+img {
+  max-width: 75%;
+  max-height: 75%;
+}
