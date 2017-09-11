@@ -1,3 +1,7 @@
+/* landing page has its own header, margin-top counterracts base.css margin rule for header*/
+.wrapper {
+  margin-top: -50px;
+}
 /* will be used to style bootstrap classes*/
 
 .container {

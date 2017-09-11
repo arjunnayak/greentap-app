@@ -40,7 +40,7 @@ router(app)
 
 // start app
 const server = app.listen(port)
-console.log("Your app is listening on "+port)
+console.log("Your app is listening on ", port)
 
 // for testing
 module.exports = server

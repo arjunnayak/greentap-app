@@ -14,7 +14,7 @@ import {
   ControlLabel
 } from 'react-bootstrap';
 
-import '../../styles/custom.css'
+import '../../styles/landing.css'
 
 class HomePage extends Component {
 

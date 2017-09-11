@@ -46,27 +46,27 @@ class GreentapRouter extends Component {
     return (
       <Router history={browserHistory} >
         <div>
-          {/*<HeaderTemplate logo="Greentap"/>*/}
-            <Switch>
-              <Route exact path="/" component={HomePage}/>
-              <Route path="/register" component={Register} />
-              <Route path="/login" component={Login} />
-              <Route path="/logout" component={Logout} />
-              <Route path="/products" component={Products} />
-              <Route path="/product/:id" component={Product} />
-              {/*<Route path="contact-us" component={ContactPage} />*/}
-              {/*<Route path="component-samples" component={RequireAuth(ComponentSamplesPage)} />*/}
+          <Route exact path="/" component={HomePage}/>
+          <Switch>
+            {/* Each components needs to include a header if it needs it */}
+            <Route path="/register" component={Register} />
+            <Route path="/login" component={Login} />
+            <Route path="/logout" component={Logout} />
+            <Route path="/products" component={Products} />
+            <Route path="/product/:id" component={Product} />
+            {/*<Route path="contact-us" component={ContactPage} />*/}
+            {/*<Route path="component-samples" component={RequireAuth(ComponentSamplesPage)} />*/}
 
-              <Route path="/forgot-password" component={ForgotPassword} />
-              <Route path="/reset-password/:resetToken" component={ResetPassword} />
+            <Route path="/forgot-password" component={ForgotPassword} />
+            <Route path="/reset-password/:resetToken" component={ResetPassword} />
 
-              {/*<Route path="profile" component={RequireAuth(ViewProfile)} />*/}
+            {/*<Route path="profile" component={RequireAuth(ViewProfile)} />*/}
 
-              <Route path="/dashboard" component={RequireAuth(Dashboard)}/>
-                {/*<IndexRoute component={RequireAuth(Dashboard)} />*/}
+            <Route path="/dashboard" component={(Dashboard)}/>
+              {/*<IndexRoute component={RequireAuth(Dashboard)} />*/}
 
-              <Route component={NotFoundPage} />
-            </Switch>
+            <Route component={NotFoundPage} />
+          </Switch>
           <FooterTemplate/>
         </div>
       </Router>

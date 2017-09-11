@@ -9,7 +9,7 @@ export default function (state = INITIAL_STATE, action) {
     case UNAUTH_USER:
       return { ...state, authenticated: false, error: action.payload };
     case AUTH_ERROR:
-      return { ...state, error: action.payload };
+      return { ...state, error: action.payload.error };
     case FORGOT_PASSWORD_REQUEST:
       return { ...state, message: action.payload.message };
     case RESET_PASSWORD_REQUEST:

@@ -12,7 +12,6 @@ const localOptions = {
 
 // Setting up local login strategy
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
-  console.log(email)
   User.findOne({ email }, (err, user) => {
     if (err) { return done(err) }
     if (!user) { return done(null, false, { error: 'Your login details could not be verified. Please try again.' }) }

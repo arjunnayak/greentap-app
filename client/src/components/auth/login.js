@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../../actions/auth';
+import HeaderTemplate from '../template/header';
 
 const form = reduxForm({
   form: 'login',
@@ -10,13 +11,19 @@ const form = reduxForm({
 
 class Login extends Component {
   handleFormSubmit(formProps) {
-    this.props.loginUser(formProps);
+    this.props.loginUser(formProps)
+      .then(() => {
+      console.log("after login authenticated", this.props.authenticated)
+      if(this.props.authenticated) {
+        this.props.history.push("/dashboard");
+      }
+    });
   }
 
   renderAlert() {
     if (this.props.errorMessage) {
       return (
-        <div>
+        <div className="auth-form-error">
           <span><strong>Error!</strong> {this.props.errorMessage}</span>
         </div>
       );
@@ -25,9 +32,9 @@ class Login extends Component {
 
   render() {
     const { handleSubmit } = this.props;
-
-    return (
+    return (  
       <div>
+        <HeaderTemplate logo="Greentap"/>
         <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           {this.renderAlert()}
           <div>

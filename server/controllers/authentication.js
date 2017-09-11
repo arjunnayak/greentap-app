@@ -14,13 +14,39 @@ function generateToken(user) {
 //= =======================================
 // Login Route
 //= =======================================
-exports.login = (req, res, next) => {
-  const userInfo = setUserInfo(req.user)
 
-  res.status(200).json({
-    token: `JWT ${generateToken(userInfo)}`,
-    user: userInfo
-  })
+exports.login = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log(email + password)
+
+  // Return error if no email provided
+  if (!email) {
+    return res.status(422).json({ error: 'You must enter an email address.' });
+  }
+
+  // Return error if no password provided
+  if (!password) {
+    return res.status(422).json({ error: 'You must enter a password.' });
+  }
+
+  User.findOne({ email }, (err, user) => {
+    if (err || !user) { 
+      return res.status(400).json({ error: "Incorrect login credentials" });
+    }
+  
+    user.comparePassword(password, (err, isMatch) => {
+      if (err || !isMatch) { 
+        return res.status(400).json({ error: "Incorrect login credentials" });
+      }
+  
+      const userInfo = setUserInfo(user);
+      return res.status(200).json({
+        token: `JWT ${generateToken(userInfo)}`,
+        user: userInfo
+      });
+    })
+  });
 } 
 
 //= =======================================
@@ -35,15 +61,15 @@ exports.register = (req, res, next) => {
 
   // Return error if no email provided
   if (!email) {
-    return res.status(422).send({ error: 'You must enter an email address.' })
+    return res.status(422).json({ error: 'You must enter an email address.' })
   }
   // Return error if full name not provided
   if (!firstName || !lastName) {
-    return res.status(422).send({ error: 'You must enter your full name.' })
+    return res.status(422).json({ error: 'You must enter your full name.' })
   }
   // Return error if no password provided
   if (!password) {
-    return res.status(422).send({ error: 'You must enter a password.' })
+    return res.status(422).json({ error: 'You must enter a password.' })
   }
 
   User.findOne({ email }, (err, existingUser) => {
@@ -51,7 +77,7 @@ exports.register = (req, res, next) => {
 
     // If user is not unique, return error
     if (existingUser) {
-      return res.status(422).send({ error: 'That email address is already in use.' })
+      return res.status(400).json({ error: 'That email address is already in use.' })
     }
     // If email is unique and password was provided, create account
     user = {
@@ -66,7 +92,7 @@ exports.register = (req, res, next) => {
       // Respond with JWT if user was created
 
       const userInfo = setUserInfo(user);
-      res.status(201).json({
+      return res.status(201).json({
         token: `JWT ${generateToken(userInfo)}`,
         user: userInfo
       });
@@ -111,7 +137,7 @@ exports.forgotPassword = function (req, res, next) {
         }
 
           // Otherwise, send user email via Mailgun
-        mailgun.sendEmail(existingUser.email, message)
+        // mailgun.sendEmail(existingUser.email, message)
 
         return res.status(200).json({ message: 'Please check your email for the link to reset your password.' })
       })
