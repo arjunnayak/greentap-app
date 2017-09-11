@@ -1,0 +1,34 @@
+/* will be used to style bootstrap classes*/
+
+.container {
+  max-width: 1170px;
+}
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.jumbotron {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.jumbotron h1 {
+  font-size: 38px;
+}
+
+/*use to position content within jumbotron to left*/
+.Jumbotron-content {
+  background-size: cover;
+  min-height: 200px;
+  max-height: 500px;
+}
+
+#subtitle {
+  text-align:center;
+}
+
+img {
+  max-width: 75%;
+  max-height: 75%;
+}
