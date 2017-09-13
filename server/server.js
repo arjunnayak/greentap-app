@@ -1,25 +1,23 @@
 // set up ======================================================================
 const express = require('express')
-const mongoose = require('mongoose')
 const port = process.env.PORT || 3001
 const logger = require('morgan')
 const router = require('./router')
 const bodyParser = require('body-parser')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
 const passport = require('passport')
 const passportService = require('./config/passport')
+const db = require('./config/db')
+
+//test db
+db.any('SELECT * FROM public.user;')
+.then(function(data) {
+  console.log(data)
+})
+.catch(function(error) {
+  console.log(error)
+});
 
 var app = express()
-
-// configuration ===============================================================
-mongoose.connect('mongodb://localhost:27017/greentap') 
-app.use(session({
-  store: new MongoStore({ mongooseConnection: mongoose.connection }),
-  secret: 'secret',
-  resave: false,
-  saveUninitialized: false
-}))
 
 // app.use(express.static(__dirname + '/public'))                 // set the static files location /public/img will be /img for users
 app.use(logger('dev'))                                         // log every request to the console
