@@ -28,12 +28,11 @@ body {
 }
 
 .mainNav .nav.navbar-nav li a, .mainNav .nav.navbar-nav.navbar-right li a {
-    color: white;
+  color: white;
 }
 
 .carousel-caption {
   padding-top: 25%;
-
   position: relative;
   text-align: left;
   right:0;
@@ -47,27 +46,26 @@ body {
 }
 
 .overlay {
-    z-index: 1;
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-    top: 0px;
-    left: 0px;
-    background: rgba(0, 0, 0, 0.575); /*can be anything, of course*/
-    min-height: 100vh;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  top: 0px;
+  left: 0px;
+  background: rgba(0, 0, 0, 0.575); /*can be anything, of course*/
+  min-height: 100vh;
 }
 
 .jumbotron {
-padding:0;
-    background: url("https://res.cloudinary.com/hdj563isl/image/upload/v1483640639/weedshop2_mbndjx.png") no-repeat center center fixed; 
--webkit-background-size: cover;
--moz-background-size: cover;
--o-background-size: cover;
-background-size:cover;
+  padding:0;
+      background: url("https://res.cloudinary.com/hdj563isl/image/upload/v1483640639/weedshop2_mbndjx.png") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size:cover;
 
-min-height:  100vh;
-color:white;
-
+  min-height:  100vh;
+  color:white;
 }
 
 label.control-label {
@@ -76,7 +74,7 @@ label.control-label {
 
 
 select.form-control, .inline-label {
-   border-radius: 0;
+  border-radius: 0;
   padding-right: 20px;
   -webkit-appearance: none;
 }
@@ -121,19 +119,16 @@ ul.feature-list{
 }
 ul.feature-list > li {
   padding:20px;
-
   list-style: none;
 }
 
 select {
-   margin-right: 20px;
-   padding-bottom: 20px;
+  margin-right: 20px;
+  padding-bottom: 20px;
 }
 
 button {
-
-
- margin-right: 20px;
+  margin-right: 20px;
 }
 
 .wrapper {
