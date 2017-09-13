@@ -3,16 +3,31 @@ body {
   font-family: 'Noto Sans', sans-serif;
 }
 
-.navbar {
+.btn-primary {
+  background: #0C8346;
+}
+
+.primary {
+  color:#12CE6D;
+}
+
+.primary-transparent {
+  background: rgba(12,131,70, .9);
+}
+
+.mainNav > .navbar-default .navbar-collapse.in, .navbar-default .navbar-collapsing {
+  background: rgba(12,131,70, .9);
+}
+.mainNav > .navbar {
   background:inherit;
   border:none;
 }
 
-.navbar-default .navbar-brand, .navbar-toggle .collapsed{
+.mainNav > .navbar-default .navbar-brand, .mainNav >.navbar-toggle .collapsed{
   color:white;
 }
 
-.nav.navbar-nav li a, .nav.navbar-nav.navbar-right li a {
+.mainNav .nav.navbar-nav li a, .mainNav .nav.navbar-nav.navbar-right li a {
     color: white;
 }
 
@@ -39,7 +54,7 @@ body {
     top: 0px;
     left: 0px;
     background: rgba(0, 0, 0, 0.575); /*can be anything, of course*/
-    min-height: 400px;
+    min-height: 100vh;
 }
 
 .jumbotron {
@@ -50,7 +65,7 @@ padding:0;
 -o-background-size: cover;
 background-size:cover;
 
-min-height: 400px;
+min-height:  100vh;
 color:white;
 
 }

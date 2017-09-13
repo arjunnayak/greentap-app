@@ -23,7 +23,7 @@ class HomePage extends Component {
 
   renderNav () {
     return(
-      <div>
+      <div className="mainNav">
 
       <Navbar className="navbar-fixed-top" collapseOnSelect>
     <Navbar.Header>
