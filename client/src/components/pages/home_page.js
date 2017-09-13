@@ -25,7 +25,7 @@ class HomePage extends Component {
     return(
       <div>
 
-      <Navbar inverse collapseOnSelect>
+      <Navbar className="navbar-fixed-top" collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
         <a href="#">GreenTap</a>
@@ -49,21 +49,25 @@ class HomePage extends Component {
 
   renderHero() {
     return (
-      <div>
-        <Jumbotron>
+      
+        <Jumbotron >
+        <div className="overlay">
           <div className='container'>
-            <div className='Jumbotron-content container'>
+            <div className='jumbotron-content container'>
             <Row>
               <Col md={8}>
+              <div  className="carousel-caption">
                 <h1>Wholesale Cannabis Marketplace</h1>
-                <p>Easily source and discover products from anywhere.
-                <br/> <small>Start your new business today.</small>
-                </p>
+                <p className="lead">Easily source and discover products from anywhere.</p>
+               
+              
                 <Navbar.Form>
+                 <ControlLabel>Start your new business today</ControlLabel>
                     <FormGroup>
+                   
                       <FormControl type="text" placeholder="Enter e-mail address" />
                       {' '}
-                      <ControlLabel>You are a: </ControlLabel>
+                      <ControlLabel className="inline-label">You are a: </ControlLabel>
                       <FormControl componentClass='select' placeholder='select'>
                         <option value='Vendor'>Vendor</option>
                         <option value='Retailer'>Retailer</option>
@@ -72,37 +76,33 @@ class HomePage extends Component {
                       <Button type="submit" className="btn-primary">Get Early Access</Button>
                     </FormGroup>
                 </Navbar.Form>
-
+</div>
                 </Col>
                 <Col md={4}>
-                  <Image src="https://react-bootstrap.github.io/assets/thumbnail.png" />
+                 
                 </Col>
             </Row>
             </div>
           </div>
+           </div>
         </Jumbotron>
-      </div>
+    
     )
   }
 
 // need to add grid system
 renderContent(){
   return(
-    <Grid>
+<Grid >
       <div className='main-content'>
-
-
-          <Row className='show-grid'>
-          
+        <div >
+          <Row className='show-grid container'>
               <div className='main-content-top'>
-             
               <Col md={12}>
                  <PageHeader >Dispensaries</PageHeader>
               </Col>
               <Col md={6} >
-                  <div className="container-fluid image-content">
-                    <Image id="dispensary" src="https://res.cloudinary.com/hdj563isl/image/upload/v1483640639/weedshop2_mbndjx.png" responsive></Image>
-                  </div>
+                  
               </Col>
                 <Col md={6} >  
                   <ul className="feature-list">
@@ -110,20 +110,16 @@ renderContent(){
                     <li><i className="fa fa-2x fa-check"/> Identify quality products with existing user reviews</li>
                     <li><i className="fa fa-2x fa-check"/> Simple proposal tool to streamline purchase</li>
                     <li><i className="fa fa-2x fa-check"/> Superior customer service to assist your every needs</li>
-                  </ul>
-                    
+                  </ul>  
                 </Col>
-             
               </div>
-             
-
           </Row>
-
           <Row className='show-grid text-center'>
         <Button className="btn btn-lg btn-primary btn-padded">Register Now</Button>
         </Row>
+        </div>
 
-        <Row className='show-grid'>
+        <Row className='show-grid container'>
           <div className='main-content-bottom'>
             <PageHeader className="text-center">Vendors</PageHeader>
             <Col md={6} className="border-right" >
@@ -150,7 +146,8 @@ renderContent(){
         </Row>
 
       </div>
-    </Grid>
+      </Grid>
+ 
   )
 }
   render() {
@@ -158,9 +155,9 @@ renderContent(){
       <div className='wrapper'>
         {this.renderNav()}
         {this.renderHero()}
-        <div className="container">
+   
           {this.renderContent()}
-        </div>
+
       </div>
     );
   }
