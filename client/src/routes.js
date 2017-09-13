@@ -46,8 +46,8 @@ class GreentapRouter extends Component {
     return (
       <Router history={browserHistory} >
         <div>
-          <Route exact path="/" component={HomePage}/>
           <Switch>
+            <Route exact path="/" component={HomePage}/>
             {/* Each components needs to include a header if it needs it */}
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
