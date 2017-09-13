@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
-const User = require('../models/user')
+const db = require('../config/db')
 const setUserInfo = require('../helpers').setUserInfo
 
 // Generate JWT
@@ -18,7 +18,6 @@ function generateToken(user) {
 exports.login = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email + password)
 
   // Return error if no email provided
   if (!email) {
@@ -30,23 +29,18 @@ exports.login = (req, res, next) => {
     return res.status(422).json({ error: 'You must enter a password.' });
   }
 
-  User.findOne({ email }, (err, user) => {
-    if (err || !user) { 
-      return res.status(400).json({ error: "Incorrect login credentials" });
-    }
-  
-    user.comparePassword(password, (err, isMatch) => {
-      if (err || !isMatch) { 
-        return res.status(400).json({ error: "Incorrect login credentials" });
-      }
-  
+  const GET_USER = 'SELECT * FROM public.user WHERE email = $1 and password = $2';
+  db.one(GET_USER, [email, password])
+    .then(user => {
       const userInfo = setUserInfo(user);
       return res.status(200).json({
         token: `JWT ${generateToken(userInfo)}`,
         user: userInfo
       });
     })
-  });
+    .catch(error => {
+      return res.status(400).json({ error: "Incorrect login credentials" });
+    });
 } 
 
 //= =======================================
@@ -72,32 +66,23 @@ exports.register = (req, res, next) => {
     return res.status(422).json({ error: 'You must enter a password.' })
   }
 
-  User.findOne({ email }, (err, existingUser) => {
-    if (err) { return next(err) }
-
-    // If user is not unique, return error
-    if (existingUser) {
-      return res.status(400).json({ error: 'That email address is already in use.' })
-    }
-    // If email is unique and password was provided, create account
-    user = {
-      email,
-      password,
-      profile: { firstName, lastName }
-    }
-    User.create(user, function (err, user) {
-      if (err) { return next(err); }
-      // Subscribe member to Mailchimp list
-      // mailchimp.subscribeToNewsletter(user.email);
-      // Respond with JWT if user was created
-
+  const CREATE_USER = 'INSERT INTO public.user(first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING first_name, last_name, email;';
+  db.one(CREATE_USER, [firstName, lastName, email, password])
+    .then(user => {
+      console.log(user);
       const userInfo = setUserInfo(user);
       return res.status(201).json({
         token: `JWT ${generateToken(userInfo)}`,
         user: userInfo
       });
     })
-  })
+    .catch(error => {
+      console.log(error);
+      if(error.code == '23505') {
+        return res.status(400).json({ error: 'That email address is already in use.' })
+      }
+      return res.status(400).json({ error: 'There was an error.' })
+    });
 }
 
 // //= =======================================
@@ -107,42 +92,44 @@ exports.register = (req, res, next) => {
 exports.forgotPassword = function (req, res, next) {
   const email = req.body.email
 
-  User.findOne({ email }, (err, existingUser) => {
-    // If user is not found, return error
-    if (err || existingUser == null) {
-      res.status(422).json({ error: 'Your request could not be processed as entered. Please try again.' })
-      return next(err)
-    }
+  // TODO:use code below for reference when implementing this for postgres
 
-      // If user is found, generate and save resetToken
+  // User.findOne({ email }, (err, existingUser) => {
+  //   // If user is not found, return error
+  //   if (err || existingUser == null) {
+  //     res.status(422).json({ error: 'Your request could not be processed as entered. Please try again.' })
+  //     return next(err)
+  //   }
 
-      // Generate a token with Crypto
-    crypto.randomBytes(48, (err, buffer) => {
-      const resetToken = buffer.toString('hex')
-      if (err) { return next(err) }
+  //     // If user is found, generate and save resetToken
 
-      existingUser.resetPasswordToken = resetToken
-      existingUser.resetPasswordExpires = Date.now() + 3600000 // 1 hour
+  //     // Generate a token with Crypto
+  //   crypto.randomBytes(48, (err, buffer) => {
+  //     const resetToken = buffer.toString('hex')
+  //     if (err) { return next(err) }
 
-      existingUser.save((err) => {
-          // If error in saving token, return it
-        if (err) { return next(err) }
+  //     existingUser.resetPasswordToken = resetToken
+  //     existingUser.resetPasswordExpires = Date.now() + 3600000 // 1 hour
 
-        const message = {
-          subject: 'Reset Password',
-          text: `${'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-            'http://'}${req.headers.host}/reset-password/${resetToken}\n\n` +
-            `If you did not request this, please ignore this email and your password will remain unchanged.\n`
-        }
+  //     existingUser.save((err) => {
+  //         // If error in saving token, return it
+  //       if (err) { return next(err) }
 
-          // Otherwise, send user email via Mailgun
-        // mailgun.sendEmail(existingUser.email, message)
+  //       const message = {
+  //         subject: 'Reset Password',
+  //         text: `${'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+  //           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+  //           'http://'}${req.headers.host}/reset-password/${resetToken}\n\n` +
+  //           `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+  //       }
 
-        return res.status(200).json({ message: 'Please check your email for the link to reset your password.' })
-      })
-    })
-  })
+  //         // Otherwise, send user email via Mailgun
+  //       // mailgun.sendEmail(existingUser.email, message)
+
+  //       return res.status(200).json({ message: 'Please check your email for the link to reset your password.' })
+  //     })
+  //   })
+  // })
 }
 
 // //= =======================================
@@ -150,31 +137,34 @@ exports.forgotPassword = function (req, res, next) {
 // //= =======================================
 
 exports.verifyToken = function (req, res, next) {
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, resetUser) => {
-    // If query returned no results, token expired or was invalid. Return error.
-    if (!resetUser) {
-      res.status(422).json({ error: 'Your token has expired. Please attempt to reset your password again.' })
-    }
 
-      // Otherwise, save new password and clear resetToken from database
-    resetUser.password = req.body.password
-    resetUser.resetPasswordToken = undefined
-    resetUser.resetPasswordExpires = undefined
+  // TODO:use code below for reference when implementing this for postgres
 
-    resetUser.save((err) => {
-      if (err) { return next(err) }
+  // User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, resetUser) => {
+  //   // If query returned no results, token expired or was invalid. Return error.
+  //   if (!resetUser) {
+  //     res.status(422).json({ error: 'Your token has expired. Please attempt to reset your password again.' })
+  //   }
 
-        // If password change saved successfully, alert user via email
-      const message = {
-        subject: 'Password Changed',
-        text: 'You are receiving this email because you changed your password. \n\n' +
-          'If you did not request this change, please contact us immediately.'
-      }
+  //     // Otherwise, save new password and clear resetToken from database
+  //   resetUser.password = req.body.password
+  //   resetUser.resetPasswordToken = undefined
+  //   resetUser.resetPasswordExpires = undefined
 
-        // Otherwise, send user email confirmation of password change via Mailgun
-      mailgun.sendEmail(resetUser.email, message)
+  //   resetUser.save((err) => {
+  //     if (err) { return next(err) }
 
-      return res.status(200).json({ message: 'Password changed successfully. Please login with your new password.' })
-    })
-  })
+  //       // If password change saved successfully, alert user via email
+  //     const message = {
+  //       subject: 'Password Changed',
+  //       text: 'You are receiving this email because you changed your password. \n\n' +
+  //         'If you did not request this change, please contact us immediately.'
+  //     }
+
+  //       // Otherwise, send user email confirmation of password change via Mailgun
+  //     mailgun.sendEmail(resetUser.email, message)
+
+  //     return res.status(200).json({ message: 'Password changed successfully. Please login with your new password.' })
+  //   })
+  // })
 }

@@ -2,8 +2,8 @@
 exports.setUserInfo = function setUserInfo(request) {
   const getUserInfo = {
     _id: request._id,
-    firstName: request.profile.firstName,
-    lastName: request.profile.lastName,
+    firstName: request.first_name,
+    lastName: request.last_name,
     email: request.email
     // role: request.role
   }
