@@ -39,7 +39,7 @@ body {
     top: 0px;
     left: 0px;
     background: rgba(0, 0, 0, 0.575); /*can be anything, of course*/
-    min-height: 400px;
+    min-height: 100vh;
 }
 
 .jumbotron {
@@ -50,7 +50,7 @@ padding:0;
 -o-background-size: cover;
 background-size:cover;
 
-min-height: 400px;
+min-height:  100vh;
 color:white;
 
 }
