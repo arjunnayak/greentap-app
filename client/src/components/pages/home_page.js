@@ -23,8 +23,7 @@ class HomePage extends Component {
 
   renderNav () {
     return(
-      <div>
-
+      <div className="mainNav">
       <Navbar className="navbar-fixed-top" collapseOnSelect>
     <Navbar.Header>
       <Navbar.Brand>
@@ -43,6 +42,7 @@ class HomePage extends Component {
       </Nav>
     </Navbar.Collapse>
   </Navbar>
+
       </div>
     )
   }
@@ -58,7 +58,7 @@ class HomePage extends Component {
               <Col md={8}>
               <div  className="carousel-caption">
                 <h1>Wholesale Cannabis Marketplace</h1>
-                <p className="lead">Easily source and discover products from anywhere.</p>
+                <p className="lead primary">Easily source and discover products from anywhere.</p>
                
               
                 <Navbar.Form>
@@ -96,28 +96,6 @@ renderContent(){
 <Grid >
       <div className='main-content'>
         <div >
-          <Row className='show-grid container'>
-              <div className='main-content-top'>
-              <Col md={12}>
-                 <PageHeader >Dispensaries</PageHeader>
-              </Col>
-              <Col md={6} >
-                  
-              </Col>
-                <Col md={6} >  
-                  <ul className="feature-list">
-                    <li><i className="fa fa-2x fa-check"/> Discover new products and request samples</li>
-                    <li><i className="fa fa-2x fa-check"/> Identify quality products with existing user reviews</li>
-                    <li><i className="fa fa-2x fa-check"/> Simple proposal tool to streamline purchase</li>
-                    <li><i className="fa fa-2x fa-check"/> Superior customer service to assist your every needs</li>
-                  </ul>  
-                </Col>
-              </div>
-          </Row>
-          <Row className='show-grid text-center'>
-        <Button className="btn btn-lg btn-primary btn-padded">Register Now</Button>
-        </Row>
-        </div>
 
         <Row className='show-grid container'>
           <div className='main-content-bottom'>
@@ -144,6 +122,30 @@ renderContent(){
         <Row className='show-grid text-center'>
         <Button className="btn btn-lg btn-primary btn-padded">Start an Application</Button>
         </Row>
+          <Row className='show-grid container'>
+              <div className='main-content-top'>
+              <Col md={12}>
+                 <PageHeader >Dispensaries</PageHeader>
+              </Col>
+              <Col md={6} >
+                  
+              </Col>
+                <Col md={6} >  
+                  <ul className="feature-list">
+                    <li><i className="fa fa-2x fa-check"/> Discover new products and request samples</li>
+                    <li><i className="fa fa-2x fa-check"/> Identify quality products with existing user reviews</li>
+                    <li><i className="fa fa-2x fa-check"/> Simple proposal tool to streamline purchase</li>
+                    <li><i className="fa fa-2x fa-check"/> Superior customer service to assist your every needs</li>
+                  </ul>  
+                </Col>
+              </div>
+          </Row>
+          <Row className='show-grid text-center'>
+        <Button className="btn btn-lg btn-primary btn-padded">Register Now</Button>
+        </Row>
+        </div>
+
+        
 
       </div>
       </Grid>
