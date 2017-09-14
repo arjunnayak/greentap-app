@@ -9,13 +9,6 @@ const form = reduxForm({
   validate,
 });
 
-const renderField = field => (
-  <div>
-    <input className="form-control" {...field.input} />
-    {field.touched && field.error && <div className="error">{field.error}</div>}
-  </div>
-);
-
 function validate(formProps) {
   const errors = {};
 
@@ -36,6 +29,13 @@ function validate(formProps) {
   }
   return errors;
 }
+
+const renderField = field => (
+  <div>
+    <input className="form-control simple-input" {...field.input} placeholder={field.placeholder} />
+    {field.touched && field.error && <div className="error">{field.error}</div>}
+  </div>
+);
 
 class Register extends Component {
   handleFormSubmit(formProps) {
@@ -64,32 +64,32 @@ class Register extends Component {
     return (
       <div>
         <HeaderTemplate logo="Greentap"/>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-          {this.renderAlert()}
-          <div className="row">
-            <div className="col-md-6">
-              <label>First Name</label>
-              <Field name="firstName" className="form-control" component={renderField} type="text" />
-            </div>
-            <div className="col-md-6">
-              <label>Last Name</label>
-              <Field name="lastName" className="form-control" component={renderField} type="text" />
-            </div>
+        <div className="container cont-space center">
+          <h1 className="form-space">Register</h1>
+          <div className="panel panel-default">
+            <form className="" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              {this.renderAlert()}
+              <div className="panel-body">
+                <Field name="firstName" component={renderField} type="text" placeholder="First Name" />
+              </div>
+              <div className="panel-body">
+                <Field name="lastName" component={renderField} type="text" placeholder="Last Name" />
+              </div>
+              <div className="panel-body">
+                <Field name="email" component={renderField} type="text" placeholder="Email" />
+              </div>
+              <div className="panel-body">
+                <Field name="password" component={renderField} type="password" placeholder="Password" />
+              </div>
+              <div className="panel-body">
+                <Field name="password" component={renderField} type="password" placeholder="Confirm Password" />
+              </div>
+              <div className="panel-body">
+                <button type="submit" className="btn btn-primary">Create Account</button>
+              </div>
+            </form>
           </div>
-          <div className="row">
-            <div className="col-md-12">
-              <label>Email</label>
-              <Field name="email" className="form-control" component={renderField} type="text" />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              <label>Password</label>
-              <Field name="password" className="form-control" component={renderField} type="password" />
-            </div>
-          </div>
-          <button type="submit" className="btn btn-primary">Register</button>
-        </form>
+        </div>
       </div>
     );
   }

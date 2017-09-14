@@ -18,6 +18,7 @@ ul.footer-nav {
   padding: 0;
   margin: 0;
 }
+
 ul.footer-nav > li {
   display: inline-block;
   padding-right: 5px;
@@ -37,4 +38,27 @@ p.copyright > span {
 
 .auth-form-error {
   color: red;
+}
+
+.form-space {
+  margin-bottom: 20px;
+}
+
+.container.cont-space {
+  margin-top: 20px;
+}
+
+.cont-space.center {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+input.simple-input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 1px solid black;
+  -webkit-box-shadow: none;
+  padding-left: 5px;
 }

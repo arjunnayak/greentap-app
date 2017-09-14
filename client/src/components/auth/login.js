@@ -9,6 +9,13 @@ const form = reduxForm({
   form: 'login',
 });
 
+const renderField = field => (
+  <div>
+    <input className="form-control simple-input" {...field.input} placeholder={field.placeholder} />
+    {field.touched && field.error && <div className="error">{field.error}</div>}
+  </div>
+);
+
 class Login extends Component {
   handleFormSubmit(formProps) {
     this.props.loginUser(formProps)
@@ -35,20 +42,28 @@ class Login extends Component {
     return (  
       <div>
         <HeaderTemplate logo="Greentap"/>
-        <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-          {this.renderAlert()}
-          <div>
-            <label>Email</label>
-            <Field name="email" className="form-control" component="input" type="text" />
+        <div className="container cont-space center">
+          <h1 className="form-space">Login</h1>
+          <div className="panel panel-default">
+            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              {this.renderAlert()}
+              <div className="panel-body">
+                <Field name="email" component={renderField} type="text" placeholder="Email" />
+              </div>
+              <div className="panel-body">
+                <Field name="password" component={renderField} type="text" placeholder="Password" />
+              </div>
+              <div className="panel-body">
+                <button type="submit" className="btn btn-primary">Login</button>
+              </div>
+              <div className="panel-body">
+                <Link to="/forgot-password">Forgot Password?</Link>
+              </div>
+            </form>
           </div>
-          <div>
-            <label>Password</label>
-            <Field name="password" className="form-control" component="input" type="password" />
-          </div>
-          <button type="submit" className="btn btn-primary">Login</button>
-        </form>
-        <Link to="/forgot-password">Forgot Password?</Link>
-      </div>
+        </div>
+    </div>
+
     );
   }
 }
