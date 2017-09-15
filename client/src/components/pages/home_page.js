@@ -93,8 +93,7 @@ renderContent(){
   return(
     <Grid >
       <div className='main-content'>
-        <div >
-
+        <div>
           <Row className='show-grid container'>
             <div className='main-content-bottom'>
               <PageHeader className="text-center">Vendors</PageHeader>
