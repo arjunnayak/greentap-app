@@ -22,7 +22,7 @@ import '../../styles/landing.css'
 class HomePage extends Component {
 
   renderNav () {
-    return(
+    return (
       <div className="mainNav">
         <Navbar className="navbar-fixed-top" collapseOnSelect>
           <Navbar.Header>
@@ -33,12 +33,21 @@ class HomePage extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavItem eventKey={1} href="#">Contact Us</NavItem>
+              {/* <NavItem eventKey={1} href="#">Contact Us</NavItem> */}
+              <li className="nav-item">
+                <a className="nav-link active" href="#">Contact Us</a>
+              </li>
             </Nav>
             <Nav pullRight>
               {/* needs to link somewhere */}
-              <NavItem eventKey={3} href="#">Vendors</NavItem>
-              <NavItem eventKey={4} href="#">Retailers</NavItem>
+              <li className="nav-item">
+                <a className="nav-link active" href="#vendors">Vendors</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link active" href="#dispensaries">Dispensaries</a>
+              </li>
+              {/* <NavItem eventKey={3} href="/login">Vendors</NavItem> */}
+              {/* <NavItem eventKey={4} href="#dispensaries">Dispensaries</NavItem> */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -58,26 +67,20 @@ class HomePage extends Component {
                     <h1>Wholesale Cannabis Marketplace</h1>
                     <p className="lead primary">Easily source and discover products from anywhere.</p>
 
-
                     <Navbar.Form>
                       <ControlLabel>Start your new business today</ControlLabel>
                       <FormGroup>
-
-                        <FormControl type="text" placeholder="Enter e-mail address" />
-                        {' '}
                         <ControlLabel className="inline-label">You are a: </ControlLabel>
                         <FormControl componentClass='select' placeholder='select'>
-                          <option value='Vendor'>Vendor</option>
                           <option value='Retailer'>Retailer</option>
+                          <option value='Wholesaler'>Wholesaler</option>
+                          <option value='Producer'>Producer</option>
                         </FormControl>
-
+                        <FormControl type="text" placeholder="Enter e-mail address" />
                         <Button type="submit" className="btn-primary">Get Early Access</Button>
                       </FormGroup>
                     </Navbar.Form>
                   </div>
-                </Col>
-                <Col md={4}>
-
                 </Col>
               </Row>
             </div>
@@ -94,7 +97,7 @@ renderContent(){
     <Grid >
       <div className='main-content'>
         <div>
-          <Row className='show-grid container'>
+          <Row id="vendors" className='show-grid container'>
             <div className='main-content-bottom'>
               <PageHeader className="text-center">Vendors</PageHeader>
               <Col md={6} className="border-right" >
@@ -115,19 +118,16 @@ renderContent(){
               </Col>
             </div>
           </Row>
-
           <Row className='show-grid text-center'>
-            <Button className="btn btn-lg btn-primary btn-padded">Start an Application</Button>
+            <Button href="/register" className="btn btn-lg btn-primary btn-padded">Start an Application</Button>
           </Row>
+
           <Row className='show-grid container'>
             <div className='main-content-top'>
               <Col md={12}>
-                <PageHeader >Dispensaries</PageHeader>
+                <PageHeader id="dispensaries" className="text-center">Dispensaries</PageHeader>
               </Col>
-              <Col md={6} >
-
-              </Col>
-              <Col md={6} >
+              <Col md={12} >
                 <ul className="feature-list">
                   <li><i className="fa fa-2x fa-check" /> Discover new products and request samples</li>
                   <li><i className="fa fa-2x fa-check" /> Identify quality products with existing user reviews</li>
@@ -138,7 +138,7 @@ renderContent(){
             </div>
           </Row>
           <Row className='show-grid text-center'>
-            <Button className="btn btn-lg btn-primary btn-padded">Register Now</Button>
+            <Button href="/register" className="btn btn-lg btn-primary btn-padded">Register Now</Button>
           </Row>
         </div>
       </div>

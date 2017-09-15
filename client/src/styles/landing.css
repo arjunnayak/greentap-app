@@ -31,6 +31,10 @@ body {
   color: white;
 }
 
+input.form-control {
+  margin-right: 15px;
+}
+
 .carousel-caption {
   padding-top: 25%;
   position: relative;
@@ -68,15 +72,18 @@ body {
   color:white;
 }
 
+li.nav-item > a.nav-link:hover {
+  color: #555 !important;
+  background-color: #E7E7E7;
+}
+
 label.control-label {
   padding-bottom:5px;
 }
 
-
 select.form-control, .inline-label {
   border-radius: 0;
-  padding-right: 20px;
-  -webkit-appearance: none;
+  padding-right: 5px;
 }
 
 input, .btn, .form-control, .navbar, button.navbar-toggle.collapsed  {

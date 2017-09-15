@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans:300,400,500,700" rel="stylesheet">
-    <title>Greentap</title>
+    <title>GreenTap</title>
 
   </head>
   <body>
@@ -38,17 +38,17 @@
     <!-- Import Bootstrap JS from CDN for easy replacement/removal -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
           <script>
-    $(document).ready(function(){
-  $(window).on("scroll",function(){
-    var wn = $(window).scrollTop();
-    if(wn > 400){
-      $(".navbar").css("background","rgba(12,131,70, .9)");
-    }
-    else{
-      $(".navbar").css("background","inherit");
-    }
-  });
-});
+    $(document).ready(function () {
+      $(window).on("scroll", function () {
+        var wn = $(window).scrollTop();
+        if (wn > 300) {
+          $(".navbar").css("background", "rgba(12,131,70, .9)");
+        }
+        else {
+          $(".navbar").css("background", "inherit");
+        }
+      });
+    });
   </script>
   </body>
 </html>
