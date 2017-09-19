@@ -46,12 +46,11 @@ class HomePage extends Component {
               </li>
             </Nav>
             <Nav pullRight>
-              {/* needs to link somewhere */}
               <li className="nav-item">
-                <a className="nav-link active" href="#vendors">Vendors</a>
+                <a className="nav-link active" href="#retailers">Retailers</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link active" href="#dispensaries">Dispensaries</a>
+                <a className="nav-link active" href="#vendors">Vendors</a>
               </li>
               {/* <NavItem eventKey={3} href="/login">Vendors</NavItem> */}
               {/* <NavItem eventKey={4} href="#dispensaries">Dispensaries</NavItem> */}
@@ -81,9 +80,8 @@ class HomePage extends Component {
               <Row>
                 <Col md={8}>
                   <div className="carousel-caption">
-                    <h1>Wholesale Cannabis Marketplace</h1>
-                    <p className="lead primary">Easily source and discover products from anywhere.</p>
-
+                    <h1>Wholesale Cannabis<br/><span className="marketplace">Marketplace</span></h1>
+                    <p className="lead primary">Easily source and discover new products from anywhere</p>
                     <Navbar.Form>
                       <ControlLabel>Start your new business today</ControlLabel>
                       <FormGroup>
@@ -114,6 +112,25 @@ class HomePage extends Component {
       <Grid >
         <div className='main-content'>
           <div>
+          <Row className='show-grid container'>
+              <div className='main-content-top'>
+                <Col md={12}>
+                  <PageHeader id="retailers" className="text-center">Retailers</PageHeader>
+                </Col>
+                <Col md={12} >
+                  <ul className="feature-list">
+                    <li><i className="fa fa-2x fa-check" /> Discover new products and request samples</li>
+                    <li><i className="fa fa-2x fa-check" /> Identify quality products with existing user reviews</li>
+                    <li><i className="fa fa-2x fa-check" /> Simple proposal tool to streamline purchase</li>
+                    <li><i className="fa fa-2x fa-check" /> Superior customer service to assist your every needs</li>
+                  </ul>
+                </Col>
+              </div>
+            </Row>
+            <Row className='show-grid text-center'>
+              <Button href="/register" className="btn btn-lg btn-primary btn-padded">Register Now</Button>
+            </Row>
+
             <Row id="vendors" className='show-grid container'>
               <div className='main-content-bottom'>
                 <PageHeader className="text-center">Vendors</PageHeader>
@@ -137,25 +154,6 @@ class HomePage extends Component {
             </Row>
             <Row className='show-grid text-center'>
               <Button href="/register" className="btn btn-lg btn-primary btn-padded">Start an Application</Button>
-            </Row>
-
-            <Row className='show-grid container'>
-              <div className='main-content-top'>
-                <Col md={12}>
-                  <PageHeader id="dispensaries" className="text-center">Dispensaries</PageHeader>
-                </Col>
-                <Col md={12} >
-                  <ul className="feature-list">
-                    <li><i className="fa fa-2x fa-check" /> Discover new products and request samples</li>
-                    <li><i className="fa fa-2x fa-check" /> Identify quality products with existing user reviews</li>
-                    <li><i className="fa fa-2x fa-check" /> Simple proposal tool to streamline purchase</li>
-                    <li><i className="fa fa-2x fa-check" /> Superior customer service to assist your every needs</li>
-                  </ul>
-                </Col>
-              </div>
-            </Row>
-            <Row className='show-grid text-center'>
-              <Button href="/register" className="btn btn-lg btn-primary btn-padded">Register Now</Button>
             </Row>
           </div>
         </div>
