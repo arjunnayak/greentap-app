@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { getForgotPasswordToken } from '../../actions/auth';
 import PropTypes from 'prop-types';
+import HeaderTemplate from '../template/header';
 
 const form = reduxForm({
   form: 'forgotPassword',
@@ -43,23 +44,30 @@ class ForgotPassword extends Component {
     const { handleSubmit } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-        <div>
-          {this.renderAlert()}
-          <label>Email</label>
-          <Field name="email" className="form-control" component="input" type="text" />
-        </div>
-        <button type="submit" className="btn btn-primary">Reset Password</button>
-      </form>
+      <div>
+        <HeaderTemplate logo="Greentap"/>
+        <div className="container cont-space center">
+          <h1 className="form-space">Forgot Password</h1>
+          <div className="panel panel-default">
+            <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+              {this.renderAlert()}
+              <div className="panel-body">
+                <input className="form-control simple-input" type="text" placeholder="Email"/>
+              </div>
+              <div className="panel-body">
+                <button type="submit" className="btn btn-primary">Reset</button>
+              </div>
+            </form>
+          </div>
+          </div>
+      </div>  
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    errorMessage: state.auth.error,
-    message: state.auth.message,
-    authenticated: state.auth.authenticated,
+    message: state.auth.message
   };
 }
 
