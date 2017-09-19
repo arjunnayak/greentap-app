@@ -155,6 +155,25 @@ class HomePage extends Component {
             <Row className='show-grid text-center'>
               <Button href="/register" className="btn btn-lg btn-primary btn-padded">Start an Application</Button>
             </Row>
+
+            <Row className='show-grid container'>
+              <div className='main-content-top'>
+                <Col md={12}>
+                  <PageHeader id="dispensaries" className="text-center">Dispensaries</PageHeader>
+                </Col>
+                <Col md={12} >
+                  <ul className="feature-list">
+                    <li><i className="fa fa-2x fa-check" /> Discover new products and request samples</li>
+                    <li><i className="fa fa-2x fa-check" /> Identify quality products with existing user reviews</li>
+                    <li><i className="fa fa-2x fa-check" /> Simple proposal tool to streamline purchase</li>
+                    <li><i className="fa fa-2x fa-check" /> Superior customer service to assist your every needs</li>
+                  </ul>
+                </Col>
+              </div>
+            </Row>
+            <Row className='show-grid text-center'>
+              <Button href="/register" className="btn btn-lg btn-primary btn-padded">Register Now</Button>
+            </Row>
           </div>
         </div>
       </Grid>
