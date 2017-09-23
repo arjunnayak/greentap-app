@@ -59,6 +59,9 @@ class Login extends Component {
               <div className="panel-body">
                 <Link to="/forgot-password">Forgot Password?</Link>
               </div>
+              <div className="last-link">
+                <Link to="/register">Create Account</Link>
+              </div>
             </form>
           </div>
         </div>
