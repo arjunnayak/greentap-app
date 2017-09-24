@@ -23,7 +23,7 @@ import Products from './components/products';
 import Product from './components/product';
 
 // Import dashboard pages
-import Dashboard from './components/dashboard';
+import Dashboard from './components/dashboard/dashboard';
 // import ViewProfile from './components/dashboard/profile/view-profile';
 
 // Import higher order components
