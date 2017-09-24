@@ -37,18 +37,20 @@
 
     <!-- Import Bootstrap JS from CDN for easy replacement/removal -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-          <script>
-    $(document).ready(function () {
-      $(window).on("scroll", function () {
-        var wn = $(window).scrollTop();
-        if (wn > 300) {
-          $(".navbar").css("background", "rgba(12,131,70, .9)");
-        }
-        else {
-          $(".navbar").css("background", "inherit");
-        }
+    
+    <script>
+      // Changes color of navbar on scroll position
+      $(document).ready(function () {
+        $(window).on("scroll", function () {
+          var wn = $(window).scrollTop();
+          if (wn > 300) {
+            $(".navbar").css("background", "rgba(12,131,70, .9)");
+          }
+          else {
+            $(".navbar").css("background", "inherit");
+          }
+        });
       });
-    });
-  </script>
+    </script>
   </body>
 </html>
