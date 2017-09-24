@@ -63,7 +63,7 @@ class Register extends Component {
 
     return (
       <div>
-        <HeaderTemplate logo="Greentap"/>
+        <HeaderTemplate />
         <div className="container cont-space center">
           <h1 className="form-space">Register</h1>
           <div className="panel panel-default">

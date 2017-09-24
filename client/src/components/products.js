@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { fetchProducts } from "../actions/content"
 import { Link } from 'react-router-dom'
+import HeaderTemplate from './template/header';
 
 class Products extends Component {
 
@@ -26,6 +27,7 @@ class Products extends Component {
   render() {
     return (
       <div>
+        <HeaderTemplate />
         <h3>Products</h3>
         <div className="row">
           {this.renderProducts()}

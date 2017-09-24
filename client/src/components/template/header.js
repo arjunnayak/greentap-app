@@ -21,14 +21,17 @@ class HeaderTemplate extends Component {
       return [
         // Unauthenticated navigation
         <li key={1}>
-          <Link to="/products">Products</Link>
+          <Link to="/dashboard">Dashboard</Link>
         </li>,
         <li key={2}>
-          <Link to="/login">Login</Link>
+          <Link to="/products">Products</Link>
         </li>,
         <li key={3}>
-          <Link to="/register">Register</Link>
+          <Link to="/login">Sign In</Link>
         </li>,
+        <li key={4}>
+          <Link to="/register">Register</Link>
+        </li>
       ];
     }
   }
@@ -44,7 +47,7 @@ class HeaderTemplate extends Component {
                 <span className="icon-bar" />
                 <span className="icon-bar" />
               </button>
-              <div><Link className="navbar-brand" to="/">{this.props.logo}</Link></div>
+              <div><Link className="navbar-brand" to="/">Greentap</Link></div>
             </div>
 
             <div className="collapse navbar-collapse" id="nav-collapse">

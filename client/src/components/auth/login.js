@@ -41,7 +41,7 @@ class Login extends Component {
     const { handleSubmit } = this.props;
     return (  
       <div>
-        <HeaderTemplate logo="Greentap"/>
+        <HeaderTemplate />
         <div className="container cont-space center">
           <h1 className="form-space">Login</h1>
           <div className="panel panel-default">
