@@ -19,12 +19,14 @@ import Logout from './components/auth/logout';
 import ForgotPassword from './components/auth/forgot_password';
 import ResetPassword from './components/auth/reset_password';
 
-import Products from './components/products';
-import Product from './components/product';
-
 // Import dashboard pages
-import Dashboard from './components/dashboard/dashboard';
-// import ViewProfile from './components/dashboard/profile/view-profile';
+import Overview from './components/dashboard/overview';
+import Products from './components/dashboard/products';
+import AddProduct from './components/dashboard/add_product';
+import EditProduct from './components/dashboard/edit_product';
+
+import Inventory from './components/dashboard/inventory';
+import Settings from './components/dashboard/settings';
 
 // Import higher order components
 import RequireAuth from './components/auth/require_auth';
@@ -52,18 +54,19 @@ class GreentapRouter extends Component {
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route path="/logout" component={Logout} />
-            <Route path="/products" component={Products} />
-            <Route path="/product/:id" component={Product} />
             {/*<Route path="contact-us" component={ContactPage} />*/}
             {/*<Route path="component-samples" component={RequireAuth(ComponentSamplesPage)} />*/}
 
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/reset-password/:resetToken" component={ResetPassword} />
 
-            {/*<Route path="profile" component={RequireAuth(ViewProfile)} />*/}
-
-            <Route path="/dashboard" component={(Dashboard)}/>
-              {/*<IndexRoute component={RequireAuth(Dashboard)} />*/}
+            {/* order matters here: router will hit first matching route */}
+            <Route path="/dashboard/products/add" component={AddProduct}/>
+            <Route path="/dashboard/products/edit/:id" component={EditProduct}/>
+            <Route path="/dashboard/products" component={Products}/>
+            <Route path="/dashboard/inventory" component={Inventory}/>
+            <Route path="/dashboard/settings" component={Settings}/>
+            <Route exact path="/dashboard" component={Overview}/>
 
             <Route component={NotFoundPage} />
           </Switch>

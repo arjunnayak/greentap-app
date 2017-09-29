@@ -9,16 +9,19 @@ export const AUTH_USER = 'auth_user',
   PROTECTED_TEST = 'protected_test';
 
 //= =====================
+// Product Actions
+//= =====================
+export const GET_PRODUCTS = 'get_products', 
+  GET_PRODUCT = 'get_product', 
+  ADD_PRODUCT = 'add_product', 
+  EDIT_PRODUCT = 'edit_product', 
+  DELETE_PRODUCT = 'delete_product', 
+  PRODUCT_ERROR = 'product_error';
+
+//= =====================
 // User Profile Actions
 //= =====================
 export const FETCH_USER = 'fetch_user';
-
-//= =====================
-// Product Actions
-//= =====================
-export const FETCH_PRODUCTS = 'fetch_products',
-  FETCH_PRODUCT = 'fetch_product',
-  PRODUCT_ERROR = 'product_error';
 
 //= =====================
 // Messaging Actions
