@@ -16,6 +16,8 @@ import {
   Panel,
   PageHeader
 } from 'react-bootstrap';
+import retailers from '../../../public/images/retailers.jpg';
+import brands from '../../../public/images/brands.jpg';
 
 import '../../styles/landing.css'
 
@@ -24,36 +26,52 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: ''
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      company: '',
+      inquiry: ''
     };
+    this.handleChange = this.handleChange.bind(this)
+    this.earlyAccess = this.earlyAccess.bind(this)
   }
 
-  renderNav () {
+  render() {
+    return (
+      <div className='landing'>
+        {this.renderNav()}
+        {this.renderHero()}
+        {this.renderContent()}
+        {this.renderContactForm()}
+      </div>
+    );
+  }
+
+  renderNav() {
     return (
       <div className="mainNav">
-        <Navbar className="navbar-fixed-top" collapseOnSelect>
+        <Navbar collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
-              <a href="#">GreenTap</a>
+              <a>GreenTap</a>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
-            <Nav>
-              {/* <NavItem eventKey={1} href="#">Contact Us</NavItem> */}
-              <li className="nav-item">
-                <a className="nav-link active" href="#">Contact Us</a>
-              </li>
-            </Nav>
             <Nav pullRight>
               <li className="nav-item">
-                <a className="nav-link active" href="#retailers">Retailers</a>
+                <a className="nav-link active" href="#">Home</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link active" href="#vendors">Vendors</a>
+                <a className="nav-link active" href="#about">About</a>
               </li>
-              {/* <NavItem eventKey={3} href="/login">Vendors</NavItem> */}
-              {/* <NavItem eventKey={4} href="#dispensaries">Dispensaries</NavItem> */}
+              <li className="nav-item">
+                <a className="nav-link active" href="#">Team</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link active" href="#contact">Contact Us</a>
+              </li>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -61,120 +79,114 @@ class HomePage extends Component {
     )
   }
 
-  earlyAccess() {
-    console.log(this.state.email);
-  }
-
-  updateEmail(e) {
-    this.setState({
-      email: e.target.value
-    });
-  }
-
   renderHero() {
     return (
-      <Jumbotron >
+      <div id="hero-bg" className="jumbotron hero-wrapper" >
         <div className="overlay">
           <div className='container'>
             <div className='jumbotron-content container'>
               <Row>
-                <Col md={8}>
+                <Col md={12}>
                   <div className="carousel-caption">
-                    <h1>Wholesale Cannabis<br/><span className="marketplace">Marketplace</span></h1>
-                    <p className="lead primary">Easily source and discover new products from anywhere</p>
-                    <Navbar.Form>
-                      <ControlLabel>Start your new business today</ControlLabel>
-                      <FormGroup>
-                        <ControlLabel className="inline-label">You are a: </ControlLabel>
-                        <FormControl componentClass='select' placeholder='select'>
-                          <option value='Retailer'>Retailer</option>
-                          <option value='Wholesaler'>Wholesaler</option>
-                          <option value='Producer'>Producer</option>
-                        </FormControl>
-                        <FormControl onChange={(e) => { this.updateEmail(e) }} type="text" placeholder="Enter e-mail address" />
-                        <Button onClick={(e) => { this.earlyAccess(e) }} type="submit" className="btn-primary">Get Early Access</Button>
-                      </FormGroup>
-                    </Navbar.Form>
+                    <h1>Wholesale Marketplace for the Marijuana Industry</h1>
+                    <h4>(Think of a tag line and add it here)</h4>
+                    <Button href="#contact" type="submit" className="btn-primary btn-lg">Contact</Button>
                   </div>
                 </Col>
               </Row>
             </div>
           </div>
         </div>
-      </Jumbotron>
-    
+      </div>
     )
   }
 
-  // need to add grid system
   renderContent() {
     return (
-      <Grid >
-        <div className='main-content'>
-          <div>
-          <Row className='show-grid container'>
-              <div className='main-content-top'>
-                <Col md={12}>
-                  <PageHeader id="retailers" className="text-center">Retailers</PageHeader>
-                </Col>
-                <Col md={12} >
-                  <ul className="feature-list">
-                    <li><i className="fa fa-2x fa-check" /> Discover new products and request samples</li>
-                    <li><i className="fa fa-2x fa-check" /> Identify quality products with existing user reviews</li>
-                    <li><i className="fa fa-2x fa-check" /> Simple proposal tool to streamline purchase</li>
-                    <li><i className="fa fa-2x fa-check" /> Superior customer service to assist your every needs</li>
-                  </ul>
-                </Col>
-              </div>
-            </Row>
-            <Row className='show-grid text-center'>
-              <Button href="/register" className="btn btn-lg btn-primary btn-padded">Register Now</Button>
-            </Row>
-
-            <Row id="vendors" className='show-grid container'>
-              <div className='main-content-bottom'>
-                <PageHeader className="text-center">Vendors</PageHeader>
-                <Col md={6} className="border-right" >
-                  <ul className="feature-list">
-                    <li><i className="fa fa-2x fa-check" /> Scale sales within 24/7 exposure to retailers</li>
-                    <li><i className="fa fa-2x fa-check" /> Nurture relationships local and out-of-state stores</li>
-                    <li><i className="fa fa-2x fa-check" /> Manage product availability & backorders</li>
-                    <li><i className="fa fa-2x fa-check" /> Reduce time to market and improve execution and quality</li>
-                  </ul>
-                </Col>
-                <Col md={6} >
-                  <ul className="feature-list">
-                    <li><i className="fa fa-2x fa-shopping-cart" /> Sales Order Management</li>
-                    <li><i className="fa fa-2x fa-archive" /> Inventory Management</li>
-                    <li><i className="fa fa-2x fa-users" /> Customer Relationship Management</li>
-                    <li><i className="fa fa-2x fa-line-chart" /> Supply Chain Management</li>
-                  </ul>
-                </Col>
-              </div>
-            </Row>
-            <Row className='show-grid text-center'>
-              <Button href="/register" className="btn btn-lg btn-primary btn-padded">Start an Application</Button>
+      <div>
+        <div className="dark-bg">
+          <div className="jumbotron-retailers-brands">
+            <Row className="">
+              <Col md={6}>
+                <i className="fa fa-5x fa-home" />
+                <h2 className="">Retailers</h2>
+                <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum</p>
+                <Button className="btn-primary btn-lg">Learn More</Button>
+              </Col>
+              <Col md={6}>
+                <i className="fa fa-5x fa-home" />
+                <h2>Brands</h2>
+                <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum</p>
+                <Button className="btn-primary btn-lg">Learn More</Button>
+              </Col>
             </Row>
           </div>
         </div>
-      </Grid>
+        <div className="jumbotron-retailers-brands">
+          <Row>
+            <Col md={6}>
+              <Image src={retailers} responsive />
+            </Col>
+            <Col md={6}>
+              <h2>GreenTap For Retailers</h2>
+              <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum</p>
+            </Col>
+          </Row>
+        </div>
+        <div className="jumbotron-retailers-brands">
+          <Row>
+            <Col md={6}>
+              <h2>GreenTap For Brands</h2>
+              <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum</p>
+            </Col>
+            <Col md={6}>
+              <Image src={brands} responsive />
+            </Col>
+          </Row>
+        </div>
+      </div>
     )
   }
 
-  render() {
+  renderContactForm() {
     return (
-      <div className='wrapper'>
-        {this.renderNav()}
-        {this.renderHero()}
-
-        {this.renderContent()}
-
+      <div id="contact-bg" className="jumbotron hero-wrapper">
+        <div className="overlay">
+          <div id="contact-form">
+            <form>
+              <div className="carousel-caption">
+                <h2>See GreenTap in Action</h2>
+                <h3>"Add your favorite headline here"</h3>
+              </div>
+              <FormGroup>
+                <Col md={6}>
+                  <FormControl name="firstName" value={this.state.firstName} onChange={this.handleChange} placeholder="First Name" />
+                  <FormControl name="email" value={this.state.email} onChange={this.handleChange} placeholder="Business Email" />
+                  <FormControl name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="Phone Number" />
+                </Col>
+                <Col md={6}>
+                  <FormControl name="lastName" value={this.state.lastName} onChange={this.handleChange} placeholder="Last Name" />
+                  <FormControl name="company" value={this.state.company} onChange={this.handleChange} placeholder="Company" />
+                  <FormControl name="inquiry" value={this.state.inquiry} onChange={this.handleChange} placeholder="Inquiry" />
+                </Col>
+                <Col md={12} className="center-btn">
+                  <Button onClick={this.earlyAccess} type="submit" className="btn-primary btn-lg">Submit</Button>
+                </Col>
+              </FormGroup>
+            </form>
+          </div>
+        </div>
       </div>
-    );
+    )
   }
 
+  earlyAccess() {
+    console.log(this.state);
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
 }
-
-
 
 export default HomePage;
