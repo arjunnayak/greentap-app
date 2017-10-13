@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { getProduct, editProduct } from "../../actions/products";
-import HeaderTemplate from '../template/header';
-import SideNav from './side_nav';
+import Dashboard from './dashboard';
 
 const form = reduxForm({
   form: 'edit_product',
@@ -12,7 +11,7 @@ const form = reduxForm({
 
 const renderField = field => (
   <div>
-    <input className="form-control simple-input" {...field.input} placeholder={field.placeholder} />
+    <input className="form-control" {...field.input} placeholder={field.placeholder}>{field.value}</input>
     {field.touched && field.error && <div className="error">{field.error}</div>}
   </div>
 );
@@ -22,43 +21,39 @@ class EditProduct extends Component {
   componentDidMount() {
     const productId = this.props.match.params.id;
     this.props.getProduct(productId);
-    console.log(this.props.product);
   }
 
   render() {
     const { handleSubmit } = this.props;
+    const prod = this.props.product;
     return (
-      <div>
-        <HeaderTemplate />
-        <div className="container-fluid">
-            <div className="row">
-              <SideNav />
-              <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                <h2 className="page-header">Edit Product</h2>
-                <div className="row">
-                  <form onSubmit={handleSubmit(this.handleEditProductSave.bind(this))}>
-                    <div className="panel-body">
-                      <img src={this.props.product.image} alt="product image" />
-                      <Field name="productName" component={renderField} type="text" />
-                    </div>
-                    <div className="panel-body">
-                      <Link to="/dashboard/products"><a className="btn btn-primary">Cancel</a></Link>
-                      <button type="submit" className="btn btn-primary">Save</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+      <Dashboard>
+        <h2 className="page-header">Edit Product</h2>
+        <div className="row">
+          <form onSubmit={handleSubmit(this.handleEditProduct.bind(this))}>
+            <div className="panel-body">
+              <img src={prod.image} alt="product" />
+              <Field name="productName" value={prod.name} onChangeAction={this.props.onChangeAction} component={renderField} type="text" />
             </div>
+            <div className="panel-body">
+              <Link to="/dashboard/products">Cancel</Link>
+              <button type="submit" className="btn btn-primary">Save</button>
+            </div>
+          </form>
         </div>
-      </div>
+      </Dashboard>
     )
   }
 
-  handleEditProductSave(formProps) {
+  handleEditProduct(formProps) {
     this.props.editProduct(formProps)
       .then(() => {
       console.log("product edited")
     });
+  }
+
+  handleChange(e) {
+    console.log(e)
   }
 }
 

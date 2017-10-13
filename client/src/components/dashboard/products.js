@@ -4,10 +4,16 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { getProducts, deleteProduct } from "../../actions/products"
-import HeaderTemplate from '../template/header';
-import SideNav from './side_nav';
+import Dashboard from './dashboard';
 import EditProduct from './edit_product';
 import AddProduct from './add_product';
+import {
+  Button,
+  Col,
+  Row,
+  ControlLabel,
+  Image
+} from 'react-bootstrap';
 
 const renderField = field => (
   <div>
@@ -19,24 +25,23 @@ const renderField = field => (
 class Products extends Component {
 
   componentDidMount() {
-    this.props.getProducts();
+    const business_id = 1;
+    this.props.getProducts(business_id);
   }
 
   render() {
     return (
-      <div>
-        <HeaderTemplate />
-        <div className="container-fluid">
-          <div className="row">
-            <SideNav />
-            <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-              <h2 className="page-header">Products</h2>
-              <Link to="/dashboard/products/add"><button className="btn btn-primary pull-right">Add Product</button></Link>
-              { this.renderProducts() }
-            </div>
-          </div>
-        </div>
-      </div>
+      <Dashboard>
+        <Col md={10}>
+          <h2 className="page-header">Products</h2>
+        </Col>
+        <Col md={2}>
+          <Link to="/dashboard/products/add"><button className="btn btn-primary pull-right">Add Product</button></Link>
+        </Col>
+        <Col md={12}>
+          { this.renderProducts() }
+        </Col>
+      </Dashboard>
     )
   }
 
