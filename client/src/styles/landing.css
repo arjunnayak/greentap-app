@@ -1,6 +1,5 @@
 /* landing page has its own header, margin-top counterracts base.css margin rule for header*/
 body {
-  font-family: 'Noto Sans', sans-serif;
   line-height: 1.618;
   font-size: 18px;
 }
@@ -11,6 +10,7 @@ body {
 
 input.form-control {
   margin-right: 15px;
+  margin-bottom: 15px;
 }
 
 .carousel-caption {
@@ -174,10 +174,6 @@ select {
   min-height:100%;
 }
 
-#contact-form input {
-  margin-bottom: 5%;
-}
-
 #contact-form h2 {
   font-size: 32px;
 }
@@ -221,60 +217,60 @@ select {
 
 
 /* this height should complement jumbotron height */
-.navbar-default {
+.landing .navbar-default {
   min-height: 8vh;
 }
 /* Navbar bootstrap crap */
-.navbar-default {
+.landing .navbar-default {
   background-color: #5b6e57;
   border-color: transparent;
 }
-.navbar-default .navbar-brand {
+.landing .navbar-default .navbar-brand {
   font-size: 36px;
   color: #ffffff;
 }
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus {
+.landing .navbar-default .navbar-brand:hover,
+.landing .navbar-default .navbar-brand:focus {
   color: #ffffff;
 }
-.navbar-default .navbar-nav > li > a {
+.landing .navbar-default .navbar-nav > li > a {
   font-size: 16px;
   color: #ffffff;
 }
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > li > a:focus {
+.landing .navbar-default .navbar-nav > li > a:hover,
+.landing .navbar-default .navbar-nav > li > a:focus {
   color: #ffffff;
 }
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:hover,
+.landing .navbar-default .navbar-nav > .active > a,
+.landing .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
   color: #ffffff;
   background-color: #555555;
 }
-.navbar-default .navbar-nav > .open > a,
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:focus {
+.landing .navbar-default .navbar-nav > .open > a,
+.landing .navbar-default .navbar-nav > .open > a:hover,
+.landing .navbar-default .navbar-nav > .open > a:focus {
   color: #ffffff;
   background-color: #555555;
 }
-.navbar-default .navbar-toggle {
+.landing .navbar-default .navbar-toggle {
   border-color: #555555;
 }
-.navbar-default .navbar-toggle:hover,
-.navbar-default .navbar-toggle:focus {
+.landing .navbar-default .navbar-toggle:hover,
+.landing .navbar-default .navbar-toggle:focus {
   background-color: #555555;
 }
-.navbar-default .navbar-toggle .icon-bar {
+.landing .navbar-default .navbar-toggle .icon-bar {
   background-color: #ffffff;
 }
-.navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
+.landing .navbar-default .navbar-collapse,
+.landing .navbar-default .navbar-form {
   border-color: #ffffff;
 }
-.navbar-default .navbar-link {
+.landing .navbar-default .navbar-link {
   color: #ffffff;
 }
-.navbar-default .navbar-link:hover {
+.landing .navbar-default .navbar-link:hover {
   color: #ffffff;
 }
 
@@ -295,8 +291,8 @@ select {
 }
 
 /* Making it larger */
-.navbar-brand,
-.navbar-nav li a {
+.landing .navbar-brand,
+.landing .navbar-nav li a {
     line-height: 70px;
     height: 70px;
     padding-top: 0;
