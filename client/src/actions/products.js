@@ -7,23 +7,17 @@ import { GET_PRODUCTS, GET_PRODUCT, ADD_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT, P
 //= ===============================
 
 // TO-DO: Add expiration to cookie
-export function getProducts() {
-  console.log('get products called');
+export function getProducts(business_id) {
   return dispatch => {
-    axios.get(`${API_URL}/products`)
+    axios.get(`${API_URL}/products?business_id=${business_id}`)
     .then((response) => {
-      console.log(response)
       dispatch({
-        type: GET_PRODUCTS
-        // payload: response.data.content,
+        type: GET_PRODUCTS,
+        payload: response.data.products
       })
     })
     .catch((error) => {
-      console.log('get products error')
-      dispatch({
-        type: GET_PRODUCTS
-      })
-      // errorHandler(dispatch, error.response, PRODUCT_ERROR);
+      errorHandler(dispatch, error.response, PRODUCT_ERROR);
     });
   };
 }
@@ -31,32 +25,28 @@ export function getProducts() {
 // TO-DO: Add expiration to cookie
 export function getProduct(productId) {
   return dispatch => {
-    axios.get(`${API_URL}/product/${productId}`)
+    axios.get(`${API_URL}/products/${productId}`)
     .then((response) => {
       console.log(response)
       dispatch({
         type: GET_PRODUCT,
-        payload: response.data.content,
+        payload: response.data.product
       })
     })
     .catch((error) => {
-      console.log('get products error')
-      dispatch({
-        type: GET_PRODUCT
-      })
-      // errorHandler(dispatch, error.response, PRODUCT_ERROR);
+      errorHandler(dispatch, error.response, PRODUCT_ERROR);
     });
   };
 }
 
 export function addProduct(product) {
   return dispatch => {
-    axios.post(`${API_URL}/product/add`)
+    axios.post(`${API_URL}/products/add`)
     .then((response) => {
       console.log(response)
       dispatch({
         type: ADD_PRODUCT,
-        payload: response.data.content,
+        payload: response.data.product
       })
     })
     .catch((error) => {
@@ -67,28 +57,12 @@ export function addProduct(product) {
 
 export function editProduct(product) {
   return dispatch => {
-    axios.put(`${API_URL}/product/${product.id}`)
+    axios.put(`${API_URL}/products/${product.id}`)
     .then((response) => {
       console.log(response)
       dispatch({
         type: EDIT_PRODUCT,
-        payload: response.data.content,
-      })
-    })
-    .catch((error) => {
-      // errorHandler(dispatch, error.response, PRODUCT_ERROR);
-    });
-  };
-}
-
-export function deleteProduct(product) {
-  return dispatch => {
-    axios.delete(`${API_URL}/product/${product.id}`)
-    .then((response) => {
-      console.log(response)
-      dispatch({
-        type: DELETE_PRODUCT,
-        payload: response.data.content,
+        payload: response.data.product
       })
     })
     .catch((error) => {
@@ -97,18 +71,18 @@ export function deleteProduct(product) {
   };
 }
 
-// export function fetchProduct(id) {
-//   return dispatch => {
-//     axios.get(`${API_URL}/product/${id}`)
-//     .then((response) => {
-//       console.log(response)
-//       dispatch({
-//         type: FETCH_PRODUCT,
-//         payload: response.data.content,
-//       })
-//     })
-//     .catch((error) => {
-//       errorHandler(dispatch, error.response, PRODUCT_ERROR);
-//     });
-//   };
-// }
+export function deleteProduct(product) {
+  return dispatch => {
+    axios.delete(`${API_URL}/products/${product.id}`)
+    .then((response) => {
+      console.log(response)
+      dispatch({
+        type: DELETE_PRODUCT,
+        payload: response.data.product
+      })
+    })
+    .catch((error) => {
+      errorHandler(dispatch, error.response, PRODUCT_ERROR);
+    });
+  };
+}
