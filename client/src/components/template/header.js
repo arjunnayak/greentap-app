@@ -44,7 +44,7 @@ class HeaderTemplate extends Component {
                 <span className="icon-bar" />
                 <span className="icon-bar" />
               </button>
-              <div><Link className="navbar-brand" to="/">Greentap</Link></div>
+              <div><Link className="navbar-brand" to="/">GreenTap</Link></div>
             </div>
 
             <div className="collapse navbar-collapse" id="nav-collapse">
