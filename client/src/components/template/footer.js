@@ -1,59 +1,25 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Grid } from 'react-bootstrap';
 
-class FooterTemplate extends Component {
-  renderLinks() {
-    if (this.props.authenticated) {
-      return [
-        <li key={1}>
-          <Link to="/">Home</Link>
-        </li>,
-        <li key={2}>
-          <Link to="dashboard">Dashboard</Link>
-        </li>,
-        <li key={3}>
-          <Link to="logout">Logout</Link>
-        </li>,
-      ];
-    } else {
-      return [
-        // Unauthenticated navigation
-        <li key={1}>
-          <Link to="/">Home</Link>
-        </li>,
-        <li key={2}>
-          <Link to="login">Login</Link>
-        </li>,
-        <li key={3}>
-          <Link to="register">Register</Link>
-        </li>,
-      ];
-    }
-  }
+import './footer.css';
 
-  render() {
-    const d = new Date();
-    const year = d.getFullYear();
-
-    return (
-      /*<footer>
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-12">
-              <nav>
-                <ul className="footer-nav">
-                  {this.renderLinks()}
-                </ul>
-              </nav>
-              <p className="copyright">© {year}, Your Site. All Rights Reserved.</p>
-            </div>
-          </div>
+const Footer = () => {
+  return (
+    <Grid>
+      <footer>
+        <div className="baseline">
+          <span className="copyright">© 2017 GreenTap. All rights reserved.</span>
+          <nav>
+            <ul className="footer-nav">
+              <li><span><a href="#Blog">Blog</a></span></li>
+              <li><a href="about">About</a></li>
+            </ul>
+          </nav>
         </div>
-      </footer>*/
-      <div>
-      </div>
-    )
-  }
-}
+      </footer>
+    </Grid>
+  );
+};
 
-export default FooterTemplate
+export default Footer;

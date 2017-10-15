@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { getForgotPasswordToken } from '../../actions/auth';
 import PropTypes from 'prop-types';
-import HeaderTemplate from '../template/header';
+import Header from '../template/header';
 
 const form = reduxForm({
   form: 'forgotPassword',
@@ -45,7 +45,7 @@ class ForgotPassword extends Component {
 
     return (
       <div>
-        <HeaderTemplate />
+        <Header />
         <div className="container cont-space center">
           <h1 className="form-space">Forgot Password</h1>
           <div className="panel panel-default">

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-class HeaderTemplate extends Component {
+class Header extends Component {
   renderLinks() {
     console.log(`authenticated ${this.props.authenticated}`);
     if (this.props.authenticated) {
@@ -67,4 +67,4 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps
-)(HeaderTemplate);
+)(Header);

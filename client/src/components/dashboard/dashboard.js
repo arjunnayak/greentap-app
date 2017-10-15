@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import '../../styles/dashboard.css';
-import HeaderTemplate from '../template/header';
+import Header from '../template/header';
 import SideNav from './side_nav';
 
 class Dashboard extends Component {
   render() {
     return (
       <div>
-        <HeaderTemplate />
+        <Header />
         <div className="container-fluid">
           <div className="row">
             <SideNav />

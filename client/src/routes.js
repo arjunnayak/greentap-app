@@ -6,8 +6,7 @@ import { withCookies, Cookies } from 'react-cookie';
 // Import static pages and templates
 import HomePage from './components/pages/home_page';
 import NotFoundPage from './components/pages/not_found_page';
-import HeaderTemplate from './components/template/header';
-import FooterTemplate from './components/template/footer';
+import Footer from './components/template/footer';
 
 // import ContactPage from './components/pages/contact-page';
 // import ComponentSamplesPage from './components/pages/component-samples';
@@ -70,7 +69,6 @@ class GreentapRouter extends Component {
 
             <Route component={NotFoundPage} />
           </Switch>
-          <FooterTemplate/>
         </div>
       </Router>
     )
