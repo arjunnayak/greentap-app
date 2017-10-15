@@ -55,7 +55,7 @@ input.form-control {
 }
 
 #contact-bg .overlay {
-  min-height: 100vh;
+  min-height: 95vh;
 }
 
 .jumbotron-retailers-brands {
@@ -75,24 +75,48 @@ input.form-control {
 }
 
 .jumbotron-retailers-brands .row {
-  padding: 5% 0;
+  padding: 2% 0;
+}
+
+.jumbotron-retailers-brands h2 {
+  font-size: 38px;
+  margin-top: 0px;
 }
 
 .jumbotron-retailers-brands.dark-bg {
   background-color: #F6F6F6;
 }
 
-.jumbotron-retailers-brands .img-responsive {
+.jumbotron-retailers-brands.combined .img-responsive {
   margin: auto;
+  width: 25vw;
+  min-width: 200px;
+  height: 25vh;
+  margin-bottom: 15px;
+}
+
+.jumbotron-retailers-brands.combined {
+  text-align: center;
+}
+
+@media (min-width: 992px) {
+  .jumbotron-retailers-brands.combined .left {
+    padding-left: 5%;
+  }
+
+  .jumbotron-retailers-brands.combined .right {
+    padding-right: 5%;
+  }
 }
 
 label.control-label {
   padding-bottom:5px;
 }
 
-select.form-control, .inline-label {
+select.form-control {
   border-radius: 0;
   padding-right: 5px;
+  margin-bottom: 15px;
 }
 
 input, .btn, .form-control, .navbar, button.navbar-toggle.collapsed  {
@@ -157,13 +181,14 @@ select {
 }
 
 .jumbotron h1 {
-  font-size: 60px;
+  font-size: 74px;
   font-weight: bold;
 }
 
 .jumbotron h4 {
-  margin-top: 5%;
+  margin-top: 3%;
   font-weight: 100;
+  font-size: 21px;
 }
 
 .jumbotron a.btn {
@@ -171,7 +196,7 @@ select {
 }
 
 #contact-form {
-  min-height:100%;
+  min-height: 100%;
 }
 
 #contact-form h2 {
@@ -215,7 +240,6 @@ select {
   text-align:center;
 }
 
-
 /* this height should complement jumbotron height */
 .landing .navbar-default {
   min-height: 8vh;
@@ -243,10 +267,11 @@ select {
 }
 .landing .navbar-default .navbar-nav > .active > a,
 .landing .navbar-default .navbar-nav > .active > a:hover,
-.navbar-default .navbar-nav > .active > a:focus {
+.landing .navbar-default .navbar-nav > .active > a:focus {
   color: #ffffff;
   background-color: #555555;
 }
+
 .landing .navbar-default .navbar-nav > .open > a,
 .landing .navbar-default .navbar-nav > .open > a:hover,
 .landing .navbar-default .navbar-nav > .open > a:focus {
@@ -274,17 +299,22 @@ select {
   color: #ffffff;
 }
 
+.landing .navbar-default .navbar-nav > li > a:hover {
+  color: #555;
+  background-color: #E7E7E7;
+}
+
 @media (max-width: 767px) {
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a {
     color: #ffffff;
   }
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
     color: #ffffff;
   }
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #ffffff;
     background-color: #555555;
   }

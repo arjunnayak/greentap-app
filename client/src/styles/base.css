@@ -33,14 +33,6 @@ ul.footer-nav > li {
   padding-right: 5px;
 }
 
-.footer-nav li::after {
-  content: " |";
-}
-
-.footer-nav li:last-of-type::after {
-  content: "";
-}
-
 p.copyright > span {
   color: #777;
 }
