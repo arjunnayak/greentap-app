@@ -23,16 +23,6 @@ body {
   display: block;
 }
 
-ul.footer-nav {
-  padding: 0;
-  margin: 0;
-}
-
-ul.footer-nav > li {
-  display: inline-block;
-  padding-right: 5px;
-}
-
 p.copyright > span {
   color: #777;
 }
