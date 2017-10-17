@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-class HeaderTemplate extends Component {
+class Header extends Component {
   renderLinks() {
     console.log(`authenticated ${this.props.authenticated}`);
     if (this.props.authenticated) {
@@ -15,7 +15,7 @@ class HeaderTemplate extends Component {
         </li>,
         <li key={`${3}header`}>
           <Link to="logout">Logout</Link>
-        </li>,
+        </li>
       ];
     } else {
       return [
@@ -44,7 +44,7 @@ class HeaderTemplate extends Component {
                 <span className="icon-bar" />
                 <span className="icon-bar" />
               </button>
-              <div><Link className="navbar-brand" to="/">Greentap</Link></div>
+              <div><Link className="navbar-brand" to="/">GreenTap</Link></div>
             </div>
 
             <div className="collapse navbar-collapse" id="nav-collapse">
@@ -65,6 +65,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps
-)(HeaderTemplate);
+export default connect(mapStateToProps)(Header);

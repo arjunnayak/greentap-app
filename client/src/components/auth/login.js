@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { loginUser } from '../../actions/auth';
-import HeaderTemplate from '../template/header';
+import Header from '../template/header';
 
 const form = reduxForm({
   form: 'login',
@@ -41,7 +41,7 @@ class Login extends Component {
     const { handleSubmit } = this.props;
     return (  
       <div>
-        <HeaderTemplate />
+        <Header />
         <div className="container cont-space center">
           <h1 className="form-space">Login</h1>
           <div className="panel panel-default">

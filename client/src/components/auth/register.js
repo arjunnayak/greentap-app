@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { registerUser } from '../../actions/auth';
-import HeaderTemplate from '../template/header';
+import Header from '../template/header';
 
 const form = reduxForm({
   form: 'register',
@@ -63,7 +63,7 @@ class Register extends Component {
 
     return (
       <div>
-        <HeaderTemplate />
+        <Header />
         <div className="container cont-space center">
           <h1 className="form-space">Register</h1>
           <div className="panel panel-default">
