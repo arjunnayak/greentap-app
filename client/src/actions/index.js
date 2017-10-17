@@ -124,21 +124,3 @@ export function deleteData(action, errorType, isAuthReq, url, dispatch) {
     errorHandler(dispatch, error.response, errorType);
   });
 }
-
-//= ===============================
-// Static Page actions
-//= ===============================
-export function sendContactForm({ name, emailAddress, message }) {
-  return dispatch => {
-    axios.post(`${API_URL}/communication/contact`, { name, emailAddress, message })
-    .then((response) => {
-      dispatch({
-        type: SEND_CONTACT_FORM,
-        payload: response.data.message,
-      });
-    })
-    .catch((error) => {
-      errorHandler(dispatch, error.response, STATIC_ERROR);
-    });
-  };
-}

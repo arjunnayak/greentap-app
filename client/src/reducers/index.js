@@ -3,16 +3,14 @@ import { reducer as formReducer } from 'redux-form';
 import authReducer from './auth_reducer';
 import userReducer from './user_reducer';
 import productsReducer from './products_reducer';
-// import communicationReducer from './communication_reducer';
-// import customerReducer from './customer_reducer';
+import contactFormReducer from './contact_form_reducer';
 
 const rootReducer = combineReducers({
   form: formReducer,
   auth: authReducer,
   user: userReducer,
-  products: productsReducer
-  // communication: communicationReducer,
-  // customer: customerReducer,
+  products: productsReducer,
+  contact: contactFormReducer
 });
 
 export default rootReducer;

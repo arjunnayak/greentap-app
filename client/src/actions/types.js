@@ -34,10 +34,10 @@ export const FETCH_CONVERSATIONS = 'fetch_conversations',
   SEND_REPLY = 'send_reply';
 
 //= =====================
-// Page Actions
+// Contact Form Actions
 //= =====================
-export const SEND_CONTACT_FORM = 'send_contact_form',
-  STATIC_ERROR = 'static_error';
+export const SAVE_CONTACT = 'save_contact_form',
+  SAVE_CONTACT_ERROR = 'save_contact_form_error';
 
 //= =====================
 // Customer Actions

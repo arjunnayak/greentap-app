@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { Jumbotron, Button, Grid, Col, Row, Navbar, NavItem, Nav, FormGroup, FormControl, Form, ControlLabel, Image, Panel, PageHeader } from 'react-bootstrap';
+import { Button, Col, Row, FormGroup, FormControl, Image } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import Footer from '../template/footer';
+import LandingHeader from '../template/landing_header';
 
 import retailers_icon from '../../../public/images/shop.svg';
 import brands_icon from '../../../public/images/laptop.svg';
 import retailers from '../../../public/images/retailers.jpg';
 import brands from '../../../public/images/brands.jpg';
+
+import { saveContactForm } from "../../actions/contact_form";
 
 import '../../styles/landing.css'
 
@@ -22,51 +26,20 @@ class HomePage extends Component {
       inquiry: 'retailer',
       message: ''
     };
-    this.handleChange = this.handleChange.bind(this)
-    this.contactUs = this.contactUs.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.contactUs = this.contactUs.bind(this);
   }
 
   render() {
     return (
       <div className='landing'>
-        {this.renderNav()}
+        <LandingHeader />
         {this.renderHero()}
         {this.renderContent()}
         {this.renderContactForm()}
         <Footer />
       </div>
     );
-  }
-
-  renderNav() {
-    return (
-      <div className="mainNav">
-        <Navbar collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <a>GreenTap</a>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Home</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#about">About</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#blog">Blog</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#contact-form">Contact Us</a>
-              </li>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-      </div>
-    )
   }
 
   renderHero() {
@@ -78,7 +51,7 @@ class HomePage extends Component {
               <Row>
                 <Col md={12}>
                   <div className="carousel-caption">
-                    <h1>Wholesale Marketplace for the Marijuana Industry</h1>
+                    <h1>Wholesale Marketplace for the Cannabis Industry</h1>
                     <h4>We make transactions between canna-businesses easy and effortless.</h4>
                     <Button href="#contact" type="submit" className="btn-primary btn-lg">Contact</Button>
                   </div>
@@ -116,7 +89,7 @@ class HomePage extends Component {
               <Image src={retailers} responsive />
             </Col>
             <Col md={6}>
-              <h2>For Retailers</h2>
+              <h2>Empowering Retailers</h2>
               <p>Search and discover new cannabis products on GreenTap's marketplace anytime, anywhere.</p>
               <p>Don't know what to buy? Request a sample or read through our community's experience with the product.</p>
               <p>Cultivate connections with brands that are licensed and compliant.</p>
@@ -127,7 +100,7 @@ class HomePage extends Component {
         <div className="jumbotron-retailers-brands">
           <Row>
             <Col md={6}>
-              <h2>For Brands</h2>
+              <h2>Expanding Your Brand</h2>
               <p>Cultivate your connections through 24/7 exposure to retailers around your area.</p>
               <p>Manage your wholesale orders and communications from a single platform.</p>
               <p>Stay compliant with your state's regulations and avoid large fees with our inventory management system.</p>
@@ -146,11 +119,11 @@ class HomePage extends Component {
     return (
       <div id="contact-bg" className="jumbotron hero-wrapper">
         <div className="overlay">
-          <div id="contact-form">
+          <div id="contact">
             <form>
               <div className="carousel-caption">
-                <h2>See GreenTap in Action</h2>
-                <h3>Ask the team anything!</h3>
+                <h2>See GreenTap in action!</h2>
+                <h3>Ask the team anything</h3>
               </div>
               <FormGroup>
                 <Col md={6}>
@@ -182,7 +155,7 @@ class HomePage extends Component {
   }
 
   contactUs() {
-    console.log(this.state);
+    saveContactForm(this.state);
   }
 
   handleChange(e) {

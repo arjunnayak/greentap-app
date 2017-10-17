@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication')
 const UserController = require('./controllers/user')
 const ProductController = require('./controllers/product')
+const ContactFormController = require('./controllers/contact_form')
 const express = require('express')
 const passport = require('passport')
 const passportService = require('./config/passport')
@@ -14,7 +15,8 @@ module.exports = function (app) {
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
     userRoutes = express.Router(),
-    productRoutes = express.Router();
+    productRoutes = express.Router(),
+    contactFormRoutes = express.Router();
 
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
@@ -32,6 +34,9 @@ module.exports = function (app) {
   productRoutes.put('/:id', ProductController.updateProduct)
   productRoutes.delete('/:id', ProductController.deleteProduct)
 
+  //Contact form routes
+  contactFormRoutes.post('/', ContactFormController.saveContact)
+
   // Test protected route
   apiRoutes.get('/protected', requireAuth, (req, res) => {
     res.send({ content: 'The protected test route is functional!' })
@@ -41,6 +46,7 @@ module.exports = function (app) {
   apiRoutes.use('/auth', authRoutes)
   apiRoutes.use('/user', userRoutes)
   apiRoutes.use('/products', productRoutes)
+  apiRoutes.use('/contact', contactFormRoutes)
 
   // Set url for API group routes
   app.use('/api', apiRoutes)

@@ -47,11 +47,18 @@ input.form-control {
 }
 
 #hero-bg {
-  background: url(../../public/images/hero.png) no-repeat center;   
+  background: url(../../public/images/hero.png) no-repeat center;
+  background-size: cover;
 }
 
 #contact-bg {
-  background: url(../../public/images/contact.jpg) no-repeat center;   
+  background: url(../../public/images/contact.jpg) no-repeat center;
+  background-size: cover;
+}
+
+#about-bg {
+  background: url(../../public/images/about_hero.jpg) no-repeat center;
+  background-size: cover;
 }
 
 #contact-bg .overlay {
@@ -195,36 +202,36 @@ select {
   margin: 5%;
 }
 
-#contact-form {
+#contact {
   min-height: 100%;
 }
 
-#contact-form h2 {
+#contact h2 {
   font-size: 32px;
 }
 
-#contact-form h3 {
+#contact h3 {
   font-size: 20px;
 }
 
-#contact-form .carousel-caption {
+#contact .carousel-caption {
   padding-top: 10%;
 }
 
-#contact-form .form-group {
+#contact .form-group {
   padding: 0% 20% 0% 20%;
 }
 
-#contact-form .form-control {
+#contact .form-control {
   border-radius: 4px;
 }
 
-#contact-form .center-btn {
+#contact .center-btn {
   text-align: center;
   padding: 3%;
 }
 
-#contact-form .btn {
+#contact .btn {
   position: relative;
   right: 0;
   left: 0;
@@ -240,90 +247,34 @@ select {
   text-align:center;
 }
 
-/* this height should complement jumbotron height */
-.landing .navbar-default {
-  min-height: 8vh;
-}
-/* Navbar bootstrap crap */
-.landing .navbar-default {
-  background-color: #5b6e57;
-  border-color: transparent;
-}
-.landing .navbar-default .navbar-brand {
-  font-size: 36px;
-  color: #ffffff;
-}
-.landing .navbar-default .navbar-brand:hover,
-.landing .navbar-default .navbar-brand:focus {
-  color: #ffffff;
-}
-.landing .navbar-default .navbar-nav > li > a {
-  font-size: 16px;
-  color: #ffffff;
-}
-.landing .navbar-default .navbar-nav > li > a:hover,
-.landing .navbar-default .navbar-nav > li > a:focus {
-  color: #ffffff;
-}
-.landing .navbar-default .navbar-nav > .active > a,
-.landing .navbar-default .navbar-nav > .active > a:hover,
-.landing .navbar-default .navbar-nav > .active > a:focus {
-  color: #ffffff;
-  background-color: #555555;
+/* About page layout */
+
+.mission {
+  margin-top: 30px;
+  margin-left: 30px;
+  background-color: rgba(91, 110, 87, 0.7);
+  padding: 15px 15px 10px 15px;
 }
 
-.landing .navbar-default .navbar-nav > .open > a,
-.landing .navbar-default .navbar-nav > .open > a:hover,
-.landing .navbar-default .navbar-nav > .open > a:focus {
-  color: #ffffff;
-  background-color: #555555;
-}
-.landing .navbar-default .navbar-toggle {
-  border-color: #555555;
-}
-.landing .navbar-default .navbar-toggle:hover,
-.landing .navbar-default .navbar-toggle:focus {
-  background-color: #555555;
-}
-.landing .navbar-default .navbar-toggle .icon-bar {
-  background-color: #ffffff;
-}
-.landing .navbar-default .navbar-collapse,
-.landing .navbar-default .navbar-form {
-  border-color: #ffffff;
-}
-.landing .navbar-default .navbar-link {
-  color: #ffffff;
-}
-.landing .navbar-default .navbar-link:hover {
-  color: #ffffff;
+.mission h1 {
+  margin: 0;
+  font-size: 60px;
 }
 
-.landing .navbar-default .navbar-nav > li > a:hover {
-  color: #555;
-  background-color: #E7E7E7;
+.mission p {
+  margin-bottom: 0;
 }
 
-@media (max-width: 767px) {
-  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-    color: #ffffff;
-  }
-  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
-  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #ffffff;
-  }
-  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
-  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
-  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #ffffff;
-    background-color: #555555;
-  }
+.mission a {
+  color: white;
+  text-decoration: underline white;
 }
 
-/* Making it larger */
-.landing .navbar-brand,
-.landing .navbar-nav li a {
-    line-height: 70px;
-    height: 70px;
-    padding-top: 0;
+.team {
+  margin-top: 20px;
+}
+
+.team h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }

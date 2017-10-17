@@ -1,0 +1,75 @@
+/* this height should complement jumbotron height */
+.landing .navbar-default {
+  min-height: 8vh;
+}
+/* Navbar bootstrap crap */
+.landing .navbar-default {
+  background-color: #5b6e57;
+  border-color: transparent;
+}
+.landing .navbar-default .navbar-brand {
+  font-size: 36px;
+  color: #ffffff;
+}
+.landing .navbar-default .navbar-brand:hover,
+.landing .navbar-default .navbar-brand:focus {
+  border-bottom-color: #fff;
+}
+.landing .navbar-default .navbar-nav > li > a {
+  border-bottom: 2px solid transparent;
+  font-size: 16px;
+  color: #ffffff;
+}
+.landing .navbar-default .navbar-nav > li > a:hover,
+.landing .navbar-default .navbar-nav > li > a:focus {
+  border-bottom-color: #fff;  
+}
+.landing .navbar-default .navbar-nav > .active > a,
+.landing .navbar-default .navbar-nav > .active > a:hover,
+.landing .navbar-default .navbar-nav > .active > a:focus {
+  border-bottom-color: #fff;  
+}
+
+.landing .navbar-default .navbar-nav > .open > a,
+.landing .navbar-default .navbar-nav > .open > a:hover,
+.landing .navbar-default .navbar-nav > .open > a:focus {
+  border-bottom-color: #fff;  
+}
+
+.landing .navbar-default .navbar-toggle .icon-bar {
+  background-color: #ffffff;
+}
+.landing .navbar-default .navbar-collapse,
+.landing .navbar-default .navbar-form {
+  border-color: #ffffff;
+}
+.landing .navbar-default .navbar-link {
+  color: #ffffff;
+}
+.landing .navbar-default .navbar-link:hover {
+  border-bottom-color: #fff;  
+}
+
+@media (max-width: 767px) {
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #ffffff;
+  }
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffffff;
+  }
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffffff;
+    background-color: #555555;
+  }
+}
+
+/* Making it larger */
+.landing .navbar-brand,
+.landing .navbar-nav li a {
+    line-height: 70px;
+    height: 70px;
+    padding-top: 0;
+}
