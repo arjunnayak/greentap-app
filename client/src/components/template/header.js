@@ -15,7 +15,7 @@ class Header extends Component {
         </li>,
         <li key={`${3}header`}>
           <Link to="logout">Logout</Link>
-        </li>,
+        </li>
       ];
     } else {
       return [
@@ -65,6 +65,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps
-)(Header);
+export default connect(mapStateToProps)(Header);
