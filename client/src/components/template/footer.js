@@ -11,7 +11,7 @@ const Footer = () => {
           <span className="copyright">© 2017 GreenTap. All rights reserved.</span>
           <nav>
             <ul className="footer-nav">
-              <li><span><a href="#Blog">Blog</a></span></li>
+              <li><a href="#Blog">Blog</a></li>
               <li><a href="about">About</a></li>
             </ul>
           </nav>
