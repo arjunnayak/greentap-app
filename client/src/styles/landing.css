@@ -62,7 +62,7 @@ input.form-control {
 }
 
 #contact-bg .overlay {
-  min-height: 95vh;
+  min-height: 96vh;
 }
 
 .jumbotron-retailers-brands {
@@ -277,4 +277,29 @@ select {
 .team h1 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.team img {
+  margin: auto;
+}
+
+@media (max-width: 550px) {
+  .mission {
+    margin-left: 0px;
+  }
+}
+
+@media (max-width: 425px) {
+
+  .mission {
+    margin-left: 0px;
+  }
+
+  .mission h1 {
+    font-size: 45px;
+  }
+
+  .mission p {
+    font-size: 18px;
+  }
 }
