@@ -16,17 +16,17 @@ const LandingHeader = () => {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight>
-            <li className="nav-item">
-              <a className="nav-link" href="/">Home</a>
+            <li>
+              <Link to="/">Home</Link>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/about">About</a>
+            <li>
+              <Link to="/about">About</Link>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/blog">Blog</a>
+            <li>
+              <Link to="/blog">Blog</Link>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/#contact">Contact Us</a>
+            <li>
+              <Link to="/#contact">Contact Us</Link>
             </li>
           </Nav>
         </Navbar.Collapse>

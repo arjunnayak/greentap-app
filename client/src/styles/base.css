@@ -1,13 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Catamaran:300,400,700');
 
 body {
-  font-family: 'Open Sans', sans-serif;
-
-  /*background: #EFEFEF;*/
+  /* standard font */
+  font-family: 'Catamaran', sans-serif;
   padding-top: 50px;
-}
-
-h1,h2,h3,h4,h5,h6 {
-  font-family: 'Catamaran', sans-serif; 
 }
 
 .main {

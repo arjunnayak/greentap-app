@@ -1,3 +1,18 @@
+.landing .navbar-default * {
+  color: white !important;
+}
+
+.landing .navbar-default a:hover {
+  text-decoration: none;
+}
+
+.landing .navbar-default .navbar-toggle {
+  background-color: transparent;
+  margin-bottom: 18px;
+  margin-top: 18px;
+  border-radius: 4px;
+}
+
 /* this height should complement jumbotron height */
 .landing .navbar-default {
   min-height: 8vh;
@@ -9,7 +24,6 @@
 }
 .landing .navbar-default .navbar-brand {
   font-size: 36px;
-  color: #ffffff;
 }
 .landing .navbar-default .navbar-brand:hover,
 .landing .navbar-default .navbar-brand:focus {
@@ -18,21 +32,24 @@
 .landing .navbar-default .navbar-nav > li > a {
   border-bottom: 2px solid transparent;
   font-size: 16px;
-  color: #ffffff;
 }
 .landing .navbar-default .navbar-nav > li > a:hover,
 .landing .navbar-default .navbar-nav > li > a:focus {
+  text-decoration: none;
+    
   border-bottom-color: #fff;  
 }
 .landing .navbar-default .navbar-nav > .active > a,
 .landing .navbar-default .navbar-nav > .active > a:hover,
 .landing .navbar-default .navbar-nav > .active > a:focus {
+  text-decoration: none;
   border-bottom-color: #fff;  
 }
 
 .landing .navbar-default .navbar-nav > .open > a,
 .landing .navbar-default .navbar-nav > .open > a:hover,
 .landing .navbar-default .navbar-nav > .open > a:focus {
+  text-decoration: none;
   border-bottom-color: #fff;  
 }
 
@@ -44,7 +61,6 @@
   border-color: #ffffff;
 }
 .landing .navbar-default .navbar-link {
-  color: #ffffff;
 }
 .landing .navbar-default .navbar-link:hover {
   border-bottom-color: #fff;  
@@ -52,16 +68,15 @@
 
 @media (max-width: 767px) {
   .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a {
-    color: #ffffff;
   }
   .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
   .landing .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-    color: #ffffff;
+    text-decoration: none;
   }
   .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
   .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
   .landing .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-    color: #ffffff;
+    text-decoration: none;
     background-color: #555555;
   }
 }

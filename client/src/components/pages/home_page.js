@@ -9,26 +9,9 @@ import brands_icon from '../../../public/images/laptop.svg';
 import retailers from '../../../public/images/retailers.jpg';
 import brands from '../../../public/images/brands.jpg';
 
-import { saveContactForm } from "../../actions/contact_form";
-
 import '../../styles/landing.css'
 
 class HomePage extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      company: '',
-      inquiry: 'retailer',
-      message: ''
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.contactUs = this.contactUs.bind(this);
-  }
 
   render() {
     return (
@@ -66,24 +49,24 @@ class HomePage extends Component {
 
   renderContent() {
     return (
-      <div>
+      <div id="content">
         <div className="jumbotron-retailers-brands combined">
           <Row>
             <Col md={6} className="left">
               <Image src={retailers_icon} responsive />
               <h2 className="">Retailers</h2>
               <p>Explore and shop your favorite brands in one cart. Be confident in every purchase with community feedback.</p>
-              <Button className="btn-primary btn-lg">Learn More</Button>
+              <Button href="#retailers" className="btn-primary btn-lg">Learn More</Button>
             </Col>
             <Col md={6} className="right">
               <Image src={brands_icon} responsive />
               <h2>Brands</h2>
               <p>Focus on building relationships and grow your revenue. Boost sales and streamline operations with our all-in-one platform.</p>
-              <Button className="btn-primary btn-lg">Learn More</Button>
+              <Button href="#brands" className="btn-primary btn-lg">Learn More</Button>
             </Col>
           </Row>
         </div>
-        <div className="jumbotron-retailers-brands dark-bg">
+        <div id="retailers" className="jumbotron-retailers-brands dark-bg single">
           <Row>
             <Col md={6}>
               <Image src={retailers} responsive />
@@ -97,7 +80,7 @@ class HomePage extends Component {
             </Col>
           </Row>
         </div>
-        <div className="jumbotron-retailers-brands">
+        <div id="brands" className="jumbotron-retailers-brands single">
           <Row>
             <Col md={6}>
               <h2>Expanding Your Brand</h2>
@@ -117,49 +100,8 @@ class HomePage extends Component {
 
   renderContactForm() {
     return (
-      <div id="contact-bg" className="jumbotron hero-wrapper">
-        <div className="overlay">
-          <div id="contact">
-            <form>
-              <div className="carousel-caption">
-                <h2>See GreenTap in action!</h2>
-                <h3>Ask the team anything</h3>
-              </div>
-              <FormGroup>
-                <Col md={6}>
-                  <FormControl name="firstName" value={this.state.firstName} onChange={this.handleChange} placeholder="First Name" />
-                  <FormControl name="email" value={this.state.email} onChange={this.handleChange} placeholder="Business Email" />
-                  <FormControl name="phone" value={this.state.phone} onChange={this.handleChange} placeholder="Phone Number" />
-                </Col>
-                <Col md={6}>
-                  <FormControl name="lastName" value={this.state.lastName} onChange={this.handleChange} placeholder="Last Name" />
-                  <FormControl name="company" value={this.state.company} onChange={this.handleChange} placeholder="Company" />
-                  <FormControl name="inquiry" value={this.state.inquiry} onChange={this.handleChange} componentClass="select">
-                    <option value="retailer">Retailer</option>
-                    <option value="brand">Brand</option>
-                    <option value="other">Other</option>
-                  </FormControl>
-                </Col>
-                <Col md={12}>
-                  <FormControl name="message" componentClass="textarea" value={this.state.message} onChange={this.handleChange} placeholder="Message" />
-                </Col>
-                <Col md={12} className="center-btn">
-                  <Button onClick={this.contactUs} type="submit" className="btn-primary btn-lg">Submit</Button>
-                </Col>
-              </FormGroup>
-            </form>
-          </div>
-        </div>
-      </div>
+      <div id="contact" />
     )
-  }
-
-  contactUs() {
-    saveContactForm(this.state);
-  }
-
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
   }
 }
 

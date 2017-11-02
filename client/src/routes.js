@@ -6,6 +6,7 @@ import { withCookies, Cookies } from 'react-cookie';
 // Import static pages and templates
 import HomePage from './components/pages/home_page';
 import AboutPage from './components/pages/about';
+import BlogPage from './components/pages/blog';
 import NotFoundPage from './components/pages/not_found_page';
 import Footer from './components/template/footer';
 
@@ -51,6 +52,7 @@ class GreentapRouter extends Component {
           <Switch>
             <Route exact path="/" component={HomePage}/>
             <Route path="/about" component={AboutPage}/>
+            <Route path="/blog" component={BlogPage}/>
             {/* Each components needs to include a header if it needs it */}
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
