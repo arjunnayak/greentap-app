@@ -28,6 +28,9 @@ const LandingHeader = () => {
             <li>
               <Link to="/#contact">Contact Us</Link>
             </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
