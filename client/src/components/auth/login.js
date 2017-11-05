@@ -11,7 +11,7 @@ const form = reduxForm({
 
 const renderField = field => (
   <div>
-    <input className="form-control simple-input" {...field.input} placeholder={field.placeholder} />
+    <input className="form-control" {...field.input} type={field.type} placeholder={field.placeholder} />
     {field.touched && field.error && <div className="error">{field.error}</div>}
   </div>
 );
@@ -51,7 +51,7 @@ class Login extends Component {
                 <Field name="email" component={renderField} type="text" placeholder="Email" />
               </div>
               <div className="panel-body">
-                <Field name="password" component={renderField} type="text" placeholder="Password" />
+                <Field name="password" component={renderField} type="password" placeholder="Password" />
               </div>
               <div className="panel-body">
                 <button type="submit" className="btn btn-primary">Login</button>
