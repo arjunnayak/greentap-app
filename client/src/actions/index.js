@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import { logoutUser } from './auth';
-import { SEND_CONTACT_FORM, STATIC_ERROR, FETCH_USER } from './types';
+import { STATIC_ERROR, FETCH_USER } from './types';
 export const API_URL = 'http://localhost:3001/api';
 export const CLIENT_ROOT_URL = 'http://localhost:3000';
 

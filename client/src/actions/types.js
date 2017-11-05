@@ -34,12 +34,6 @@ export const FETCH_CONVERSATIONS = 'fetch_conversations',
   SEND_REPLY = 'send_reply';
 
 //= =====================
-// Contact Form Actions
-//= =====================
-export const SAVE_CONTACT = 'save_contact_form',
-  SAVE_CONTACT_ERROR = 'save_contact_form_error';
-
-//= =====================
 // Customer Actions
 //= =====================
 export const CREATE_CUSTOMER = 'create_customer',
