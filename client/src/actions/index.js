@@ -25,9 +25,8 @@ export function fetchUser(uid) {
 }
 
 export function errorHandler(dispatch, error, type) {
-  console.log('Error type: ', type);
-  console.log(error);
-  let errorMessage = error.data ? error.data : error;
+  console.log('errorHandler: ', error);
+  let errorMessage = error.data.error ? error.data.error : error;
 
    // NOT AUTHENTICATED ERROR
   if (error.status === 401) {

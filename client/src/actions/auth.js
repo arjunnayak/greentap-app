@@ -18,24 +18,29 @@ export function loginUser({ email, password }) {
         cookies.set('user', response.data.user, { path: '/' });
         dispatch({ type: AUTH_USER });
       })
-      .catch((error) => {
-        console.log(`loginUser error handler: ${error}`)      
+      .catch((error) => {    
         errorHandler(dispatch, error.response, AUTH_ERROR);
       });
   };
 }
 
-export function registerUser({ email, firstName, lastName, password }) {
+export function registerUser(data) {
   return dispatch => {
-    return axios.post(`${API_URL}/auth/register`, { email, firstName, lastName, password })
+    return axios.post(`${API_URL}/auth/register`, data)
       .then((response) => {
         const cookies = new Cookies();
-        cookies.set('token', response.data.token, { path: '/' });
-        cookies.set('user', response.data.user, { path: '/' });
-        dispatch({ type: AUTH_USER });
+        cookies.set('token', response.data.token, { path: '/' })
+        cookies.set('user', response.data.user, { path: '/' })
+        var user = response.data.user
+        if(response.data.business) {
+          user.business = response.data.business
+        }
+        dispatch({ 
+          type: AUTH_USER,
+          payload: user
+        })
       })
       .catch((error) => {
-        console.log(`registerUser error handler: ${error}`)
         errorHandler(dispatch, error.response, AUTH_ERROR);
       });
   };

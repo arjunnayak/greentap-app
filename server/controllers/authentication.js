@@ -52,37 +52,97 @@ exports.register = (req, res, next) => {
   const firstName = req.body.firstName
   const lastName = req.body.lastName
   const password = req.body.password
+  const confirmPassword = req.body.confirmPassword
+  const businessType = req.body.businessType
 
-  // Return error if no email provided
-  if (!email) {
+  if(!email) {
     return res.status(422).json({ error: 'You must enter an email address.' })
-  }
-  // Return error if full name not provided
-  if (!firstName || !lastName) {
-    return res.status(422).json({ error: 'You must enter your full name.' })
-  }
-  // Return error if no password provided
-  if (!password) {
+  } else if(!firstName) {
+    return res.status(422).json({ error: 'You must enter your first name.' })
+  } else if(!lastName) {
+    return res.status(422).json({ error: 'You must enter your last name.' })
+  } else if(!password) {
     return res.status(422).json({ error: 'You must enter a password.' })
-  }
+  } else if(!confirmPassword) {
+    return res.status(422).json({ error: 'You must confirm your password.' })    
+  } else if(password !== confirmPassword) {
+    return res.status(422).json({ error: 'Passwords do not match.' })    
+  } else if(!businessType) {
+    return res.status(422).json({ error: 'You must enter a business type.' })    
+  } 
 
-  const CREATE_USER = 'INSERT INTO public.user(first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING first_name, last_name, email;';
-  db.one(CREATE_USER, [firstName, lastName, email, password])
-    .then(user => {
-      console.log(user);
-      const userInfo = setUserInfo(user);
+  const CREATE_USER = `INSERT INTO public.user(first_name, last_name, email, password, business_type) 
+    VALUES ($1, $2, $3, $4, $5) RETURNING id, first_name, last_name, email, business_type;`;
+  var user = null;
+  db.task(t => {
+    return t.one(CREATE_USER, [firstName, lastName, email, password, businessType])
+      .then(createdUser => {
+        user = createdUser;
+        if(user.business_type === "brand") {
+          const businessName = req.body.businessName
+          const phone = req.body.phone
+          const address = req.body.address
+          const city = req.body.city
+          const state = req.body.state
+          const zip = req.body.zip
+          const CREATE_BIZ = `INSERT INTO public.business(user_id, name, phone, address, city, state, zip) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name;`;
+          return t.one(CREATE_BIZ, [user.id, businessName, phone, address, city, state, zip])
+        } else {
+          return res.status(201).json({
+            token: `JWT ${generateToken(user)}`,
+            user
+          });
+        }
+      });
+  }).then(business => {
       return res.status(201).json({
-        token: `JWT ${generateToken(userInfo)}`,
-        user: userInfo
+        user,
+        business,
+        token: `JWT ${generateToken(user)}`
       });
     })
     .catch(error => {
-      console.log(error);
-      if(error.code == '23505') {
-        return res.status(400).json({ error: 'That email address is already in use.' })
+      if(error.code === "23505" && error.constraint === "user_pkey1") {
+        return res.status(409).json({ error: 'Email already in use.' })  
       }
-      return res.status(400).json({ error: 'There was an error.' })
+      return res.status(500).json({ error: 'There was an error creating your account.' })                    
     });
+
+  // db.one(CREATE_USER, [firstName, lastName, email, password, businessType])
+  //   .then(user => {
+  //     const userInfo = setUserInfo(user);
+  //     console.log(user);
+  //      else {
+  //       return res.status(201).json({
+  //         token: `JWT ${generateToken(userInfo)}`,
+  //         user: userInfo
+  //       });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //     if(error.code == '23505') {
+  //       return res.status(400).json({ error: 'That email address is already in use.' })
+  //     }
+  //     return res.status(400).json({ error: 'There was an error creating the user.' })
+  //   });
+  
+  // if(user.business_type === "brand") {
+  //   const CREATE_BIZ = `INSERT INTO public.business(user_id, name, phone, address, city, state, zip) 
+  //     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name;`;
+  //   db.one(CREATE_BIZ, [user.id, businessName, phone, address, city, state, zip])
+  //     .then(business => {
+  //       return res.status(201).json({
+  //         token: `JWT ${generateToken(userInfo)}`,
+  //         user: userInfo,
+  //         business: business
+  //       });
+  //     })
+  //     .catch(error => {
+  //       return res.status(400).json({ error: 'There was an error creating the business.' })            
+  //     }); 
+  // }
 }
 
 // //= =======================================
