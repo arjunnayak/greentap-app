@@ -1,38 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { registerUser } from '../../actions/auth';
 import Header from '../template/header';
 
+const formName = 'register';
+
 const form = reduxForm({
-  form: 'register',
-  validate,
+  form: formName
 });
 
-function validate(formProps) {
-  const errors = {};
-
-  if (!formProps.firstName) {
-    errors.firstName = 'Please enter a first name';
-  }
-
-  if (!formProps.lastName) {
-    errors.lastName = 'Please enter a last name';
-  }
-
-  if (!formProps.email) {
-    errors.email = 'Please enter an email';
-  }
-
-  if (!formProps.password) {
-    errors.password = 'Please enter a password';
-  }
-  return errors;
-}
-
 const renderField = field => (
-  <div>
-    <input className="form-control simple-input" {...field.input} placeholder={field.placeholder} />
+  <div className="panel-body">
+    <input className="form-control" {...field.input} type={field.type} placeholder={field.placeholder} />
     {field.touched && field.error && <div className="error">{field.error}</div>}
   </div>
 );
@@ -41,25 +21,28 @@ class Register extends Component {
   handleFormSubmit(formProps) {
     this.props.registerUser(formProps)
       .then(() => {
-      console.log("after register authenticated", this.props.authenticated)
-      if(this.props.authenticated) {
-        this.props.history.push("/dashboard");
-      }
-    });
+        if (this.props.authenticated) {
+          if (this.props.user.business) {
+            this.props.history.push("/dashboard");
+          } else {
+            this.props.history.push("/");
+          }
+        }
+      });
   }
 
   renderAlert() {
     if (this.props.errorMessage) {
       return (
         <div className="auth-form-error">
-          <span><strong>Error!</strong> {this.props.errorMessage}</span>
+          <span>Error: {this.props.errorMessage}</span>
         </div>
       );
     }
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, businessTypeValue } = this.props;
 
     return (
       <div>
@@ -69,21 +52,32 @@ class Register extends Component {
           <div className="panel panel-default">
             <form className="" onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
               {this.renderAlert()}
-              <div className="panel-body">
-                <Field name="firstName" component={renderField} type="text" placeholder="First Name" />
+              <Field name="firstName" component={renderField} type="text" placeholder="First Name" />
+              <Field name="lastName" component={renderField} type="text" placeholder="Last Name" />
+              <Field name="email" component={renderField} type="text" placeholder="Email" />
+              <Field name="password" component={renderField} type="password" placeholder="Password" />
+              <Field name="confirmPassword" component={renderField} type="password" placeholder="Confirm Password" />
+              <label>Are you a retailer or a brand?</label>
+              <div>
+                <label><Field name="businessType" component="input" type="radio" value="retailer" /> Retailer</label>
+                <label><Field name="businessType" component="input" type="radio" value="brand" /> Brand</label>
               </div>
-              <div className="panel-body">
-                <Field name="lastName" component={renderField} type="text" placeholder="Last Name" />
-              </div>
-              <div className="panel-body">
-                <Field name="email" component={renderField} type="text" placeholder="Email" />
-              </div>
-              <div className="panel-body">
-                <Field name="password" component={renderField} type="password" placeholder="Password" />
-              </div>
-              <div className="panel-body">
-                <Field name="password" component={renderField} type="password" placeholder="Confirm Password" />
-              </div>
+              {
+                businessTypeValue === "brand" ? (
+                  <div>
+                    <Field name="businessName" component={renderField} type="input" placeholder="Business Name" />
+                    <Field name="phone" component={renderField} type="input" placeholder="Phone" />
+                    <Field name="address" component={renderField} type="input" placeholder="Address" />
+                    <Field name="city" component={renderField} type="input" placeholder="City" />
+                    State: <Field name="state" component="select">
+                      <option value="California">California</option>
+                      <option value="Oregon">Oregon</option>
+                      <option value="Washington">Washington</option>
+                    </Field>
+                    <Field name="zip" component={renderField} type="input" placeholder="Zip Code" />
+                  </div>
+                ) : null
+              }
               <div className="panel-body">
                 <button type="submit" className="btn btn-primary">Create Account</button>
               </div>
@@ -95,11 +89,15 @@ class Register extends Component {
   }
 }
 
+const selector = formValueSelector(formName);
+
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
     message: state.auth.message,
     authenticated: state.auth.authenticated,
+    user: state.auth.user,
+    businessTypeValue: selector(state, 'businessType')
   };
 }
 
