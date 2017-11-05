@@ -9,7 +9,7 @@ const passportService = require('./config/passport')
 const db = require('./config/db')
 
 //test db
-db.any('SELECT * FROM public.user;')
+db.any('SELECT 1 FROM public.business;')
 .then(function(data) {
   console.log(data)
 })
