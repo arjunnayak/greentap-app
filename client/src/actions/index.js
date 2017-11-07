@@ -8,23 +8,11 @@ export const CLIENT_ROOT_URL = 'http://localhost:3000';
 //= ===============================
 // Utility actions
 //= ===============================
-
-export function fetchUser(uid) {
-  return dispatch => {
-    axios.get(`${API_URL}/user/${uid}`, {
-      headers: { Authorization: Cookies.get('token') },
-    })
-    .then((response) => {
-    dispatch({
-        type: FETCH_USER,
-        payload: response.data.user,
-      });
-    })
-    .catch(response => dispatch(errorHandler(response.data.error)));
-  };
-}
-
 export function errorHandler(dispatch, error, type) {
+  if(!error) {
+    console.log("error handler called but no error received")
+    return
+  }
   console.log('errorHandler: ', error);
   let errorMessage = error.data.error ? error.data.error : error;
 

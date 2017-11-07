@@ -4,17 +4,16 @@ import { connect } from 'react-redux'
 
 class Header extends Component {
   renderLinks() {
-    console.log(`authenticated ${this.props.authenticated}`);
     if (this.props.authenticated) {
       return [
         <li key={`${1}header`}>
           <Link to="/">Home</Link>
         </li>,
         <li key={`${2}header`}>
-          <Link to="dashboard">Dashboard</Link>
+          <Link to="/dashboard">Dashboard</Link>
         </li>,
         <li key={`${3}header`}>
-          <Link to="logout">Logout</Link>
+          <Link to="/logout">Logout</Link>
         </li>
       ];
     } else {

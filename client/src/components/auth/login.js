@@ -20,7 +20,6 @@ class Login extends Component {
   handleFormSubmit(formProps) {
     this.props.loginUser(formProps)
       .then(() => {
-      console.log("after login authenticated", this.props.authenticated)
       if(this.props.authenticated) {
         this.props.history.push("/dashboard");
       }
