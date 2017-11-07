@@ -28,8 +28,8 @@ class AddProduct extends Component {
           <form onSubmit={handleSubmit(this.handleAddProduct.bind(this))}>
             <FormGroup>
               <div className="panel-body">
-                <Field name="productName" component={renderField} type="text" placeholder="Title"/>
-                <Field name="productDesc" component={renderField} type="textarea" placeholder="Description"/>
+                <Field name="name" component={renderField} type="text" placeholder="Title"/>
+                <Field name="desc" component={renderField} type="textarea" placeholder="Description"/>
               </div>
               <div className="panel-body">
                 <img src="" alt="product image goes here" />
@@ -46,16 +46,16 @@ class AddProduct extends Component {
   }
 
   handleAddProduct(formProps) {
-    this.props.addProduct(formProps)
+    this.props.addProduct(formProps, this.props.user.business.id)
       .then(() => {
-      console.log("product added")
-    });
+        this.props.history.push("/dashboard/products");
+      });
   }
 }
 
 function mapStateToProps(state) {
   return {
-
+    user: state.auth.user
   }
 }
 

@@ -25,11 +25,12 @@ const renderField = field => (
 class Products extends Component {
 
   componentDidMount() {
-    const business_id = 1;
+    const business_id = this.props.user.business.id;
     this.props.getProducts(business_id);
   }
 
   render() {
+    console.log('products render: products ',this.props.products)
     return (
       <Dashboard>
         <Col md={10}>
@@ -50,8 +51,6 @@ class Products extends Component {
       return (
         <tr key={product.id}>
           <td><Link to={'/dashboard/products/edit/'+product.id}>{product.name}</Link></td>
-          <td>{product.sku}</td>
-          <td>{product.inventory}</td>
         </tr>
       )
     })
@@ -60,8 +59,6 @@ class Products extends Component {
         <thead>
           <tr>
             <th>Title</th>
-            <th>SKU</th>
-            <th>Inventory</th>
           </tr>
         </thead>
         <tbody>
@@ -75,6 +72,7 @@ class Products extends Component {
 function mapStateToProps(state) {
   return { 
     authenticated: state.auth.authenticated,
+    user: state.auth.user,
     products: state.products.products
   }
 }

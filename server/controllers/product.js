@@ -1,18 +1,18 @@
 const db = require('../config/db')
 
 exports.getProducts = (req, res, next) => {
-  const bus_id = req.query.business_id;
+  const business_id = req.query.business_id;
 
   // Return error if no business id provided
-  if (!bus_id) {
+  if (!business_id) {
     return res.status(400).json({ error: 'Must provide business id.' });
   }
 
   const GET_PRODUCTS = 'SELECT * FROM public.product WHERE business_id=$1;';
-  db.query(GET_PRODUCTS, [bus_id])
+  db.query(GET_PRODUCTS, [business_id])
     .then(products => {
       return res.status(200).json({
-        products: products
+        products
       });
     })
     .catch(error => {
@@ -43,17 +43,18 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.addProduct = (req, res, next) => {
-  const name = req.body.name;
-  const desc = req.body.desc;
+  console.log(req.body)
+  const name = req.body.product.name;
+  const desc = req.body.product.desc;
   const image = '';
-  const bus_id = req.body.bus_id;
+  const business_id = req.body.business_id;
 
-  if (!bus_id || !name || !desc) {
-    return res.status(400).json({ error: 'Must provide all parameters (bus_id, name, desc).' });
+  if (!business_id || !name || !desc) {
+    return res.status(400).json({ error: 'Must provide all parameters (business_id, name, desc).' });
   }
 
-  const ADD_PRODUCT = 'INSERT INTO public.product(name, description, image, bus_id) VALUES ($1, $2, $3, $4) RETURNING *;';
-  db.one(ADD_PRODUCT, [name, desc, image, bus_id])
+  const ADD_PRODUCT = 'INSERT INTO public.product(name, description, image, business_id) VALUES ($1, $2, $3, $4) RETURNING *;';
+  db.one(ADD_PRODUCT, [name, desc, image, business_id])
     .then(product => {
       return res.status(200).json({
         product: product

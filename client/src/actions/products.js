@@ -9,7 +9,7 @@ import { GET_PRODUCTS, GET_PRODUCT, ADD_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT, P
 // TO-DO: Add expiration to cookie
 export function getProducts(business_id) {
   return dispatch => {
-    axios.get(`${API_URL}/products?business_id=${business_id}`)
+    return axios.get(`${API_URL}/products?business_id=${business_id}`)
     .then((response) => {
       dispatch({
         type: GET_PRODUCTS,
@@ -25,7 +25,7 @@ export function getProducts(business_id) {
 // TO-DO: Add expiration to cookie
 export function getProduct(productId) {
   return dispatch => {
-    axios.get(`${API_URL}/products/${productId}`)
+    return axios.get(`${API_URL}/products/${productId}`)
     .then((response) => {
       console.log(response)
       dispatch({
@@ -39,25 +39,28 @@ export function getProduct(productId) {
   };
 }
 
-export function addProduct(product) {
+export function addProduct(product, business_id) {
   return dispatch => {
-    axios.post(`${API_URL}/products/add`)
-    .then((response) => {
-      console.log(response)
-      dispatch({
-        type: ADD_PRODUCT,
-        payload: response.data.product
-      })
+    return axios.post(`${API_URL}/products/add`, {
+      business_id, //syntactically equivalent as "business_id: business_id"
+      product
     })
-    .catch((error) => {
-      errorHandler(dispatch, error.response, PRODUCT_ERROR);
-    });
+      .then((response) => {
+        console.log(response)
+        dispatch({
+          type: ADD_PRODUCT,
+          payload: response.data.product
+        })
+      })
+      .catch((error) => {
+        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+      });
   };
 }
 
 export function editProduct(product) {
   return dispatch => {
-    axios.put(`${API_URL}/products/${product.id}`)
+    return axios.put(`${API_URL}/products/${product.id}`)
     .then((response) => {
       console.log(response)
       dispatch({
@@ -73,7 +76,7 @@ export function editProduct(product) {
 
 export function deleteProduct(product) {
   return dispatch => {
-    axios.delete(`${API_URL}/products/${product.id}`)
+    return axios.delete(`${API_URL}/products/${product.id}`)
     .then((response) => {
       console.log(response)
       dispatch({
