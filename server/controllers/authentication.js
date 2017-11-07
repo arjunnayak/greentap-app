@@ -30,17 +30,59 @@ exports.login = (req, res, next) => {
   }
 
   const GET_USER = 'SELECT * FROM public.user WHERE email = $1 and password = $2';
-  db.one(GET_USER, [email, password])
-    .then(user => {
-      const userInfo = setUserInfo(user);
-      return res.status(200).json({
-        token: `JWT ${generateToken(userInfo)}`,
-        user: userInfo
+  var user = null;
+  db.task(t => {
+    return t.one(GET_USER, [email, password])
+      .then(createdUser => {
+        user = createdUser;
+        if(user.business_type === "brand") {
+          const GET_BUSINESS = 'SELECT * FROM public.business WHERE user_id = $1';
+          return t.one(GET_BUSINESS, [user.id])
+        } else {
+          return res.status(201).json({
+            token: `JWT ${generateToken(user)}`,
+            user
+          });
+        }
+      });
+  }).then(business => {
+      return res.status(201).json({
+        user,
+        business,
+        token: `JWT ${generateToken(user)}`
       });
     })
     .catch(error => {
-      return res.status(400).json({ error: "Incorrect login credentials" });
+      return res.status(404).json({ error: 'Incorrect login credentials' })                    
     });
+
+
+  // db.one(GET_USER, [email, password])
+  //   .then(user => {
+  //     console.log('user result', user)
+  //     if(user && user.business_type === "brand") {
+  //       const GET_BUSINESS = 'SELECT * FROM public.business WHERE user_id = $1';
+  //       db.one(GET_BUSINESS, [user.id])
+  //         .then(business => {
+  //           return res.status(200).json({
+  //             token: `JWT ${generateToken(user)}`,
+  //             user,
+  //             business
+  //           });
+  //         })
+  //         .catch(error => {
+  //           return res.status(404).json({ error: "No business created for this user" });
+  //         });
+  //     } else {
+  //       return res.status(200).json({
+  //         token: `JWT ${generateToken(user)}`,
+  //         user
+  //       });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     return res.status(400).json({ error: "Incorrect login credentials" });
+  //   });
 } 
 
 //= =======================================

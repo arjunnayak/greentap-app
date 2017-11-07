@@ -13,10 +13,17 @@ export function loginUser({ email, password }) {
   return dispatch => {
     return axios.post(`${API_URL}/auth/login`, { email, password })
       .then((response) => {
+        var user = response.data.user
+        if(response.data.business) {
+          user.business = response.data.business
+        }
         const cookies = new Cookies();
         cookies.set('token', response.data.token, { path: '/' });
-        cookies.set('user', response.data.user, { path: '/' });
-        dispatch({ type: AUTH_USER });
+        cookies.set('user', user, { path: '/' });
+        dispatch({ 
+          type: AUTH_USER,
+          payload: user
+        });
       })
       .catch((error) => {    
         errorHandler(dispatch, error.response, AUTH_ERROR);
@@ -28,13 +35,13 @@ export function registerUser(data) {
   return dispatch => {
     return axios.post(`${API_URL}/auth/register`, data)
       .then((response) => {
-        const cookies = new Cookies();
-        cookies.set('token', response.data.token, { path: '/' })
-        cookies.set('user', response.data.user, { path: '/' })
         var user = response.data.user
         if(response.data.business) {
           user.business = response.data.business
         }
+        const cookies = new Cookies();
+        cookies.set('token', response.data.token, { path: '/' })
+        cookies.set('user', user, { path: '/' })
         dispatch({ 
           type: AUTH_USER,
           payload: user
