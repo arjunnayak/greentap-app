@@ -16,12 +16,8 @@ export const GET_PRODUCTS = 'get_products',
   ADD_PRODUCT = 'add_product', 
   EDIT_PRODUCT = 'edit_product', 
   DELETE_PRODUCT = 'delete_product', 
-  PRODUCT_ERROR = 'product_error';
-
-//= =====================
-// User Profile Actions
-//= =====================
-export const FETCH_USER = 'fetch_user';
+  PRODUCT_ERROR = 'product_error',
+  CLEAR_PRODUCT = 'clear_product';
 
 //= =====================
 // Messaging Actions
