@@ -66,23 +66,25 @@ exports.addProduct = (req, res, next) => {
 }
 
 exports.updateProduct = (req, res, next) => {
+  const id = req.body.id;
   const name = req.body.name;
   const description = req.body.description;
   const image = req.body.image;
-  const business_id = req.body.business_id;
 
-  if (!bus_id || !name || !desc) {
-    return res.status(400).json({ error: 'Must provide all parameters (bus_id, name, desc).' });
+  if (!id | !name || !description) {
+    console.log('error for not having params')
+    return res.status(400).json({ error: 'Must provide all parameters to edit a product.' });
   }
 
-  const UPDATE_PRODUCT = 'UPDATE public.product SET name=$1, description=$2, image=$3, business_id=$4 RETURNING id;';
-  db.one(UPDATE_PRODUCT, [name, description, image, business_id])
-    .then(product => {
+  const UPDATE_PRODUCT = 'UPDATE public.product SET name=$1, description=$2, image=$3 WHERE id=$4 RETURNING id, name, description, image;';
+  db.one(UPDATE_PRODUCT, [name, description, image, id])
+    .then((product) => {
       return res.status(200).json({
-        product: product.id
+        product
       });
     })
     .catch(error => {
+      console.log('error from db call', error)
       return res.status(400).json({ error: "Error adding product" });
     });
 }

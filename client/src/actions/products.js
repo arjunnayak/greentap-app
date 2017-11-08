@@ -26,16 +26,16 @@ export function getProducts(business_id) {
 export function getProduct(productId) {
   return dispatch => {
     return axios.get(`${API_URL}/products/${productId}`)
-    .then((response) => {
-      console.log(response)
-      dispatch({
-        type: GET_PRODUCT,
-        payload: response.data.product
+      .then((response) => {
+        console.log(response)
+        dispatch({
+          type: GET_PRODUCT,
+          payload: response.data.product
+        })
       })
-    })
-    .catch((error) => {
-      errorHandler(dispatch, error.response, PRODUCT_ERROR);
-    });
+      .catch((error) => {
+        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+      });
   };
 }
 
@@ -46,7 +46,7 @@ export function addProduct(product, business_id) {
       product
     })
       .then((response) => {
-        console.log(response)
+        console.log('add product action response', response)
         dispatch({
           type: ADD_PRODUCT,
           payload: response.data.product
@@ -60,9 +60,9 @@ export function addProduct(product, business_id) {
 
 export function editProduct(product) {
   return dispatch => {
-    return axios.put(`${API_URL}/products/${product.id}`)
+    return axios.put(`${API_URL}/products/${product.id}`, product)
     .then((response) => {
-      console.log(response)
+      console.log('edit product action response',response)
       dispatch({
         type: EDIT_PRODUCT,
         payload: response.data.product

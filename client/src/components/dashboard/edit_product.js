@@ -5,10 +5,6 @@ import { Field, reduxForm } from 'redux-form';
 import { getProduct, editProduct } from "../../actions/products";
 import Dashboard from './dashboard';
 
-const form = reduxForm({
-  form: 'edit_product',
-});
-
 const renderField = field => (
   <div>
     <input className="form-control" {...field.input} placeholder={field.placeholder}>{field.value}</input>
@@ -18,22 +14,50 @@ const renderField = field => (
 
 class EditProduct extends Component {
 
+  constructor(props) {
+    super(props);
+    // we're using local state for form because it's complicated to 1)load data into redux form
+    // and 2) handle changes to the input and submit
+    this.state = {
+      id: '',
+      name: '',
+      description: '',
+      image: ''
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    //flow is funky when you use this rather than binding in onSubmit
+    // this.handleEditProduct = this.handleEditProduct.bind(this);
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
   componentDidMount() {
     const productId = this.props.match.params.id;
-    this.props.getProduct(productId);
+    this.props.getProduct(productId).then(() => {
+      this.setState({
+        id: this.props.product.id,
+        name: this.props.product.name,
+        description: this.props.product.description,
+        image: ''
+      })
+    });
   }
 
   render() {
-    const { handleSubmit } = this.props;
-    const prod = this.props.product;
+    const { handleSubmit, product } = this.props;
     return (
       <Dashboard>
         <h2 className="page-header">Edit Product</h2>
         <div className="row">
+          {this.renderAlert()}
           <form onSubmit={handleSubmit(this.handleEditProduct.bind(this))}>
             <div className="panel-body">
-              <img src={prod.image} alt="product" />
-              <Field name="productName" value={prod.name} onChangeAction={this.props.onChangeAction} component={renderField} type="text" />
+              <img src={product.image} alt="product image" />
+              <input name="name" value={this.state.name} onChange={this.handleChange} type="text" />
+              <input name="description" value={this.state.description} onChange={this.handleChange} type="text" />
             </div>
             <div className="panel-body">
               <Link to="/dashboard/products">Cancel</Link>
@@ -45,21 +69,37 @@ class EditProduct extends Component {
     )
   }
 
-  handleEditProduct(formProps) {
-    this.props.editProduct(formProps)
-      .then(() => {
-      console.log("product edited")
-    });
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="auth-form-error">
+          <span><strong>Error!</strong> {this.props.errorMessage}</span>
+        </div>
+      );
+    }
   }
 
-  handleChange(e) {
-    console.log(e)
+  handleEditProduct(event) {
+    this.props.editProduct(this.state)
+      .then(() => {
+        //checks if empty or undefined/null
+        if(!this.props.errorMessage) {
+          console.log('edit product success handler')
+          this.props.history.push("/dashboard/products");
+        }
+        console.log('edit error message',this.props.errorMessage)
+      });
   }
 }
 
+const form = reduxForm({
+  form: 'edit_product',
+});
+
 function mapStateToProps(state) {
   return {
-    product: state.products.product
+    product: state.products.product,
+    errorMessage: state.products.error
   }
 }
 
