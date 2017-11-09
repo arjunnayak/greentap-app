@@ -14,7 +14,7 @@ export default function (state = INITIAL_STATE, action) {
     case EDIT_PRODUCT:
       return { ...state, product: action.payload, error: '' };
     case DELETE_PRODUCT:
-      return { ...state, product: action.payload, error: '' };
+      return { ...state, product: {}, error: '' };
     case PRODUCT_ERROR:
       return { ...state, error: action.payload };
     case CLEAR_PRODUCT:

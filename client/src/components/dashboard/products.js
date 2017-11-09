@@ -46,11 +46,24 @@ class Products extends Component {
     )
   }
 
+  handleDeleteProduct(product) {
+    var confirmDelete = confirm("Are you sure you want to delete this product?");
+    if (confirmDelete == true) {
+      this.props.deleteProduct(product)
+        .then(() => {
+          //refresh products after deletion
+          this.props.getProducts(this.props.user.business.id);          
+        });
+    }
+  }
+
   renderProducts() {
     const productRows = _.map(this.props.products, product => {
       return (
         <tr key={product.id}>
           <td><Link to={'/dashboard/products/edit/'+product.id}>{product.name}</Link></td>
+          <td>{product.description}</td>
+          <td><Button bsStyle="primary" onClick={() => {this.handleDeleteProduct(product)}}>Delete</Button></td>
         </tr>
       )
     })
@@ -59,6 +72,7 @@ class Products extends Component {
         <thead>
           <tr>
             <th>Title</th>
+            <th>Description</th>
           </tr>
         </thead>
         <tbody>
