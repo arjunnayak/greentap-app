@@ -33,15 +33,19 @@ class Products extends Component {
     console.log('products render: products ',this.props.products)
     return (
       <Dashboard>
-        <Col md={10}>
-          <h2 className="page-header">Products</h2>
-        </Col>
-        <Col md={2}>
-          <Link to="/dashboard/products/add"><button className="btn btn-primary pull-right">Add Product</button></Link>
-        </Col>
-        <Col md={12}>
-          { this.renderProducts() }
-        </Col>
+        <Row>
+          <Col sm={10}>
+            <h2 className="page-header">Products</h2>
+          </Col>
+          <Col sm={2}>
+            <Link to="/dashboard/products/add"><button className="btn btn-primary">Add Product</button></Link>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            { this.renderProducts() }
+          </Col>
+        </Row>
       </Dashboard>
     )
   }
