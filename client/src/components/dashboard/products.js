@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { getProducts, deleteProduct } from "../../actions/products"
 import Dashboard from './dashboard';
-import EditProduct from './edit_product';
-import AddProduct from './add_product';
 import {
   Button,
   Col,
@@ -65,7 +63,7 @@ class Products extends Component {
     const productRows = _.map(this.props.products, product => {
       return (
         <tr key={product.id}>
-          <td><Link to={'/dashboard/products/edit/'+product.id}>{product.name}</Link></td>
+          <td><Link to={`/dashboard/products/edit/${product.id}`}>{product.name}</Link></td>
           <td>{product.description}</td>
           <td><Button bsStyle="primary" onClick={() => {this.handleDeleteProduct(product)}}>Delete</Button></td>
         </tr>
