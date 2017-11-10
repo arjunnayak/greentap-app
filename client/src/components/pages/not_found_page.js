@@ -7,8 +7,8 @@ class NotFoundPage extends Component {
     return (
       <div className="container">
         <Header />
-        <h1>Page Not Found</h1>
-        <p>I'm sorry, the page you were looking for cannot be found.</p>
+        <h1>404</h1>
+        <p>Sorry, we couldn't find that page.</p>
       </div>
     );
   }
