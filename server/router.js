@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication')
 const UserController = require('./controllers/user')
 const ProductController = require('./controllers/product')
+const BrandController = require('./controllers/brand')
 const express = require('express')
 const passport = require('passport')
 const passportService = require('./config/passport')
@@ -18,7 +19,8 @@ module.exports = function (app) {
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
     userRoutes = express.Router(),
-    productRoutes = express.Router()
+    productRoutes = express.Router(),
+    brandRoutes = express.Router();
 
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
@@ -37,6 +39,10 @@ module.exports = function (app) {
   productRoutes.put('/:id', ProductController.updateProduct)
   productRoutes.delete('/:id', ProductController.deleteProduct)
 
+  // Brand routes
+  brandRoutes.get('/', BrandController.getBrands)
+  brandRoutes.get('/:id', BrandController.getBrand)
+
   // Test protected route
   apiRoutes.get('/protected', requireAuth, (req, res) => {
     res.send({ content: 'The protected test route is functional!' })
@@ -46,6 +52,7 @@ module.exports = function (app) {
   apiRoutes.use('/auth', authRoutes)
   apiRoutes.use('/user', userRoutes)
   apiRoutes.use('/products', productRoutes)
+  apiRoutes.use('/brands', brandRoutes)
 
   // Group sub routes together for API
   app.use('/api', apiRoutes)

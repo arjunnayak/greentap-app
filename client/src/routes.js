@@ -25,9 +25,13 @@ import Overview from './components/dashboard/overview';
 import Products from './components/dashboard/products';
 import AddProduct from './components/dashboard/add_product';
 import EditProduct from './components/dashboard/edit_product';
-
 import Inventory from './components/dashboard/inventory';
 import Settings from './components/dashboard/settings';
+
+// Import marketplace pages
+import Marketplace from './components/marketplace/marketplace';
+import BrandPage from './components/marketplace/brand_page';
+import Product from './components/marketplace/product';
 
 // Import higher order components
 import RequireAuth from './components/auth/require_auth';
@@ -70,6 +74,10 @@ class GreentapRouter extends Component {
             <Route path="/dashboard/inventory" component={Inventory}/>
             <Route path="/dashboard/settings" component={Settings}/>
             <Route exact path="/dashboard" component={Overview}/>
+
+            <Route path="/marketplace/product/:id" component={Product}/>
+            <Route path="/marketplace/brand/:id" component={BrandPage}/>
+            <Route exact path="/marketplace" component={Marketplace}/>
 
             <Route component={NotFoundPage} />
           </Switch>

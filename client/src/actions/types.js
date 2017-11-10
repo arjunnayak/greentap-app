@@ -20,6 +20,14 @@ export const GET_PRODUCTS = 'get_products',
   CLEAR_PRODUCT = 'clear_product';
 
 //= =====================
+// Brand Actions
+//= =====================
+export const GET_BRANDS = 'get_brands', 
+  GET_BRAND = 'get_brand', 
+  GET_BRAND_PRODUCT = 'get_brand_product', 
+  BRAND_ERROR = 'brand_error';
+
+//= =====================
 // Messaging Actions
 //= =====================
 export const FETCH_CONVERSATIONS = 'fetch_conversations',
