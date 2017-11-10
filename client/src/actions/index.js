@@ -19,7 +19,8 @@ export function errorHandler(dispatch, error, type) {
    // NOT AUTHENTICATED ERROR
   if (error.status === 401) {
     errorMessage = 'You are not authorized to do this.';
-    return dispatch(logoutUser(errorMessage));
+    dispatch(logoutUser(errorMessage));
+    return
   }
 
   dispatch({

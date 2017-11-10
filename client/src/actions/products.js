@@ -2,14 +2,11 @@ import axios from 'axios';
 import { API_URL, errorHandler } from './index';
 import { GET_PRODUCTS, GET_PRODUCT, ADD_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT, PRODUCT_ERROR } from './types';
 
-//= ===============================
-// Products actions
-//= ===============================
-
-// TO-DO: Add expiration to cookie
 export function getProducts(business_id) {
   return dispatch => {
-    return axios.get(`${API_URL}/products?business_id=${business_id}`)
+    return axios.get(`${API_URL}/products?business_id=${business_id}`, {
+      headers: { Authorization: `Bearer ${localStorage.token}` }
+    })
       .then((response) => {
         dispatch({
           type: GET_PRODUCTS,
@@ -22,10 +19,11 @@ export function getProducts(business_id) {
   };
 }
 
-// TO-DO: Add expiration to cookie
 export function getProduct(productId) {
   return dispatch => {
-    return axios.get(`${API_URL}/products/${productId}`)
+    return axios.get(`${API_URL}/products/${productId}`, {
+      headers: { Authorization: `Bearer ${localStorage.token}` }
+    })
       .then((response) => {
         console.log(response)
         dispatch({
@@ -42,8 +40,10 @@ export function getProduct(productId) {
 export function addProduct(product, business_id) {
   return dispatch => {
     return axios.post(`${API_URL}/products/add`, {
-      business_id, //syntactically equivalent as "business_id: business_id"
+      business_id,
       product
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.token}` }
     })
       .then((response) => {
         console.log('add product action response', response)
@@ -60,7 +60,9 @@ export function addProduct(product, business_id) {
 
 export function editProduct(product) {
   return dispatch => {
-    return axios.put(`${API_URL}/products/${product.id}`, product)
+    return axios.put(`${API_URL}/products/${product.id}`, product, {
+      headers: { Authorization: `Bearer ${localStorage.token}` }
+    })
       .then((response) => {
         console.log('edit product action response',response)
         dispatch({
@@ -76,7 +78,9 @@ export function editProduct(product) {
 
 export function deleteProduct(product) {
   return dispatch => {
-    return axios.delete(`${API_URL}/products/${product.id}`)
+    return axios.delete(`${API_URL}/products/${product.id}`, {
+      headers: { Authorization: `Bearer ${localStorage.token}` }
+    })
       .then((response) => {
         console.log('delete product action response', response)
         dispatch({

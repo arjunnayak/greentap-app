@@ -1,9 +1,9 @@
 const db = require('../config/db')
+var jwt = require('express-jwt')
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
 
-  // Return error if no business id provided
   if (!business_id) {
     return res.status(400).json({ error: 'Must provide business id.' });
   }
@@ -19,11 +19,9 @@ exports.getProducts = (req, res, next) => {
     });
 }
 
-
 exports.getProduct = (req, res, next) => {
   const id = req.params.id;
 
-  // Return error if no email provided
   if (!id) {
     return res.status(400).json({ error: 'Must provide product id.' });
   }

@@ -18,9 +18,7 @@ export function loginUser({ email, password }) {
         if(response.data.business) {
           user.business = response.data.business
         }
-        const cookies = new Cookies();
-        cookies.set('token', response.data.token, { path: '/' });
-        cookies.set('user', user, { path: '/' });
+        localStorage.setItem('token', response.data.token)
         dispatch({ 
           type: AUTH_USER,
           payload: user
@@ -40,9 +38,7 @@ export function registerUser(data) {
         if(response.data.business) {
           user.business = response.data.business
         }
-        const cookies = new Cookies();
-        cookies.set('token', response.data.token, { path: '/' })
-        cookies.set('user', user, { path: '/' })
+        localStorage.setItem('token', response.data.token)
         dispatch({ 
           type: AUTH_USER,
           payload: user
@@ -56,11 +52,9 @@ export function registerUser(data) {
 
 export function logoutUser(error) {
   return dispatch => {
+    localStorage.removeItem('token')
     dispatch({ type: UNAUTH_USER, payload: error || '' });
     dispatch({ type: CLEAR_PRODUCT });
-    const cookies = new Cookies();
-    cookies.remove('token', { path: '/' });
-    cookies.remove('user', { path: '/' });
   };
 }
 

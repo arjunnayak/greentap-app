@@ -5,6 +5,10 @@ const express = require('express')
 const passport = require('passport')
 const passportService = require('./config/passport')
 
+// const jwt = require('jsonwebtoken')
+const jwt = require('express-jwt');
+const config = require('./app_config')
+
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false })
 const requireLogin = passport.authenticate('local', { session: false })
@@ -14,7 +18,7 @@ module.exports = function (app) {
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
     userRoutes = express.Router(),
-    productRoutes = express.Router();
+    productRoutes = express.Router()
 
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
@@ -25,7 +29,8 @@ module.exports = function (app) {
   // User routes
   userRoutes.get('/:userId', requireAuth, UserController.viewProfile)
 
-  // Product routes
+  // Product routes (jwt required)
+  productRoutes.use(jwt({secret: config.jwt_secret}))
   productRoutes.get('/', ProductController.getProducts)
   productRoutes.get('/:id', ProductController.getProduct)
   productRoutes.post('/add', ProductController.addProduct)
@@ -42,6 +47,6 @@ module.exports = function (app) {
   apiRoutes.use('/user', userRoutes)
   apiRoutes.use('/products', productRoutes)
 
-  // Set url for API group routes
+  // Group sub routes together for API
   app.use('/api', apiRoutes)
 }
