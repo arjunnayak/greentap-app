@@ -23,7 +23,7 @@ class Header extends Component {
           <Link to="/dashboard">Dashboard</Link>
         </li>,
         <li key={2}>
-          <Link to="/login">Sign In</Link>
+          <Link to="/login">Login</Link>
         </li>,
         <li key={3}>
           <Link to="/register">Register</Link>
