@@ -58,6 +58,10 @@ exports.getImageUploadSign = (req, res, next) => {
 
 const optimizeAndStoreImageInS3 = function(image) {
   return new Promise((resolve, reject) => {
+    //if no image was supplied, return an empty link
+    if(image.data == '' || !image.data) {
+      resolve('')
+    }
     //strip base64 metadata from FileReader.readDataAsUrl result
     var imageData = image.data.split(',')[1]
     //convert base64 string to buffer to input to sharp constructor
@@ -104,9 +108,9 @@ exports.addProduct = (req, res, next) => {
   }
 
   optimizeAndStoreImageInS3(image)
-    .then(s3ImageLink => {
+    .then(imageLink => {
       const ADD_PRODUCT = 'INSERT INTO public.product(name, description, image, business_id) VALUES ($1, $2, $3, $4) RETURNING *;';
-      db.one(ADD_PRODUCT, [name, desc, s3ImageLink, business_id])
+      db.one(ADD_PRODUCT, [name, desc, imageLink, business_id])
         .then(product => {
           return res.status(200).json({ product });
         })
