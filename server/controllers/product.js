@@ -1,5 +1,7 @@
 const db = require('../config/db')
 var jwt = require('express-jwt')
+const aws = require('aws-sdk')
+const sharp = require('sharp')
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
@@ -36,25 +38,87 @@ exports.getProduct = (req, res, next) => {
     });
 }
 
+exports.getImageUploadSign = (req, res, next) => {
+  var s3 = new aws.S3();
+  var params = {
+    Bucket: 'greentap-images',
+    Key: req.query.filename,
+    Expires: 60,
+    ContentType: req.query.filetype,
+    ACL: 'public-read'
+  };
+  s3.getSignedUrl('putObject', params, function (error, data) {
+    if (error) {
+      return res.status(500).json({ error });      
+    } else {
+      return res.status(200).json({ data });
+    }
+  });
+}
+
+const optimizeAndStoreImageInS3 = function(image) {
+  return new Promise((resolve, reject) => {
+    //strip base64 metadata from FileReader.readDataAsUrl result
+    var imageData = image.data.split(',')[1]
+    //convert base64 string to buffer to input to sharp constructor
+    imageData = Buffer.from(imageData, 'base64')
+    sharp(imageData)
+      .resize(600, null)
+      .withoutEnlargement()
+      .min()
+      .toBuffer()
+      .then(outputBuffer => {
+        const s3 = new aws.S3({
+          apiVersion: '2006-03-01',
+          params: { Bucket: 'greentap-images' }
+        })
+        const uploadObject = {
+          Key: image.filename,
+          Body: outputBuffer,
+          ACL: 'public-read'
+        }
+        s3.upload(uploadObject, (error, data) => {
+          if (error) {
+            console.error(`There was an error uploading ${image.filename}: ${error.message}`)
+            reject(error.message)
+          }
+          console.log(`Successfully uploaded ${image.filename}.`)
+          resolve(`https://s3-us-west-1.amazonaws.com/greentap-images/${image.filename}`)
+        })
+      })
+      .catch(error => {
+        console.error(error)
+        reject(error)
+      })
+  })
+}
+
 exports.addProduct = (req, res, next) => {
-  console.log(req.body)
   const name = req.body.product.name;
   const desc = req.body.product.desc;
-  const image = '';
+  const image = req.body.product.image;
   const business_id = req.body.business_id;
 
   if (!business_id || !name || !desc) {
     return res.status(400).json({ error: 'Must provide all parameters (business_id, name, desc).' });
   }
 
-  const ADD_PRODUCT = 'INSERT INTO public.product(name, description, image, business_id) VALUES ($1, $2, $3, $4) RETURNING *;';
-  db.one(ADD_PRODUCT, [name, desc, image, business_id])
-    .then(product => {
-      return res.status(200).json({ product });
+  optimizeAndStoreImageInS3(image)
+    .then(s3ImageLink => {
+      const ADD_PRODUCT = 'INSERT INTO public.product(name, description, image, business_id) VALUES ($1, $2, $3, $4) RETURNING *;';
+      db.one(ADD_PRODUCT, [name, desc, s3ImageLink, business_id])
+        .then(product => {
+          return res.status(200).json({ product });
+        })
+        .catch(error => {
+          console.error(`error adding product to database ${error}`)
+          return res.status(500).json({ error: "Error adding product" });
+        });
     })
     .catch(error => {
-      return res.status(500).json({ error: "Error adding product" });
-    });
+      console.error(`error uploading product image ${error}`)      
+      return res.status(500).json({ error: 'Error uploading image.' });      
+    })
 }
 
 exports.updateProduct = (req, res, next) => {

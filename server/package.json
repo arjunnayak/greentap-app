@@ -11,10 +11,12 @@
   "license": "",
   "author": "Arjun Nayak",
   "dependencies": {
+    "aws-sdk": "^2.149.0",
     "babel-cli": "6.14.0",
     "babel-core": "6.14.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.4.3",
+    "crypto-js": "^3.1.9-1",
     "express": "4.13.3",
     "express-jwt": "^5.3.0",
     "jsonwebtoken": "^5.7.0",
@@ -24,7 +26,8 @@
     "passport-jwt": "^2.0.0",
     "passport-local": "1.0.0",
     "pg": "^7.3.0",
-    "pg-promise": "^6.5.3"
+    "pg-promise": "^6.5.3",
+    "sharp": "^0.18.4"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.0",

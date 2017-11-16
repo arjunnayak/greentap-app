@@ -33,6 +33,7 @@ module.exports = function (app) {
 
   // Product routes (jwt required)
   productRoutes.use(jwt({secret: config.jwt_secret}))
+  productRoutes.get('/imageUploadSign', ProductController.getImageUploadSign)
   productRoutes.get('/', ProductController.getProducts)
   productRoutes.get('/:id', ProductController.getProduct)
   productRoutes.post('/add', ProductController.addProduct)
