@@ -120,7 +120,7 @@ exports.addProduct = (req, res, next) => {
         });
     })
     .catch(error => {
-      console.error(`error uploading product image ${error}`)      
+      console.error(`error uploading product image ${error}`)
       return res.status(500).json({ error: 'Error uploading image.' });      
     })
 }
@@ -130,21 +130,41 @@ exports.updateProduct = (req, res, next) => {
   const name = req.body.name;
   const description = req.body.description;
   const image = req.body.image;
-
+  
   if (!id | !name || !description) {
     console.log('error for not having params')
     return res.status(400).json({ error: 'Must provide all parameters to edit a product.' });
   }
 
   const UPDATE_PRODUCT = 'UPDATE public.product SET name=$1, description=$2, image=$3 WHERE id=$4 RETURNING id, name, description, image;';
-  db.one(UPDATE_PRODUCT, [name, description, image, id])
+  //if there already is an image in s3, dont store
+  if(typeof image === 'string' || image instanceof String) {
+    db.one(UPDATE_PRODUCT, [name, description, image, id])
     .then((product) => {
       return res.status(200).json({ product });
     })
     .catch(error => {
       console.log('error from db call', error)
-      return res.status(500).json({ error: "Error adding product" });
+      return res.status(500).json({ error: "Error editing product" });
     });
+  } else {
+    optimizeAndStoreImageInS3(image)
+      .then(imageLink => {
+        console.log("updating with new image link", imageLink)
+        db.one(UPDATE_PRODUCT, [name, description, imageLink, id])
+          .then((product) => {
+            return res.status(200).json({ product });
+          })
+          .catch(error => {
+            console.log('error from db call', error)
+            return res.status(500).json({ error: "Error editing product" });
+          });
+      })
+      .catch(error => {
+        console.error(`error uploading product image ${error}`)
+        return res.status(500).json({ error: 'Error uploading image.' });
+      })
+  }
 }
 
 exports.deleteProduct = (req, res, next) => {

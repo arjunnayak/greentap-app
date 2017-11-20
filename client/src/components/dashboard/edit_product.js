@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 import { getProduct, editProduct } from "../../actions/products";
 import Dashboard from './dashboard';
+import ImageUpload from '../template/image_upload'
 
 const renderField = field => (
   <div>
@@ -41,7 +42,7 @@ class EditProduct extends Component {
         id: this.props.product.id,
         name: this.props.product.name,
         description: this.props.product.description,
-        image: ''
+        image: this.props.product.image
       })
     });
   }
@@ -55,7 +56,7 @@ class EditProduct extends Component {
           {this.renderAlert()}
           <form onSubmit={handleSubmit(this.handleEditProduct.bind(this))}>
             <div className="panel-body">
-              <img src={product.image} alt="product image" />
+              <ImageUpload name="image" ref="imageUpload" seedImg={product.image}/>
               <input name="name" value={this.state.name} onChange={this.handleChange} type="text" />
               <input name="description" value={this.state.description} onChange={this.handleChange} type="text" />
             </div>
@@ -80,11 +81,28 @@ class EditProduct extends Component {
   }
 
   handleEditProduct(event) {
-    this.props.editProduct(this.state)
+    const imageUpload = this.refs.imageUpload
+    let currentImage = imageUpload.state
+    let newImage = null
+    if(currentImage.imagePreviewUrl !== this.props.product.image) {
+      newImage = {
+        filename: currentImage.file.name,
+        filetype: currentImage.file.type,
+        data: currentImage.imagePreviewUrl
+      }
+      //cannot expect this to be synchronous
+      this.setState({ image: newImage })
+    }
+    let editedProduct = {
+      id: this.state.id,
+      name: this.state.name,
+      description: this.state.description,
+      image: newImage || this.state.image
+    }
+    this.props.editProduct(editedProduct)
       .then(() => {
         //checks if empty or undefined/null
-        if(!this.props.errorMessage) {
-          console.log('edit product success handler')
+        if(this.props.errorMessage === "") {
           this.props.history.push("/dashboard/products");
         }
         console.log('edit error message',this.props.errorMessage)

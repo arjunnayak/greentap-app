@@ -5,12 +5,16 @@ import { Button } from 'react-bootstrap'
 class ImageUpload extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { file: '', imagePreviewUrl: '' }
+    this.state = { 
+      file: '', 
+      imagePreviewUrl: '' 
+    }
   }
 
-  _handleSubmit(e) {
-    e.preventDefault()
-    console.log('handle uploading-', this.state.file)
+  componentWillReceiveProps(nextProps) {
+    if(this.props.seedImg !== nextProps.seedImg) {
+      this.setState({ imagePreviewUrl: nextProps.seedImg })
+    }
   }
 
   _handleImageChange(e) {
@@ -27,10 +31,9 @@ class ImageUpload extends React.Component {
   }
 
   render() {
-    let { imagePreviewUrl } = this.state
     let imagePreview = null
-    if (imagePreviewUrl) {
-      imagePreview = (<img src={imagePreviewUrl} />)
+    if (this.state.imagePreviewUrl) {
+      imagePreview = (<img src={this.state.imagePreviewUrl} />)
     } else {
       imagePreview = (<div className="previewText">Please select an Image for Preview</div>)
     }
@@ -40,10 +43,7 @@ class ImageUpload extends React.Component {
         <div className="imgPreview">
           {imagePreview}
         </div>
-        {/* <form onSubmit={(e)=>this._handleSubmit(e)}> */}
-          <input name={this.props.name} className="fileInput" type="file" onChange={(e)=>this._handleImageChange(e)} />
-          <Button bsClass="btn submitButton" onClick={(e)=>this._handleSubmit(e)}>Upload Image</Button>
-        {/* </form> */}
+        <input name={this.props.name} className="fileInput" type="file" onChange={(e)=>this._handleImageChange(e)} />
       </div>
     )
   }
