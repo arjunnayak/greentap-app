@@ -26,6 +26,7 @@ class AddProduct extends Component {
     return (
       <Dashboard>
         <h2 className="page-header">Add Product</h2>
+          {this.renderAlert()}
           <form onSubmit={handleSubmit(this.handleAddProduct.bind(this))}>
             <FormGroup>
               <ImageUpload name="image" ref="imageUpload"/>
@@ -43,24 +44,38 @@ class AddProduct extends Component {
     )
   }
 
+  renderAlert() {
+    if (this.props.errorMessage) {
+      return (
+        <div className="auth-form-error">
+          <span><strong>Error!</strong> {this.props.errorMessage}</span>
+        </div>
+      );
+    }
+  }
+
   handleAddProduct(formProps) {
     const imageUpload = this.refs.imageUpload
     let image = imageUpload.state
     formProps.image = {
       filename: image.file.name,
+      filetype: image.file.type,
       data: image.imagePreviewUrl
     }
     console.log(formProps.image)
     this.props.addProduct(formProps, this.props.user.business.id)
       .then(() => {
-        this.props.history.push("/dashboard/products");
+        if(this.props.errorMessage === "") {
+          this.props.history.push("/dashboard/products");
+        }
       })
   }
 }
 
 function mapStateToProps(state) {
   return {
-    user: state.auth.user
+    user: state.auth.user,
+    errorMessage: state.products.error
   }
 }
 
