@@ -9,6 +9,7 @@ import { AUTH_USER } from './actions/types'
 import GreentapRouter from './routes'
 
 // Import stylesheets
+import 'semantic-ui-css/semantic.min.css'
 import './styles/base.css'
 
 const store = createStore(rootReducer,

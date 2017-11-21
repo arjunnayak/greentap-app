@@ -1,21 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Catamaran:300,400,700');
-
-body {
-  /* standard font */
-  font-family: 'Catamaran', sans-serif;
-  padding-top: 50px;
-}
-
-.main {
-  padding: 25px 25px 10px 25px;;
-}
-
-.sidebar {
-  padding: 10px 20px 20px 20px;
-}
-
-.dropdown:hover .dropdown-menu {
-  display: block;
+body * {
+  font-family: 'Catamaran', sans-serif !important; 
 }
 
 p.copyright > span {
@@ -24,23 +8,4 @@ p.copyright > span {
 
 .auth-form-error {
   color: red;
-}
-
-.form-space {
-  margin-bottom: 20px;
-}
-
-.container.cont-space {
-  margin-top: 20px;
-}
-
-.cont-space.center {
-  width: 40%;
-  margin: auto;
-  text-align: center;
-}
-
-.last-link {
-  padding-top:0px;
-  padding-bottom:15px;
 }

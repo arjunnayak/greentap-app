@@ -1,67 +1,56 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Container, Menu } from 'semantic-ui-react'
 
 class Header extends Component {
+  render() {
+    return (
+      <div className="ui inverted huge borderless fixed fluid menu">
+        <a className="header item">Project name</a>
+        <div className="right menu">
+          <div className="item">
+            <div className="ui small input">
+              <input placeholder="Search..." />
+            </div>
+          </div>
+          <a className="item">Dashboard</a><a className="item">Settings</a><a className="item">Profile</a><a className="item">Help</a>
+        </div>
+      </div>
+      // <div>
+      //   <Menu fixed='top' size='massive' borderless>
+      //     <Container>
+      //       {/* <Menu.Item as={Link} to='/' header>GreenTap</Menu.Item> */}
+      //       <Menu.Menu position='right'>
+      //         {this.renderLinks()}
+      //       </Menu.Menu>
+      //     </Container>
+      //   </Menu>
+      // </div>
+    )
+  }
+
   renderLinks() {
     if (this.props.authenticated) {
       return [
-        <li key={`${1}header`}>
-          <Link to="/">Home</Link>
-        </li>,
-        <li key={`${2}header`}>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>,
-        <li key={`${3}header`}>
-          <Link to="/logout">Logout</Link>
-        </li>
-      ];
+        <Menu.Item as={Link} to='/'>Home</Menu.Item>,
+        <Menu.Item as={Link} to='/dashboard'>Dashboard</Menu.Item>,
+        <Menu.Item as={Link} to='/logout'>Logout</Menu.Item>
+      ]
     } else {
       return [
-        // Unauthenticated navigation
-        <li key={1}>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>,
-        <li key={2}>
-          <Link to="/login">Login</Link>
-        </li>,
-        <li key={3}>
-          <Link to="/register">Register</Link>
-        </li>
-      ];
+        <Menu.Item as={Link} to='/dashboard'>Dashboard</Menu.Item>,
+        <Menu.Item as={Link} to='/login'>Login</Menu.Item>,
+        <Menu.Item as={Link} to='/register'>Register</Menu.Item>
+      ]
     }
-  }
-
-  render() {
-    return (
-      <div>
-        <nav className="navbar navbar-default navbar-fixed-top">
-          <div className="container">
-            <div className="navbar-header">
-              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse">
-                <span className="icon-bar" />
-                <span className="icon-bar" />
-                <span className="icon-bar" />
-              </button>
-              <div><Link className="navbar-brand" to="/">GreenTap</Link></div>
-            </div>
-
-            <div className="collapse navbar-collapse" id="nav-collapse">
-              <ul className="nav navbar-nav navbar-right">
-                {this.renderLinks()}
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </div>
-    );
   }
 }
 
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated
-  };
+  }
 }
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps)(Header)
