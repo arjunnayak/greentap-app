@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { browserHistory } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index';
+import axios from 'axios'
+import { browserHistory } from 'react-router-dom'
+import Cookies from 'universal-cookie'
+import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FORGOT_PASSWORD_REQUEST, RESET_PASSWORD_REQUEST, PROTECTED_TEST,
-CLEAR_PRODUCT } from './types';
+CLEAR_PRODUCT } from './types'
 
 //= ===============================
 // Authentication actions
@@ -22,12 +22,12 @@ export function loginUser({ email, password }) {
         dispatch({ 
           type: AUTH_USER,
           payload: user
-        });
+        })
       })
       .catch((error) => {    
-        errorHandler(dispatch, error.response, AUTH_ERROR);
-      });
-  };
+        errorHandler(dispatch, error.response, AUTH_ERROR)
+      })
+  }
 }
 
 export function registerUser(data) {
@@ -45,17 +45,24 @@ export function registerUser(data) {
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR);
-      });
-  };
+        errorHandler(dispatch, error.response, AUTH_ERROR)
+      })
+  }
 }
 
 export function logoutUser(error) {
   return dispatch => {
     localStorage.removeItem('token')
-    dispatch({ type: UNAUTH_USER, payload: error || '' });
-    dispatch({ type: CLEAR_PRODUCT });
-  };
+    dispatch({ type: CLEAR_PRODUCT })
+    dispatch({ type: UNAUTH_USER, payload: error || '' })
+    redirectToLogin()
+  }
+}
+
+function redirectToLogin() {
+  return dispatch => {
+    window.location.href = `${CLIENT_ROOT_URL}/login`
+  }
 }
 
 export function getForgotPasswordToken({ email }) {
@@ -65,12 +72,12 @@ export function getForgotPasswordToken({ email }) {
         dispatch({
           type: FORGOT_PASSWORD_REQUEST,
           payload: response.data.message,
-        });
+        })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR);
-      });
-  };
+        errorHandler(dispatch, error.response, AUTH_ERROR)
+      })
+  }
 }
 
 export function resetPassword(token, { password }) {
@@ -80,19 +87,19 @@ export function resetPassword(token, { password }) {
         dispatch({
           type: RESET_PASSWORD_REQUEST,
           payload: response.data.message,
-        });
+        })
         // Redirect to login page on successful password reset
-        browserHistory.push('/login');
+        redirectToLogin()
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR);
-      });
-  };
+        errorHandler(dispatch, error.response, AUTH_ERROR)
+      })
+  }
 }
 
 export function protectedTest() {
   return dispatch => {
-    const cookies = new Cookies();
+    const cookies = new Cookies()
     axios.get(`${API_URL}/protected`, {
       headers: { Authorization: cookies.get('token') },
     })
@@ -100,10 +107,10 @@ export function protectedTest() {
         dispatch({
           type: PROTECTED_TEST,
           payload: response.data.content,
-        });
+        })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR);
-      });
-  };
+        errorHandler(dispatch, error.response, AUTH_ERROR)
+      })
+  }
 }
