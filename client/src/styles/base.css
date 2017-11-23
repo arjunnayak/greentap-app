@@ -9,3 +9,7 @@ p.copyright > span {
 .auth-form-error {
   color: red;
 }
+
+.auth-form {
+  margin-top: 100px;
+}
