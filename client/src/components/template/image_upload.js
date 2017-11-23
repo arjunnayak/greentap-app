@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import './image_upload.css'
-import { Button } from 'react-bootstrap'
 
 class ImageUpload extends React.Component {
   constructor(props) {
