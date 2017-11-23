@@ -10,18 +10,18 @@ class Dashboard extends Component {
       <div>
         <Header />
         <Grid>
-          <div className="row">
+          <Grid.Row>
             <SideNav />
-            <div className="column" id="content">
+            <Grid.Column id="content">
               <Grid>
-                <div className="row">
+                <Grid.Row>
                   <h1 className="ui huge header">{this.props.header}</h1>
-                </div>
+                </Grid.Row>
                 <Divider/>
                 {this.props.children}
               </Grid>
-            </div>
-          </div>
+            </Grid.Column>
+          </Grid.Row>
         </Grid>
       </div>
     )

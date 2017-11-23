@@ -5,7 +5,7 @@ import { Field, reduxForm } from 'redux-form'
 import { getProduct, editProduct } from "../../actions/products"
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
-import { Form, Button } from 'semantic-ui-react'
+import { Form, Button, Grid } from 'semantic-ui-react'
 
 const renderField = field => (
   <div>
@@ -49,16 +49,16 @@ class EditProduct extends Component {
     const { handleSubmit, product } = this.props
     return (
       <Dashboard header="Edit Product">
-        <div className="row">
+        <Grid.Row>
           {this.renderAlert()}
           <Form onSubmit={handleSubmit(this.handleEditProduct.bind(this))}>
             <ImageUpload name="image" ref="imageUpload" seedImg={product.image} />
-            <input name="name" value={this.state.name} onChange={this.handleChange} type="text" />
-            <input name="description" value={this.state.description} onChange={this.handleChange} type="text" />
-            <Button type="submit" primary>Save</Button>
+            <Form.Input name="name" value={this.state.name} onChange={this.handleChange} type="text" />
+            <Form.Input name="description" value={this.state.description} onChange={this.handleChange} type="text" />
+            <Button primary>Save</Button>
             <Link to="/dashboard/products">Cancel</Link>
           </Form>
-        </div>
+        </Grid.Row>
       </Dashboard>
     )
   }

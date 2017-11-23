@@ -6,7 +6,7 @@ import { FormGroup } from 'react-bootstrap'
 import { addProduct } from "../../actions/products"
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
-import { Button, Form } from 'semantic-ui-react'
+import { Button, Form, Grid } from 'semantic-ui-react'
 
 const form = reduxForm({
   form: 'add_product',
@@ -25,7 +25,7 @@ class AddProduct extends Component {
     const { handleSubmit } = this.props
     return (
       <Dashboard header="Add Product">
-        <div className="row">
+        <Grid.Row>
           {this.renderAlert()}
           <Form onSubmit={handleSubmit(this.handleAddProduct.bind(this))}>
             <ImageUpload name="image" ref="imageUpload" />
@@ -34,7 +34,7 @@ class AddProduct extends Component {
             <Button type="submit" primary>Add</Button>
             <Link to="/dashboard/products">Cancel</Link>
           </Form>
-        </div>
+        </Grid.Row>
       </Dashboard>    
     )
   }

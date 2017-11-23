@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Dashboard from './dashboard'
+import { Grid } from 'semantic-ui-react'
 
 class Inventory extends Component {
 
@@ -11,8 +12,8 @@ class Inventory extends Component {
   render() {
     return (
       <Dashboard header="Inventory">
-        <div className="row">
-        </div>
+        <Grid.Row>
+        </Grid.Row>
       </Dashboard>
     )
   }

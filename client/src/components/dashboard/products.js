@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Field, reduxForm } from 'redux-form'
 import { getProducts, deleteProduct } from "../../actions/products"
 import Dashboard from './dashboard'
-import { Button } from 'semantic-ui-react'
+import { Button, Grid } from 'semantic-ui-react'
 
 const renderField = field => (
   <div>
@@ -24,10 +24,10 @@ class Products extends Component {
     console.log('products render: products ',this.props.products)
     return (
       <Dashboard header="Products">
-        <div className="row">
+        <Grid.Row>
           <Link to="/dashboard/products/add"><Button primary>Add Product</Button></Link>
           { this.renderProducts() }
-        </div>
+        </Grid.Row>
       </Dashboard>
     )
   }
