@@ -5,11 +5,3 @@ body * {
 p.copyright > span {
   color: #777;
 }
-
-.auth-form-error {
-  color: red;
-}
-
-.auth-form {
-  margin-top: 100px;
-}

@@ -3,15 +3,15 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { Link } from 'react-router-dom'
 import { loginUser } from '../../actions/auth'
-import Header from '../template/header'
-import { Button, Form, Grid, Message, Segment } from 'semantic-ui-react'
+import AuthForm from './auth_form'
+import { Header, Button, Form, Message, Segment } from 'semantic-ui-react'
 
 const form = reduxForm({
   form: 'login',
 })
 
 const renderField = field => (
-  <Form.Input fluid type={field.type} placeholder={field.placeholder} {...field.input} />
+  <Form.Input type={field.type} {...field.input}/>
 )
 
 class Login extends Component {
@@ -37,27 +37,26 @@ class Login extends Component {
   render() {
     const { handleSubmit } = this.props
     return (
-      <div>
-        <Header />
-        <div className='auth-form'>
-          <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
-            <Grid.Column style={{ maxWidth: 450 }}>
-              <h1>Login</h1>
-              {this.renderAlert()}
-              <Form size='large' onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-                <Segment>
-                  <Field name="email" component={renderField} type="text" placeholder="Email" />
-                  <Field name="password" component={renderField} type="password" placeholder="Password" />
-                  <Button primary fluid size='large'>Login</Button>
-                </Segment>
-              </Form>
-              <Message>
-                New to us?{' '}<Link to="/register">Sign Up</Link>
-              </Message>
-            </Grid.Column>
-          </Grid>
-        </div>
-      </div>
+      <AuthForm>
+        <Header inverted size='huge'>Login</Header>
+        {this.renderAlert()}
+        <Form size='large' onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <Segment>
+            <Form.Field>
+              <label>Email</label>
+              <Field name="email" component={renderField} type="text" />
+            </Form.Field>
+            <Form.Field>
+              <label>Password</label>
+              <Field name="password" component={renderField} type="password" />
+            </Form.Field>
+            <Button primary fluid size='large'>Login</Button>
+          </Segment>
+        </Form>
+        <Message>
+          New to us?{' '}<Link to="/register">Sign Up</Link>
+        </Message>
+      </AuthForm>
     )
   }
 }
