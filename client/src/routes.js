@@ -4,7 +4,6 @@ import { instanceOf } from 'prop-types';
 import { withCookies, Cookies } from 'react-cookie';
 
 import NotFoundPage from './components/pages/not_found_page';
-import Footer from './components/template/footer';
 
 // import ContactPage from './components/pages/contact-page';
 // import ComponentSamplesPage from './components/pages/component-samples';
