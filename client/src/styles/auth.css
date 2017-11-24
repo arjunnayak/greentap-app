@@ -1,6 +1,6 @@
 #auth {
   height: 100vh;
-  background: linear-gradient(180deg, #273238 70%, #FFF 30%);
+  background: linear-gradient(180deg, #273238 65%, #FFF 35%);
 }
 
 #auth .auth-form {
@@ -25,7 +25,8 @@
   text-align: left;
 }
 
-/* zip code field loses its field margin-bottom since its the last field in the div */
+/* zip code field loses its field margin-bottom since 
+/* its the last field in the conditional div */ */
 #auth .ui.form .field:last-child, 
 #auth .ui.form .fields:last-child .field {
   margin-bottom: 1em;
