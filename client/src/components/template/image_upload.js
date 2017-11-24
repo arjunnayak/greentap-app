@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './image_upload.css'
+import { Segment, Button, Image, Input } from 'semantic-ui-react'
 
 class ImageUpload extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class ImageUpload extends React.Component {
     }
   }
 
-  _handleImageChange(e) {
+  handleImageChange(e) {
     e.preventDefault()
     let file = e.target.files[0]
     let reader = new FileReader()
@@ -29,21 +30,32 @@ class ImageUpload extends React.Component {
     reader.readAsDataURL(file)
   }
 
+  handleRemoveImage() {
+    this.setState({
+      file: '',
+      imagePreviewUrl: ''
+    })
+  }
+
   render() {
     let imagePreview = null
     if (this.state.imagePreviewUrl) {
-      imagePreview = (<img src={this.state.imagePreviewUrl} />)
+      imagePreview = (<Image size="medium" style={{ marginBottom: '1em' }} 
+        rounded src={this.state.imagePreviewUrl} />)
     } else {
-      imagePreview = (<div className="previewText">Please select an Image for Preview</div>)
+      imagePreview = (<Image alt="Please upload an image for preview" />)
     }
 
     return (
-      <div className="previewComponent">
-        <div className="imgPreview">
-          {imagePreview}
+      <Segment className="image-upload">
+        {imagePreview}
+        <Button onClick={() => this.handleRemoveImage()}>Remove</Button>
+        <Button primary onClick={() => this.refs.fileInputLabel.click()}>Upload</Button>
+        <div className="hiddenFileInputContainer">
+          <label htmlFor="fileInput" ref="fileInputLabel" />
+          <Input type="file" id="fileInput" onChange={(e)=>this.handleImageChange(e)} />
         </div>
-        <input name={this.props.name} className="fileInput" type="file" onChange={(e)=>this._handleImageChange(e)} />
-      </div>
+      </Segment>
     )
   }
 }

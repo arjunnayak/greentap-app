@@ -8,10 +8,10 @@ import ImageUpload from '../template/image_upload'
 import { Form, Button, Grid } from 'semantic-ui-react'
 
 const renderField = field => (
-  <div>
-    <input className="form-control" {...field.input} placeholder={field.placeholder}>{field.value}</input>
-    {field.touched && field.error && <div className="error">{field.error}</div>}
-  </div>
+  <Form.Field>
+    <label>{field.label}</label>
+    <Form.Input type={field.type} {...field.input} />
+  </Form.Field>
 )
 
 class EditProduct extends Component {
@@ -51,8 +51,12 @@ class EditProduct extends Component {
       <Dashboard header="Edit Product">
         <Grid.Row>
           {this.renderAlert()}
+        </Grid.Row>
+        <Grid.Row>
+          <ImageUpload name="image" ref="imageUpload" seedImg={product.image} />
+        </Grid.Row>
+        <Grid.Row>
           <Form onSubmit={handleSubmit(this.handleEditProduct.bind(this))}>
-            <ImageUpload name="image" ref="imageUpload" seedImg={product.image} />
             <Form.Input name="name" value={this.state.name} onChange={this.handleChange} type="text" />
             <Form.Input name="description" value={this.state.description} onChange={this.handleChange} type="text" />
             <Button primary>Save</Button>
@@ -102,7 +106,6 @@ class EditProduct extends Component {
         if(this.props.errorMessage === "") {
           this.props.history.push("/dashboard/products")
         }
-        console.log('edit error message',this.props.errorMessage)
       })
   }
 }

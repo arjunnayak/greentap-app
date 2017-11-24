@@ -13,10 +13,10 @@ const form = reduxForm({
 })
 
 const renderField = field => (
-  <div>
-    <input className="" {...field.input} placeholder={field.placeholder} />
-    {field.touched && field.error && <div className="error">{field.error}</div>}
-  </div>
+  <Form.Field>
+    <label>{field.label}</label>
+    <Form.Input type={field.type} {...field.input} />
+  </Form.Field>
 )
 
 class AddProduct extends Component {
@@ -27,10 +27,14 @@ class AddProduct extends Component {
       <Dashboard header="Add Product">
         <Grid.Row>
           {this.renderAlert()}
+        </Grid.Row>
+        <Grid.Row>
+          <ImageUpload name="image" ref="imageUpload" />
+        </Grid.Row>
+        <Grid.Row>
           <Form onSubmit={handleSubmit(this.handleAddProduct.bind(this))}>
-            <ImageUpload name="image" ref="imageUpload" />
-            <Field name="name" component={renderField} type="text" placeholder="Title" />
-            <Field name="desc" component={renderField} type="textarea" placeholder="Description" />
+            <Field name="name" label="Title" component={renderField} type="text" />
+            <Field name="desc" label="Description" component={renderField} type="textarea" />
             <Button type="submit" primary>Add</Button>
             <Link to="/dashboard/products">Cancel</Link>
           </Form>
