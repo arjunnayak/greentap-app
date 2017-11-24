@@ -11,7 +11,10 @@ const form = reduxForm({
 })
 
 const renderField = field => (
-  <Form.Input type={field.type} {...field.input}/>
+  <Form.Field>
+    <label>{field.label}</label>
+    <Form.Input type={field.type} {...field.input} />
+  </Form.Field>
 )
 
 class Login extends Component {
@@ -42,14 +45,8 @@ class Login extends Component {
         {this.renderAlert()}
         <Form size='large' onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <Segment>
-            <Form.Field>
-              <label>Email</label>
-              <Field name="email" component={renderField} type="text" />
-            </Form.Field>
-            <Form.Field>
-              <label>Password</label>
-              <Field name="password" component={renderField} type="password" />
-            </Form.Field>
+            <Field name="email" label="Email" component={renderField} type="text" />
+            <Field name="password" label="Password" component={renderField} type="password" />
             <Button primary fluid size='large'>Login</Button>
           </Segment>
         </Form>
