@@ -1,9 +1,8 @@
 import axios from 'axios'
 import { browserHistory } from 'react-router-dom'
-import Cookies from 'universal-cookie'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FORGOT_PASSWORD_REQUEST, RESET_PASSWORD_REQUEST, PROTECTED_TEST,
-CLEAR_PRODUCT, REQUEST_AUTH } from './types'
+import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, REQUEST_FORGOT_PASSWORD, FORGOT_PASSWORD_SUCCESS, 
+FORGOT_PASSWORD_FAILURE, RESET_PASSWORD_REQUEST, PROTECTED_TEST, CLEAR_PRODUCT, REQUEST_AUTH } from './types'
 
 //= ===============================
 // Authentication actions
@@ -70,15 +69,30 @@ function redirectToLogin() {
 
 export function getForgotPasswordToken({ email }) {
   return dispatch => {
+    dispatch({ type: REQUEST_FORGOT_PASSWORD })
     return axios.post(`${API_URL}/auth/forgot-password`, { email })
-      .then((response) => {
+      .then(response => {
         dispatch({
-          type: FORGOT_PASSWORD_REQUEST,
-          payload: response.data.message,
+          type: FORGOT_PASSWORD_SUCCESS,
+          payload: {
+            email: response.data.email,
+            success: response.data.success
+          }
         })
       })
-      .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR)
+      .catch(error => {
+        var payload = { success: error.response.data.success }
+        if(error.response.data.error) {
+          payload.error = error.response.data.error
+        } else if(error.response.data.email){
+          payload.email = error.response.data.email
+        }
+        console.log('error data',error.response.data)
+        console.log(payload)
+        dispatch({
+          type: FORGOT_PASSWORD_FAILURE,
+          payload
+        })
       })
   }
 }
@@ -93,24 +107,6 @@ export function resetPassword(token, { password }) {
         })
         // Redirect to login page on successful password reset
         redirectToLogin()
-      })
-      .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR)
-      })
-  }
-}
-
-export function protectedTest() {
-  return dispatch => {
-    const cookies = new Cookies()
-    axios.get(`${API_URL}/protected`, {
-      headers: { Authorization: cookies.get('token') },
-    })
-      .then((response) => {
-        dispatch({
-          type: PROTECTED_TEST,
-          payload: response.data.content,
-        })
       })
       .catch((error) => {
         errorHandler(dispatch, error.response, AUTH_ERROR)

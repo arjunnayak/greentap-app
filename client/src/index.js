@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import reduxThunk from 'redux-thunk'
-import { CookiesProvider, Cookies } from 'react-cookie'
 import rootReducer from './reducers/index'
 import { AUTH_USER } from './actions/types'
 import GreentapRouter from './routes'
@@ -18,9 +17,7 @@ const store = createStore(rootReducer,
 
 ReactDOM.render(
   <Provider store={store}>
-    <CookiesProvider>
-      <GreentapRouter/>
-    </CookiesProvider>
+    <GreentapRouter/>
   </Provider>,
   document.getElementById('root')
 )

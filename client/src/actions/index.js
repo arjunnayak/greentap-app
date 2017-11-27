@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Cookies } from 'react-cookie';
 import { logoutUser } from './auth';
 import { STATIC_ERROR, FETCH_USER } from './types';
 export const API_URL = 'http://localhost:3001/api';
@@ -29,13 +28,15 @@ export function errorHandler(dispatch, error, type) {
   });
 }
 
+//IMPORTANT: the methods below are not being used but I'm keeping them there just in case
+
 // Post Request
 export function postData(action, errorType, isAuthReq, url, dispatch, data) {
   const requestUrl = API_URL + url;
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: Cookies.get('token') } };
+    headers = { headers: { Authorization: `Bearer ${localStorage.access_token}` } };
   }
 
   axios.post(requestUrl, data, headers)
@@ -56,7 +57,7 @@ export function getData(action, errorType, isAuthReq, url, dispatch) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: Cookies.get('token') } };
+    headers = { headers: { Authorization: `Bearer ${localStorage.access_token}` } };
   }
 
   axios.get(requestUrl, headers)
@@ -77,7 +78,7 @@ export function putData(action, errorType, isAuthReq, url, dispatch, data) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: Cookies.get('token') } };
+    headers = { headers: { Authorization: `Bearer ${localStorage.access_token}` } };
   }
 
   axios.put(requestUrl, data, headers)
@@ -98,7 +99,7 @@ export function deleteData(action, errorType, isAuthReq, url, dispatch) {
   let headers = {};
 
   if (isAuthReq) {
-    headers = { headers: { Authorization: Cookies.get('token') } };
+    headers = { headers: { Authorization: `Bearer ${localStorage.access_token}` } };
   }
 
   axios.delete(requestUrl, headers)

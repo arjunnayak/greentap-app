@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, browserHistory, Route, Switch } from 'react-router-dom';
-import { instanceOf } from 'prop-types';
-import { withCookies, Cookies } from 'react-cookie';
 
 import NotFoundPage from './components/pages/not_found_page';
 
@@ -32,17 +30,6 @@ import Product from './components/marketplace/product';
 import RequireAuth from './components/auth/require_auth';
 
 class GreentapRouter extends Component {
-
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
-
-  componentWillMount() {
-    const { cookies } = this.props;
-    this.state = {
-      name: cookies.get('name')
-    };
-  }
 
   render () {
     return (
@@ -80,4 +67,4 @@ class GreentapRouter extends Component {
   }
 }
 
-export default withCookies(GreentapRouter)
+export default GreentapRouter

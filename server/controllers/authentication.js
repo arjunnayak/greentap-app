@@ -4,6 +4,8 @@ const setUserInfo = require('../helpers').setUserInfo
 const createIdToken = require('../helpers').createIdToken
 const createAccessToken = require('../helpers').createAccessToken
 
+const uuid = require('uuid/v4')
+
 exports.login = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -117,44 +119,36 @@ exports.register = (req, res, next) => {
 exports.forgotPassword = function (req, res, next) {
   const email = req.body.email
 
-  // TODO:use code below for reference when implementing this for postgres
+  if (!email) {
+    return res.status(400).json({ 
+      success: false,
+      error: 'You must enter an email address.' 
+    });
+  }
 
-  // User.findOne({ email }, (err, existingUser) => {
-  //   // If user is not found, return error
-  //   if (err || existingUser == null) {
-  //     res.status(422).json({ error: 'Your request could not be processed as entered. Please try again.' })
-  //     return next(err)
-  //   }
-
-  //     // If user is found, generate and save resetToken
-
-  //     // Generate a token with Crypto
-  //   crypto.randomBytes(48, (err, buffer) => {
-  //     const resetToken = buffer.toString('hex')
-  //     if (err) { return next(err) }
-
-  //     existingUser.resetPasswordToken = resetToken
-  //     existingUser.resetPasswordExpires = Date.now() + 3600000 // 1 hour
-
-  //     existingUser.save((err) => {
-  //         // If error in saving token, return it
-  //       if (err) { return next(err) }
-
-  //       const message = {
-  //         subject: 'Reset Password',
-  //         text: `${'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-  //           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-  //           'http://'}${req.headers.host}/reset-password/${resetToken}\n\n` +
-  //           `If you did not request this, please ignore this email and your password will remain unchanged.\n`
-  //       }
-
-  //         // Otherwise, send user email via Mailgun
-  //       // mailgun.sendEmail(existingUser.email, message)
-
-  //       return res.status(200).json({ message: 'Please check your email for the link to reset your password.' })
-  //     })
-  //   })
-  // })
+  const GET_USER = `SELECT email FROM public.user WHERE email = $1;`;
+  db.task(t => {
+    return t.one(GET_USER, [email])
+      .then(userEmail => {
+        const timestamp = new Date()
+        const token = uuid()
+        console.log(`Creating password request for ${email} at ${timestamp}. Token=${token}`)
+        const CREATE_PASSWORD_REQUEST = `INSERT INTO public.reset_password_request(email, token, timestamp)
+          VALUES ($1, $2, $3) RETURNING email;`
+        return t.one(CREATE_PASSWORD_REQUEST, [email, token, timestamp])
+      });
+    }).then(user => {
+      return res.status(201).json({
+        email: user.email,
+        success: true
+      });
+    }).catch(error => {
+      console.log(error)
+      return res.status(404).json({
+        email: email,
+        success: false
+      })
+    });
 }
 
 // //= =======================================
