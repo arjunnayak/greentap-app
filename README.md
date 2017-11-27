@@ -14,7 +14,7 @@ Keep both tabs open as the client and server run as two separate bash processes
 
 4. Install db schema
 ```
-Will upload the .sql script soon
+psql -h localhost -p 5432 -U postgres -f .db_schema_11-26.sql
 ```
 
 5. Start the client
