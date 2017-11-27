@@ -67,6 +67,7 @@ function redirectToLogin() {
   }
 }
 
+// TODO: only allow link to be consumed once, so there should be a column for 'used' boolean
 export function getForgotPasswordToken({ email }) {
   return dispatch => {
     dispatch({ type: REQUEST_FORGOT_PASSWORD })
