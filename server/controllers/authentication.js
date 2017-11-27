@@ -1,7 +1,8 @@
 const crypto = require('crypto')
 const db = require('../config/db')
 const setUserInfo = require('../helpers').setUserInfo
-const generateToken = require('../helpers').generateToken
+const createIdToken = require('../helpers').createIdToken
+const createAccessToken = require('../helpers').createAccessToken
 
 exports.login = (req, res, next) => {
   const email = req.body.email;
@@ -26,7 +27,8 @@ exports.login = (req, res, next) => {
         } else {
           return res.status(200).json({
             user,
-            token: generateToken(user)
+            id_token: createIdToken(user),
+            access_token: createAccessToken()
           });
         }
       });
@@ -34,7 +36,8 @@ exports.login = (req, res, next) => {
       return res.status(200).json({
         user,
         business,
-        token: generateToken(user)
+        id_token: createIdToken(user),
+        access_token: createAccessToken()
       });
     })
     .catch(error => {

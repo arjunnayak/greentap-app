@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, FORGOT_PASSWORD_REQUEST, RESET_PASSWORD_REQUEST, PROTECTED_TEST,
-CLEAR_PRODUCT } from './types'
+CLEAR_PRODUCT, REQUEST_AUTH } from './types'
 
 //= ===============================
 // Authentication actions
@@ -12,13 +12,15 @@ CLEAR_PRODUCT } from './types'
 // TO-DO: Add expiration to cookie
 export function loginUser({ email, password }) {
   return dispatch => {
+    dispatch({ type: REQUEST_AUTH })
     return axios.post(`${API_URL}/auth/login`, { email, password })
       .then((response) => {
         var user = response.data.user
         if(response.data.business) {
           user.business = response.data.business
         }
-        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('id_token', response.data.id_token)
+        localStorage.setItem('access_token', response.data.access_token)
         dispatch({ 
           type: AUTH_USER,
           payload: user
@@ -52,7 +54,8 @@ export function registerUser(data) {
 
 export function logoutUser(error) {
   return dispatch => {
-    localStorage.removeItem('token')
+    localStorage.removeItem('id_token')
+    localStorage.removeItem('access_token')
     dispatch({ type: CLEAR_PRODUCT })
     dispatch({ type: UNAUTH_USER, payload: error || '' })
     redirectToLogin()
