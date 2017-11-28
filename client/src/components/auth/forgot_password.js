@@ -18,21 +18,6 @@ const renderField = field => (
 )
 
 class ForgotPassword extends Component {
-  static contextTypes = {
-    router: PropTypes.object,
-  }
-
-  componentWillMount() {
-    if (this.props.authenticated) {
-      this.context.router.push('/dashboard')
-    }
-  }
-
-  componentWillUpdate(nextProps) {
-    if (nextProps.authenticated) {
-      this.context.router.push('/dashboard')
-    }
-  }
 
   handleFormSubmit(formProps) {
     this.props.getForgotPasswordToken(formProps)
@@ -56,13 +41,12 @@ class ForgotPassword extends Component {
   }
 
   renderResult() {
-    console.log(this.props.email, this.props.resetRequestSuccess, this.props.errorMessage)
     if(this.props.resetRequestSuccess != null || this.props.resetRequestSuccess != undefined) {
-      if(this.props.resetRequestSuccess) {
+      if(this.props.resetRequestSuccess === true) {
         return ( <Message positive>Reset password request sent to {this.props.email}</Message> )
       } else {
         if(this.props.errorMessage !== undefined){
-          return <Message negative>{this.props.errorMessage}</Message>
+        return ( <Message negative>{this.props.errorMessage}</Message> )
         }
         return ( <Message negative>We couldn't find the email: {this.props.email}</Message> )
       }
