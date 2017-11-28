@@ -51,6 +51,8 @@ class Login extends Component {
           </Segment>
         </Form>
         <Message>
+          <Link to="/forgot-password">Forgot your password?</Link>
+          <br/>
           New to us?{' '}<Link to="/register">Sign Up</Link>
         </Message>
       </AuthForm>
