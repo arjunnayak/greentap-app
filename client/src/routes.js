@@ -45,7 +45,7 @@ class GreentapRouter extends Component {
             {/*<Route path="component-samples" component={RequireAuth(ComponentSamplesPage)} />*/}
 
             <Route path="/forgot-password" component={ForgotPassword} />
-            <Route path="/reset-password/:resetToken" component={ResetPassword} />
+            <Route path="/reset-password" component={ResetPassword} />
 
             {/* order matters here: router will hit first matching route */}
             <Route path="/dashboard/products/add" component={AddProduct}/>

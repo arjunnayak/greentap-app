@@ -1,4 +1,4 @@
-import { AUTH_REQUEST, AUTH_USER, UNAUTH_USER, AUTH_ERROR, REQUEST_FORGOT_PASSWORD, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE, RESET_PASSWORD_REQUEST, PROTECTED_TEST, REQUEST_AUTH } from '../actions/types';
+import { REQUEST_AUTH, AUTH_USER, UNAUTH_USER, AUTH_ERROR, REQUEST_FORGOT_PASSWORD, FORGOT_PASSWORD_SUCCESS, FORGOT_PASSWORD_FAILURE, REQUEST_RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, PROTECTED_TEST } from '../actions/types';
 
 const INITIAL_STATE = { is_requesting: false, error: '', user: undefined, authenticated: localStorage.getItem('id_token') ? true: false };
 
@@ -18,8 +18,12 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, is_requesting: false, email: action.payload.email, reset_request_success: action.payload.success, error: '' };
     case FORGOT_PASSWORD_FAILURE:
       return { ...state, is_requesting: false, email: action.payload.email, reset_request_success: action.payload.success, error: action.payload.error };
-    case RESET_PASSWORD_REQUEST:
-      return { ...state, message: action.payload.message };
+    case REQUEST_RESET_PASSWORD:
+      return { ...state, is_requesting: true, reset_request_success: null, error: '' };
+    case RESET_PASSWORD_SUCCESS:
+      return { ...state, is_requesting: false, reset_request_success: action.payload.success, error: '' };
+    case RESET_PASSWORD_FAILURE:
+      return { ...state, is_requesting: false, reset_request_success: action.payload.success, error: action.payload.error };
     case PROTECTED_TEST:
       return { ...state, content: action.payload.message };
   }

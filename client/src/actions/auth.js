@@ -2,7 +2,8 @@ import axios from 'axios'
 import { browserHistory } from 'react-router-dom'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, REQUEST_FORGOT_PASSWORD, FORGOT_PASSWORD_SUCCESS, 
-FORGOT_PASSWORD_FAILURE, RESET_PASSWORD_REQUEST, PROTECTED_TEST, CLEAR_PRODUCT, REQUEST_AUTH } from './types'
+FORGOT_PASSWORD_FAILURE, REQUEST_RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, 
+PROTECTED_TEST, CLEAR_PRODUCT, REQUEST_AUTH } from './types'
 
 //= ===============================
 // Authentication actions
@@ -98,19 +99,28 @@ export function getForgotPasswordToken({ email }) {
   }
 }
 
-export function resetPassword(token, { password }) {
+export function resetPassword(data) {
   return dispatch => {
-    return axios.post(`${API_URL}/auth/reset-password/${token}`, { password })
-      .then((response) => {
+    dispatch({ type: REQUEST_RESET_PASSWORD })
+    return axios.post(`${API_URL}/auth/reset-password`, data)
+      .then(response => {
         dispatch({
-          type: RESET_PASSWORD_REQUEST,
-          payload: response.data.message,
+          type: RESET_PASSWORD_SUCCESS,
+          payload: {
+            success: response.data.success
+          }
         })
-        // Redirect to login page on successful password reset
-        redirectToLogin()
       })
-      .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR)
+      .catch(error => {
+        var payload = { 
+          success: error.response.data.success,
+          error: error.response.data.error
+        }
+        console.log(payload)
+        dispatch({
+          type: RESET_PASSWORD_FAILURE,
+          payload
+        })
       })
   }
 }

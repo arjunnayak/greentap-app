@@ -1,101 +1,70 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
-import { resetPassword } from '../../actions/auth';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Field, reduxForm } from 'redux-form'
+import { resetPassword } from '../../actions/auth'
+import PropTypes from 'prop-types'
+import AuthForm from './auth_form'
+import { Header, Button, Form, Message, Segment } from 'semantic-ui-react'
 
 const form = reduxForm({
-  form: 'resetPassword',
-  validate,
-});
-
-function validate(formProps) {
-  const errors = {};
-
-  if (!formProps.password) {
-    errors.password = 'Please enter a new password';
-  }
-
-  if (!formProps.passwordConfirm) {
-    errors.passwordConfirm = 'Please confirm new password';
-  }
-
-  if (formProps.password !== formProps.passwordConfirm) {
-    errors.password = 'Passwords must match';
-  }
-
-  return errors;
-}
+  form: 'resetPassword'
+})
 
 const renderField = field => (
-  <div>
-    <input className="form-control" {...field.input} />
-    {field.touched && field.error && <div className="error">{field.error}</div>}
-  </div>
-);
+  <Form.Field>
+    <label>{field.label}</label>
+    <Form.Input type={field.type} {...field.input} />
+  </Form.Field>
+)
 
 class ResetPassword extends Component {
-  static contextTypes = {
-    router: PropTypes.object,
-  }
 
-  componentWillMount() {
-    if (this.props.authenticated) {
-      this.context.router.push('/dashboard');
-    }
-  }
-
-  componentWillUpdate(nextProps) {
-    if (nextProps.authenticated) {
-      this.context.router.push('/dashboard');
-    }
-  }
-
-  handleFormSubmit({ password }) {
-    const resetToken = this.props.params.resetToken;
-    this.props.resetPassword(resetToken, { password });
-  }
-
-  renderAlert() {
-    if (this.props.errorMessage) {
-      return (
-        <div className="alert alert-danger">
-          <strong>Oops!</strong> {this.props.errorMessage}
-        </div>
-      );
-    } else if (this.props.message) {
-      return (
-        <div className="alert alert-success">
-          <strong>Success!</strong> {this.props.message}
-        </div>
-      );
-    }
+  handleFormSubmit(formProps) {
+    // add token to request
+    const token = this.props.location.search.split('?token=')[1]
+    formProps.token = token
+    this.props.resetPassword(formProps)
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit } = this.props
 
     return (
-      <form onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
-        <fieldset className="form-group">
-          <label>New Password:</label>
-          <Field name="password" component={renderField} type="password" />
-        </fieldset>
+      <AuthForm>
+        <Header inverted size='huge'>Reset Password</Header>
+        <Form size='large' onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
+          <Segment>
+            <Field name="password" label="New Password" component={renderField} type="password" />
+            <Field name="confirmPassword" label="Confirm New Password" component={renderField} type="password" />
+            <Button primary fluid size='large'>Reset Password</Button>
+          </Segment>
+        </Form>
+        {this.renderResult()}
+      </AuthForm>
+    )
+  }
 
-        <fieldset className="form-group">
-          <label>Confirm New Password:</label>
-          <Field name="passwordConfirm" component={renderField} type="password" />
-        </fieldset>
-
-        {this.renderAlert()}
-        <button action="submit" className="btn btn-primary">Change Password</button>
-      </form>
-    );
+  renderResult() {
+    if(this.props.resetRequestSuccess != null || this.props.resetRequestSuccess != undefined) {
+      if(this.props.resetRequestSuccess === true) {
+        return ( <Message positive>Your password reset successfully.</Message> )
+      } else {
+        if(this.props.errorMessage !== undefined) {
+          return <Message negative>{this.props.errorMessage}</Message>
+        }
+        return ( <Message negative>There was an error with resetting your password.</Message> )
+      }
+    } else {
+      return null
+    }
   }
 }
 
 function mapStateToProps(state) {
-  return { errorMessage: state.auth.error, message: state.auth.resetMessage };
+  return {
+    resetRequestSuccess: state.auth.reset_request_success,
+    errorMessage: state.auth.error
+  }
 }
 
-export default connect(mapStateToProps, { resetPassword })(form(ResetPassword));
+export default connect(mapStateToProps, { resetPassword })(form(ResetPassword))

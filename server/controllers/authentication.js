@@ -3,6 +3,8 @@ const db = require('../config/db')
 const setUserInfo = require('../helpers').setUserInfo
 const createIdToken = require('../helpers').createIdToken
 const createAccessToken = require('../helpers').createAccessToken
+const sendEmail = require('../helpers').sendEmail
+const config = require('../app_config')
 
 const uuid = require('uuid/v4')
 
@@ -17,7 +19,7 @@ exports.login = (req, res, next) => {
     return res.status(422).json({ error: 'You must enter a password.' });
   }
 
-  const GET_USER = `SELECT id, email, first_name, last_name, business_type FROM public.user WHERE email = $1 and password = $2;`;
+  const GET_USER = 'SELECT id, email, first_name, last_name, business_type FROM public.user WHERE email = $1 and password = $2;'
   var user = null;
   db.task(t => {
     return t.one(GET_USER, [email, password])
@@ -74,7 +76,7 @@ exports.register = (req, res, next) => {
   } 
 
   const CREATE_USER = `INSERT INTO public.user(first_name, last_name, email, password, business_type) 
-    VALUES ($1, $2, $3, $4, $5) RETURNING id, first_name, last_name, email, business_type;`;
+    VALUES ($1, $2, $3, $4, $5) RETURNING id, first_name, last_name, email, business_type;`
   var user = null;
   db.task(t => {
     return t.one(CREATE_USER, [firstName, lastName, email, password, businessType])
@@ -88,7 +90,7 @@ exports.register = (req, res, next) => {
           const state = req.body.state
           const zip = req.body.zip
           const CREATE_BIZ = `INSERT INTO public.business(user_id, name, phone, address, city, state, zip) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name;`;
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name;`
           return t.one(CREATE_BIZ, [user.id, businessName, phone, address, city, state, zip])
         } else {
           return res.status(201).json({
@@ -112,10 +114,6 @@ exports.register = (req, res, next) => {
     });
 }
 
-// //= =======================================
-// // Forgot Password Route
-// //= =======================================
-
 exports.forgotPassword = function (req, res, next) {
   const email = req.body.email
 
@@ -126,20 +124,22 @@ exports.forgotPassword = function (req, res, next) {
     });
   }
 
-  const GET_USER = `SELECT email FROM public.user WHERE email = $1;`;
+  const GET_USER = 'SELECT email FROM public.user WHERE email = $1;'
   db.task(t => {
     return t.one(GET_USER, [email])
       .then(userEmail => {
-        const timestamp = new Date()
         const token = uuid()
-        console.log(`Creating password request for ${email} at ${timestamp}. Token=${token}`)
+        console.log(`Creating password request for ${email} with token=${token}`)
         const CREATE_PASSWORD_REQUEST = `INSERT INTO public.reset_password_request(email, token, timestamp)
-          VALUES ($1, $2, $3) RETURNING email;`
-        return t.one(CREATE_PASSWORD_REQUEST, [email, token, timestamp])
+          VALUES ($1, $2, now()) RETURNING email, token;`
+        return t.one(CREATE_PASSWORD_REQUEST, [email, token])
       });
-    }).then(user => {
+    }).then(resetRequest => {
+      const emailText = `Click this link to reset your password: http://localhost:3000/reset_password?token=${resetRequest.token}`
+      const subject = 'Reset Password Request'
+      sendEmail(resetRequest.email, subject, emailText)
       return res.status(201).json({
-        email: user.email,
+        email: resetRequest.email,
         success: true
       });
     }).catch(error => {
@@ -151,39 +151,56 @@ exports.forgotPassword = function (req, res, next) {
     });
 }
 
-// //= =======================================
-// // Reset Password Route
-// //= =======================================
+exports.resetPassword = function (req, res, next) {
+  const password = req.body.password
+  const confirmPassword = req.body.confirmPassword
+  const token = req.body.token
+  console.log(password, confirmPassword, token)
 
-exports.verifyToken = function (req, res, next) {
+  if (!password || !confirmPassword) {
+    return res.status(400).json({ 
+      success: false,
+      error: 'You must enter and confirm your password.' 
+    })
+  } else if(!token) {
+    return res.status(400).json({ 
+      success: false,
+      error: 'There was an error. Please try again.' 
+    })
+  } else if(password !== confirmPassword) {
+    return res.status(400).json({ 
+      success: false,
+      error: 'Your passwords do not match.' 
+    })
+  }
 
-  // TODO:use code below for reference when implementing this for postgres
-
-  // User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, resetUser) => {
-  //   // If query returned no results, token expired or was invalid. Return error.
-  //   if (!resetUser) {
-  //     res.status(422).json({ error: 'Your token has expired. Please attempt to reset your password again.' })
-  //   }
-
-  //     // Otherwise, save new password and clear resetToken from database
-  //   resetUser.password = req.body.password
-  //   resetUser.resetPasswordToken = undefined
-  //   resetUser.resetPasswordExpires = undefined
-
-  //   resetUser.save((err) => {
-  //     if (err) { return next(err) }
-
-  //       // If password change saved successfully, alert user via email
-  //     const message = {
-  //       subject: 'Password Changed',
-  //       text: 'You are receiving this email because you changed your password. \n\n' +
-  //         'If you did not request this change, please contact us immediately.'
-  //     }
-
-  //       // Otherwise, send user email confirmation of password change via Mailgun
-  //     mailgun.sendEmail(resetUser.email, message)
-
-  //     return res.status(200).json({ message: 'Password changed successfully. Please login with your new password.' })
-  //   })
-  // })
+  const GET_RESET_REQUEST = 'SELECT email, timestamp FROM public.reset_password_request WHERE token = $1;'
+  db.task(t => {
+    return t.one(GET_RESET_REQUEST, [token])
+      .then(result => {
+        const ts = new Date(result.timestamp)
+        const now = new Date()
+        console.log(ts, now)
+        const timeDiff = now.getTime() - ts.getTime()
+        if(timeDiff > config.reset_password_expiration) {
+          console.log('token request expired')
+          return Promise.reject('The request to reset your password has expired.')
+        }
+        const UPDATE_USER_PASSWORD = 'UPDATE public.user SET password = $1 where email = $2 RETURNING email;'
+        return t.one(UPDATE_USER_PASSWORD, [password, result.email])
+      })
+    }).then(result => {
+      const emailText = 'You are receiving this email because you changed your password.\nIf you did not request this change, please contact us immediately at team@greentap.io.'
+      const subject = 'Your password has been reset'   
+      sendEmail(result.email, subject, emailText)
+      return res.status(200).json({
+        success: true
+      })
+    }).catch(error => {
+      console.log('ERROR',error)
+      return res.status(500).json({
+        success: false,
+        error: error
+      })
+    })
 }

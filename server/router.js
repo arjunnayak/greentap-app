@@ -26,7 +26,7 @@ module.exports = function (app) {
   authRoutes.post('/register', AuthenticationController.register)
   authRoutes.post('/login', AuthenticationController.login)
   authRoutes.post('/forgot-password', AuthenticationController.forgotPassword)
-  authRoutes.post('/reset-password/:token', AuthenticationController.verifyToken)
+  authRoutes.post('/reset-password', AuthenticationController.resetPassword)
 
   // User routes
   userRoutes.get('/:userId', requireAuth, UserController.viewProfile)

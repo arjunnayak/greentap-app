@@ -8,7 +8,9 @@ export const REQUEST_AUTH = 'request_auth',
   REQUEST_FORGOT_PASSWORD = 'request_forgot_password',
   FORGOT_PASSWORD_SUCCESS = 'forgot_password_success',
   FORGOT_PASSWORD_FAILURE = 'forgot_password_failure',
-  RESET_PASSWORD_REQUEST = 'reset_password_request',
+  REQUEST_RESET_PASSWORD = 'request_reset_password',
+  RESET_PASSWORD_SUCCESS = 'reset_password_success',
+  RESET_PASSWORD_FAILURE = 'reset_password_failure',
   PROTECTED_TEST = 'protected_test';
 
 //= =====================
