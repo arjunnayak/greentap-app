@@ -1,17 +1,18 @@
 //= =====================
 // Auth Actions
 //= =====================
-export const REQUEST_AUTH = 'request_auth',
-  AUTH_USER = 'auth_user',
-  UNAUTH_USER = 'unauth_user',
-  AUTH_ERROR = 'auth_error',
-  REQUEST_FORGOT_PASSWORD = 'request_forgot_password',
+export const LOGIN_REQUEST = 'login_request',
+  LOGIN_SUCCESS = 'login_success',
+  LOGIN_FAILURE = 'login_failure',
+  LOGOUT_REQUEST = 'logout_request',
+  LOGOUT_SUCCESS = 'logout_success',
+  LOGOUT_FAILURE = 'logout_failure',
+  FORGOT_PASSWORD_REQUEST = 'forgot_password_request',
   FORGOT_PASSWORD_SUCCESS = 'forgot_password_success',
   FORGOT_PASSWORD_FAILURE = 'forgot_password_failure',
-  REQUEST_RESET_PASSWORD = 'request_reset_password',
+  RESET_PASSWORD_REQUEST = 'reset_password_request',
   RESET_PASSWORD_SUCCESS = 'reset_password_success',
-  RESET_PASSWORD_FAILURE = 'reset_password_failure',
-  PROTECTED_TEST = 'protected_test';
+  RESET_PASSWORD_FAILURE = 'reset_password_failure';
 
 //= =====================
 // Product Actions

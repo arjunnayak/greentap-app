@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { browserHistory } from 'react-router-dom'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
-import { AUTH_USER, AUTH_ERROR, UNAUTH_USER, REQUEST_FORGOT_PASSWORD, FORGOT_PASSWORD_SUCCESS, 
-FORGOT_PASSWORD_FAILURE, REQUEST_RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, 
-PROTECTED_TEST, CLEAR_PRODUCT, REQUEST_AUTH } from './types'
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, 
+  FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, 
+  RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, CLEAR_PRODUCT } from './types'
 
 //= ===============================
 // Authentication actions
@@ -12,7 +12,7 @@ PROTECTED_TEST, CLEAR_PRODUCT, REQUEST_AUTH } from './types'
 // TO-DO: Add expiration to cookie
 export function loginUser({ email, password }) {
   return dispatch => {
-    dispatch({ type: REQUEST_AUTH })
+    dispatch({ type: LOGIN_REQUEST })
     return axios.post(`${API_URL}/auth/login`, { email, password })
       .then((response) => {
         var user = response.data.user
@@ -22,12 +22,12 @@ export function loginUser({ email, password }) {
         localStorage.setItem('id_token', response.data.id_token)
         localStorage.setItem('access_token', response.data.access_token)
         dispatch({ 
-          type: AUTH_USER,
+          type: LOGIN_SUCCESS,
           payload: user
         })
       })
       .catch((error) => {    
-        errorHandler(dispatch, error.response, AUTH_ERROR)
+        errorHandler(dispatch, error.response, LOGIN_FAILURE)
       })
   }
 }
@@ -42,12 +42,12 @@ export function registerUser(data) {
         }
         localStorage.setItem('token', response.data.token)
         dispatch({ 
-          type: AUTH_USER,
+          type: LOGIN_SUCCESS,
           payload: user
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, AUTH_ERROR)
+        errorHandler(dispatch, error.response, LOGIN_FAILURE)
       })
   }
 }
@@ -57,7 +57,7 @@ export function logoutUser(error) {
     localStorage.removeItem('id_token')
     localStorage.removeItem('access_token')
     dispatch({ type: CLEAR_PRODUCT })
-    dispatch({ type: UNAUTH_USER, payload: error || '' })
+    dispatch({ type: LOGOUT_SUCCESS, payload: error || '' })
     redirectToLogin()
   }
 }
@@ -71,7 +71,7 @@ function redirectToLogin() {
 // TODO: only allow link to be consumed once, so there should be a column for 'used' boolean
 export function getForgotPasswordToken({ email }) {
   return dispatch => {
-    dispatch({ type: REQUEST_FORGOT_PASSWORD })
+    dispatch({ type: FORGOT_PASSWORD_REQUEST })
     return axios.post(`${API_URL}/auth/forgot-password`, { email })
       .then(response => {
         dispatch({
@@ -101,7 +101,7 @@ export function getForgotPasswordToken({ email }) {
 
 export function resetPassword(data) {
   return dispatch => {
-    dispatch({ type: REQUEST_RESET_PASSWORD })
+    dispatch({ type: RESET_PASSWORD_REQUEST })
     return axios.post(`${API_URL}/auth/reset-password`, data)
       .then(response => {
         dispatch({

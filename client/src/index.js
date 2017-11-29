@@ -4,7 +4,6 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import reduxThunk from 'redux-thunk'
 import rootReducer from './reducers/index'
-import { AUTH_USER } from './actions/types'
 import GreentapRouter from './routes'
 
 // Import stylesheets
