@@ -135,7 +135,7 @@ exports.forgotPassword = function (req, res, next) {
         return t.one(CREATE_PASSWORD_REQUEST, [email, token])
       });
     }).then(resetRequest => {
-      const emailText = `Click this link to reset your password: http://localhost:3000/reset_password?token=${resetRequest.token}`
+      const emailText = `Click this link to reset your password: http://localhost:3000/reset-password?token=${resetRequest.token}`
       const subject = 'Reset Password Request'
       sendEmail(resetRequest.email, subject, emailText)
       return res.status(201).json({
