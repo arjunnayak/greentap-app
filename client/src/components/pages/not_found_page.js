@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import Header from '../template/header';
+import React, { Component } from 'react'
+import Header from '../template/header'
+import { Grid } from 'semantic-ui-react'
 
 class NotFoundPage extends Component {
 
@@ -7,11 +8,17 @@ class NotFoundPage extends Component {
     return (
       <div className="container">
         <Header />
-        <h1>404</h1>
-        <p>Sorry, we couldn't find that page.</p>
+        <Grid>
+          <Grid.Row>
+            <Grid.Column id="content">
+              <h1>404</h1>
+              <p>Sorry, we couldn't find that page.</p>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     );
   }
 }
 
-export default NotFoundPage;
+export default NotFoundPage
