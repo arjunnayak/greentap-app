@@ -13,9 +13,12 @@ export function errorHandler(dispatch, error, type) {
     return
   }
   console.log('errorHandler: ', error);
-  let errorMessage = error.data.error ? error.data.error : error;
+  let errorMessage = null
+  if(error.data.error) errorMessage = error.data.error
+  else if(error.data) errorMessage = error.data
+  else errorMessage = error;
 
-   // NOT AUTHENTICATED ERROR
+  // NOT AUTHENTICATED ERROR
   if (error.status === 401) {
     errorMessage = 'You are not authorized to do this.';
     dispatch(logoutUser(errorMessage));
