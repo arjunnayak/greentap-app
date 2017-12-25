@@ -134,7 +134,6 @@ const selector = formValueSelector(formName)
 function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
-    authenticated: state.auth.authenticated,
     user: state.auth.user,
     businessTypeValue: selector(state, 'businessType')
   }

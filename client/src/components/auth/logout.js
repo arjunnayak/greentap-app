@@ -1,16 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import * as actions from '../../actions/auth';
-import { Redirect } from 'react-router-dom';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { logoutUser } from '../../actions/auth'
+import { Redirect } from 'react-router-dom'
 
 class Logout extends Component {
   componentWillMount() {
-    this.props.logoutUser();
+    this.props.logoutUser().then(() => {
+      this.props.history.push('/login')
+    })
   }
 
   render() {
-    return <Redirect to="/login"/>
+    return null
   }
 }
 
-export default connect(null, actions)(Logout);
+export default connect(null, { logoutUser })(Logout)

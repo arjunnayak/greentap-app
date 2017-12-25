@@ -4,9 +4,7 @@ import { GET_PRODUCTS, GET_PRODUCT, ADD_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT, P
 
 export function getProducts(business_id) {
   return dispatch => {
-    return axios.get(`${API_URL}/products?business_id=${business_id}`, {
-      headers: { Authorization: `Bearer ${localStorage.access_token}` }
-    })
+    return axios.get(`${API_URL}/products?business_id=${business_id}`, { withCredentials: true })
       .then((response) => {
         dispatch({
           type: GET_PRODUCTS,
@@ -21,9 +19,7 @@ export function getProducts(business_id) {
 
 export function getProduct(productId) {
   return dispatch => {
-    return axios.get(`${API_URL}/products/${productId}`, {
-      headers: { Authorization: `Bearer ${localStorage.access_token}` }
-    })
+    return axios.get(`${API_URL}/products/${productId}`, { withCredentials: true })
       .then((response) => {
         console.log(response)
         dispatch({
@@ -39,12 +35,7 @@ export function getProduct(productId) {
 
 export function addProduct(product, business_id) {
   return dispatch => {
-    return axios.post(`${API_URL}/products/add`, {
-      business_id,
-      product
-    }, {
-      headers: { Authorization: `Bearer ${localStorage.access_token}` }
-    })
+    return axios.post(`${API_URL}/products/add`, { business_id, product}, { withCredentials: true })
       .then((response) => {
         console.log('add product action response', response)
         dispatch({
@@ -60,9 +51,7 @@ export function addProduct(product, business_id) {
 
 export function editProduct(product) {
   return dispatch => {
-    return axios.put(`${API_URL}/products/${product.id}`, product, {
-      headers: { Authorization: `Bearer ${localStorage.access_token}` }
-    })
+    return axios.put(`${API_URL}/products/${product.id}`, product, { withCredentials: true })
       .then((response) => {
         console.log('edit product action response',response)
         dispatch({
@@ -78,9 +67,7 @@ export function editProduct(product) {
 
 export function deleteProduct(product) {
   return dispatch => {
-    return axios.delete(`${API_URL}/products/${product.id}`, {
-      headers: { Authorization: `Bearer ${localStorage.access_token}` }
-    })
+    return axios.delete(`${API_URL}/products/${product.id}`, { withCredentials: true })
       .then((response) => {
         console.log('delete product action response', response)
         dispatch({

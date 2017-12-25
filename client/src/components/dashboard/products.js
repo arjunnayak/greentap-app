@@ -21,7 +21,6 @@ class Products extends Component {
   }
 
   render() {
-    console.log('products render: products ',this.props.products)
     return (
       <Dashboard header="Products">
         <Grid.Row>
@@ -70,8 +69,7 @@ class Products extends Component {
 }
 
 function mapStateToProps(state) {
-  return { 
-    authenticated: state.auth.authenticated,
+  return {
     user: state.auth.user,
     products: state.products.products
   }

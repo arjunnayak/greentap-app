@@ -1,5 +1,4 @@
 const db = require('../config/db')
-var jwt = require('express-jwt')
 const aws = require('aws-sdk')
 const sharp = require('sharp')
 

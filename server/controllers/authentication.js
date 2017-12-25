@@ -8,48 +8,6 @@ const config = require('../app_config')
 
 const uuid = require('uuid/v4')
 
-exports.login = (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-
-  if (!email) {
-    return res.status(422).json({ error: 'You must enter an email address.' });
-  }
-  if (!password) {
-    return res.status(422).json({ error: 'You must enter a password.' });
-  }
-
-  const GET_USER = 'SELECT id, email, first_name, last_name, business_type FROM public.user WHERE email = $1 and password = $2;'
-  var user = null;
-  db.task(t => {
-    return t.one(GET_USER, [email, password])
-      .then(authedUser => {
-        user = authedUser
-        if(user.business_type === "brand") {
-          const GET_BUSINESS = 'SELECT * FROM public.business WHERE user_id = $1';
-          return t.one(GET_BUSINESS, [user.id])
-        } else {
-          return res.status(200).json({
-            user,
-            id_token: createIdToken(user),
-            access_token: createAccessToken()
-          });
-        }
-      });
-  }).then(business => {
-      return res.status(200).json({
-        user,
-        business,
-        id_token: createIdToken(user),
-        access_token: createAccessToken()
-      });
-    })
-    .catch(error => {
-      console.log(error)
-      return res.status(404).json({ error: 'Incorrect login credentials' })                    
-    });
-} 
-
 exports.register = (req, res, next) => {
   // Check for registration errors
   const email = req.body.email
@@ -81,7 +39,8 @@ exports.register = (req, res, next) => {
   db.task(t => {
     return t.one(CREATE_USER, [firstName, lastName, email, password, businessType])
       .then(createdUser => {
-        user = createdUser;
+        user = createdUser
+        req.session.user = user
         if(user.business_type === "brand") {
           const businessName = req.body.businessName
           const phone = req.body.phone
@@ -92,18 +51,16 @@ exports.register = (req, res, next) => {
           const CREATE_BIZ = `INSERT INTO public.business(user_id, name, phone, address, city, state, zip) 
             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name;`
           return t.one(CREATE_BIZ, [user.id, businessName, phone, address, city, state, zip])
-        } else {
+        } else {   
           return res.status(201).json({
-            user,
-            token: generateToken(user)
+            user
           });
         }
       });
   }).then(business => {
+      user.business = business
       return res.status(201).json({
-        user,
-        business,
-        token: generateToken(user)
+        user
       });
     })
     .catch(error => {
@@ -112,6 +69,20 @@ exports.register = (req, res, next) => {
       }
       return res.status(500).json({ error: 'There was an error creating your account.' })                    
     });
+}
+
+exports.logout = (req, res, next) => {
+  req.logout()
+  req.session.destroy(function (err) {
+    if (!err) {
+      //setting session to null will trigger unset: destroy functionality
+      req.session = null
+      res.clearCookie('connect.sid', { path: '/' });
+      // res.cookie("connect.sid", "", { expires: new Date() });
+      return res.status(200).end()
+    }
+    return res.status(500).json({error:'Could not destory session'})
+  });
 }
 
 exports.forgotPassword = function (req, res, next) {

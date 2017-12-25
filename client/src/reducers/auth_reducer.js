@@ -6,13 +6,13 @@ const INITIAL_STATE = { is_requesting: false, error: '', user: undefined, authen
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case LOGIN_REQUEST:
-      return { ...state, is_requesting: true, error: '', authenticated: false };
+      return { ...state, is_requesting: true, error: '', authenticated: false, user: undefined };
     case LOGIN_SUCCESS:
       return { ...state, is_requesting: false, error: '', authenticated: true, user: action.payload };
     case LOGIN_FAILURE:
       return { ...state, is_requesting: false, authenticated: false, error: action.payload };
     case LOGOUT_SUCCESS:
-      return { ...state, is_requesting: false, authenticated: false, error: action.payload };
+      return { ...state, is_requesting: false, authenticated: false, error: action.payload, user: undefined };
     case FORGOT_PASSWORD_REQUEST:
       return { ...state, is_requesting: true, email: null, reset_request_success: null, error: '' };
     case FORGOT_PASSWORD_SUCCESS:

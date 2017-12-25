@@ -27,4 +27,4 @@ cd server && npm run server
 ```
 Visit UI at localhost:3000
 
-Make api calls to localhost:3001 (you'll need an JWT token)
+Make api calls to localhost:3001 (you'll need a session in the form of a Cookie parameter)

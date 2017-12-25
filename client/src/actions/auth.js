@@ -8,19 +8,17 @@ import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, F
 //= ===============================
 // Authentication actions
 //= ===============================
-
-// TO-DO: Add expiration to cookie
+//NOTE: withCredentials must be used when expected to send OR receive a cookie, 
+//...hence why it is necessary to use login request..since it is expecting to receive a cookie
 export function loginUser({ email, password }) {
   return dispatch => {
     dispatch({ type: LOGIN_REQUEST })
-    return axios.post(`${API_URL}/auth/login`, { email, password })
+    return axios.post(`${API_URL}/auth/login`, { email, password }, { withCredentials: true })
       .then((response) => {
         var user = response.data.user
         if(response.data.business) {
           user.business = response.data.business
         }
-        localStorage.setItem('id_token', response.data.id_token)
-        localStorage.setItem('access_token', response.data.access_token)
         dispatch({ 
           type: LOGIN_SUCCESS,
           payload: user
@@ -40,7 +38,6 @@ export function registerUser(data) {
         if(response.data.business) {
           user.business = response.data.business
         }
-        localStorage.setItem('token', response.data.token)
         dispatch({ 
           type: LOGIN_SUCCESS,
           payload: user
@@ -54,18 +51,23 @@ export function registerUser(data) {
 
 export function logoutUser(error) {
   return dispatch => {
-    localStorage.removeItem('id_token')
-    localStorage.removeItem('access_token')
-    dispatch({ type: CLEAR_PRODUCT })
-    dispatch({ type: LOGOUT_SUCCESS, payload: error || '' })
-    redirectToLogin()
+    return axios.get(`${API_URL}/auth/logout`)
+      .then((response) => {
+        dispatch({ type: CLEAR_PRODUCT })
+        dispatch({ type: LOGOUT_SUCCESS, payload: error || '' })
+        //we expect that the caller of logoutUser will decide whether or not to redirect to login
+        //if you do want to redirect, use this.props.history.push in a react component 
+        //OR
+        //use the redirectToLogin() helper function for a full page reload
+        // redirectToLogin()
+      })
+    }
   }
-}
-
-function redirectToLogin() {
-  return dispatch => {
-    window.location.href = `${CLIENT_ROOT_URL}/login`
-  }
+  
+//last resort helper function when you want to additionally redirect to login page
+export function redirectToLogin() {
+  console.log("redirecToLogin called...you should be using this.props.history.push in a react component instead if possible")
+  window.location.href = `${CLIENT_ROOT_URL}/login`
 }
 
 // TODO: only allow link to be consumed once, so there should be a column for 'used' boolean

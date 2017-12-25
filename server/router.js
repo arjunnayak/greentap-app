@@ -3,18 +3,18 @@ const UserController = require('./controllers/user')
 const ProductController = require('./controllers/product')
 const BrandController = require('./controllers/brand')
 const express = require('express')
-const passport = require('passport')
-const passportService = require('./config/passport')
-
-// const jwt = require('jsonwebtoken')
-const jwt = require('express-jwt');
 const config = require('./app_config')
 
 // Middleware to require login/auth
-const requireAuth = passport.authenticate('jwt', { session: false })
-const requireLogin = passport.authenticate('local', { session: false })
+function requireAuth(req, res, next) {
+  console.log('isAuthenticated?', req.isAuthenticated())
+  // if user is authenticated in the session, carry on 
+  if (req.isAuthenticated()) return next();
 
-module.exports = function (app) {
+  res.status(401).end()
+}
+
+module.exports = function (app, passport) {
   // Initializing route groups
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
@@ -24,21 +24,35 @@ module.exports = function (app) {
 
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
-  authRoutes.post('/login', AuthenticationController.login)
+  // authRoutes.post('/login', AuthenticationController.login)
+  authRoutes.post('/login', (req, res, next) => {
+    passport.authenticate('local-login', (err, user, info) => {
+      if (err) return next(err) // will generate a 500 error
+      if (!user) return res.status(404).json({ error: 'Incorrect login credentials' })
+      
+      req.logIn(user, loginErr => {
+        if (loginErr) return res.status(404).json({ error: 'Incorrect login credentials' })
+        console.log('req.login user:',user)
+        return res.status(200).json({
+          user
+        })
+      })
+    })(req, res, next)
+  })
+  authRoutes.get('/logout', AuthenticationController.logout)
   authRoutes.post('/forgot-password', AuthenticationController.forgotPassword)
   authRoutes.post('/reset-password', AuthenticationController.resetPassword)
 
   // User routes
   userRoutes.get('/:userId', requireAuth, UserController.viewProfile)
 
-  // Product routes (jwt required)
-  productRoutes.use(jwt({secret: config.jwt_secret}))
-  productRoutes.get('/imageUploadSign', ProductController.getImageUploadSign)
-  productRoutes.get('/', ProductController.getProducts)
-  productRoutes.get('/:id', ProductController.getProduct)
-  productRoutes.post('/add', ProductController.addProduct)
-  productRoutes.put('/:id', ProductController.updateProduct)
-  productRoutes.delete('/:id', ProductController.deleteProduct)
+  // Product routes (session required)
+  productRoutes.get('/imageUploadSign', requireAuth, ProductController.getImageUploadSign)
+  productRoutes.get('/', requireAuth, ProductController.getProducts)
+  productRoutes.get('/:id', requireAuth, ProductController.getProduct)
+  productRoutes.post('/add', requireAuth, ProductController.addProduct)
+  productRoutes.put('/:id', requireAuth, ProductController.updateProduct)
+  productRoutes.delete('/:id', requireAuth, ProductController.deleteProduct)
 
   // Brand routes
   brandRoutes.get('/', BrandController.getBrands)
