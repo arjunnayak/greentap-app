@@ -1,7 +1,7 @@
 import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, 
   FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE } from '../actions/types'
 
-const INITIAL_STATE = { is_requesting: false, error: '', user: undefined, authenticated: localStorage.getItem('id_token') ? true: false };
+const INITIAL_STATE = { is_requesting: false, error: '', user: undefined, authenticated: false };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
