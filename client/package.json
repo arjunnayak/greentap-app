@@ -21,14 +21,14 @@
     "semantic-ui-react": "^0.76.0"
   },
   "devDependencies": {
-    "react-scripts": "0.9.5",
-    "test": "jest",
-    "test:watch": "npm test -- --watch"
+    "react-scripts": "0.9.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test:jest": "jest",
+    "test:jest-watch": "npm test -- --watch",
     "eject": "react-scripts eject"
   }
 }
