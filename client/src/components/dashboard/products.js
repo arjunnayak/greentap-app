@@ -17,7 +17,8 @@ const renderField = field => (
 class Products extends Component {
 
   componentDidMount() {
-    this.props.getProducts(this.props.user.business.id)
+    let businessId = this.props.user ? this.props.user.business.id : null
+    this.props.getProducts(businessId)
   }
 
   render() {
