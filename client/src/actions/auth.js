@@ -57,16 +57,15 @@ export function logoutUser(error) {
         dispatch({ type: LOGOUT_SUCCESS, payload: error || '' })
         //we expect that the caller of logoutUser will decide whether or not to redirect to login
         //if you do want to redirect, use this.props.history.push in a react component 
-        //OR
+        // OR
         //use the redirectToLogin() helper function for a full page reload
-        // redirectToLogin()
       })
     }
   }
   
 //last resort helper function when you want to additionally redirect to login page
 export function redirectToLogin() {
-  console.log("redirecToLogin called...you should be using this.props.history.push in a react component instead if possible")
+  console.log("redirectToLogin called...you should be using this.props.history.push in a react component instead if possible")
   window.location.href = `${CLIENT_ROOT_URL}/login`
 }
 
