@@ -11,10 +11,11 @@ const sessionSecret = require('./app_config').session_secret
 
 var app = express()
 
-// app.use(express.static(__dirname + '/public'))                 // set the static files location /public/img will be /img for users
-app.use(logger('dev'))                                         // log every request to the console
-app.use(bodyParser.urlencoded({ extended: 'true' }))            // parse application/x-www-form-urlencoded
-app.use(bodyParser.json({ limit: '50mb'}))                                   // parse application/json
+// app.use(express.static(__dirname + '/public')) // set the static files location /public/img will be /img for users
+app.use(logger('dev'))
+app.use(bodyParser.urlencoded({ extended: 'true' }))
+//allow 50mb body size for sending uploaded images in base64 to server
+app.use(bodyParser.json({ limit: '50mb'}))
 app.use(helmet())
 
 // Enable CORS from client-side
