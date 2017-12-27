@@ -3,7 +3,8 @@ import { browserHistory } from 'react-router-dom'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, 
   FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, 
-  RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, CLEAR_PRODUCT } from './types'
+  RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, CLEAR_PRODUCT,
+  REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_FAILURE } from './types'
 
 //= ===============================
 // Authentication actions
@@ -32,6 +33,7 @@ export function loginUser({ email, password }) {
 
 export function registerUser(data) {
   return dispatch => {
+    dispatch({ type: REGISTER_REQUEST })
     return axios.post(`${API_URL}/auth/register`, data)
       .then((response) => {
         var user = response.data.user
@@ -39,12 +41,12 @@ export function registerUser(data) {
           user.business = response.data.business
         }
         dispatch({ 
-          type: LOGIN_SUCCESS,
+          type: REGISTER_SUCCESS,
           payload: user
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, LOGIN_FAILURE)
+        errorHandler(dispatch, error.response, REGISTER_FAILURE)
       })
   }
 }

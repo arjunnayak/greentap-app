@@ -1,5 +1,6 @@
 import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, 
-  FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE } from '../actions/types'
+  FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE,
+  REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_FAILURE } from '../actions/types'
 
 const INITIAL_STATE = { is_requesting: false, error: '', user: undefined, authenticated: false };
 
@@ -13,6 +14,12 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, is_requesting: false, authenticated: false, error: action.payload };
     case LOGOUT_SUCCESS:
       return { ...state, is_requesting: false, authenticated: false, error: action.payload, user: undefined };
+    case REGISTER_REQUEST:
+      return { ...state, is_requesting: true, error: '', authenticated: false, user: undefined };
+    case REGISTER_SUCCESS:
+      return { ...state, is_requesting: false, error: '', authenticated: true, user: action.payload };
+    case REGISTER_FAILURE:
+      return { ...state, is_requesting: false, authenticated: false, error: action.payload };
     case FORGOT_PASSWORD_REQUEST:
       return { ...state, is_requesting: true, email: null, reset_request_success: null, error: '' };
     case FORGOT_PASSWORD_SUCCESS:

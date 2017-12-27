@@ -16,11 +16,11 @@ const stateOptions = [
 ]
 
 const businessTypeOptions = [
-  { text: 'Retailer', value: 'Retailer' },
-  { text: 'Brand', value: 'Brand' },
-  { text: 'Delivery Service', value: 'Delivery Service' },
-  { text: 'Distributor', value: 'Distributor' },
-  { text: 'Other', value: 'Other' }
+  { text: 'Retailer', value: 'retailer' },
+  { text: 'Brand', value: 'brand' },
+  { text: 'Delivery Service', value: 'delivery service' },
+  { text: 'Distributor', value: 'distributor' },
+  { text: 'Other', value: 'other' }
 ]
 
 const formName = 'register'
@@ -65,10 +65,10 @@ class Register extends Component {
     this.props.registerUser(formProps)
       .then(() => {
         if (this.props.authenticated) {
-          if (this.props.user.business) {
+          if (this.props.user.business_type === "brand") {
             this.props.history.push("/dashboard")
           } else {
-            this.props.history.push("/")
+            this.props.history.push("/marketplace")
           }
         }
       })
@@ -101,7 +101,7 @@ class Register extends Component {
             <Field name="businessType" label="What type of business are you?" component={renderField}
               type="select" options={businessTypeOptions} onSelectChange={this.handleSelectChange} />
             {
-              businessTypeValue === "Brand" ? (
+              businessTypeValue === "brand" ? (
                 <div>
                   <Field name="businessName" label="Brand Name" component={renderField} type="text" />
                   <Field name="phone" label="Phone" component={renderField} type="text" />
@@ -123,7 +123,7 @@ class Register extends Component {
   handleSelectChange(e, res) {
     const { name, value } = res
     this.props.change(name, value)
-    if(value === "Brand") {
+    if(value === "brand") {
       window.scrollTo(0, document.body.scrollHeight);
     }
   }
@@ -133,6 +133,7 @@ const selector = formValueSelector(formName)
 
 function mapStateToProps(state) {
   return {
+    authenticated: state.auth.authenticated,
     errorMessage: state.auth.error,
     user: state.auth.user,
     businessTypeValue: selector(state, 'businessType')
