@@ -11,6 +11,19 @@ const sessionSecret = require('./app_config').session_secret
 
 var app = express()
 
+if(process.env.NODE_ENV != "production") {
+  const db = require('./config/db')
+  console.log('testing db connection...')
+  //test db
+  db.any('SELECT 1 FROM public.business;')
+  .then(function(data) {
+    console.log(data)
+  })
+  .catch(function(error) {
+    console.log(error)
+  });
+}
+
 // app.use(express.static(__dirname + '/public')) // set the static files location /public/img will be /img for users
 app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: 'true' }))
