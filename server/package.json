@@ -23,13 +23,13 @@
     "helmet": "^3.9.0",
     "moment": "^2.13.0",
     "morgan": "1.1.1",
-    "node-uuid": "^1.4.8",
     "nodemailer": "^4.4.0",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "pg": "^7.3.0",
     "pg-promise": "^6.5.3",
-    "sharp": "^0.18.4"
+    "sharp": "^0.18.4",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.0",
