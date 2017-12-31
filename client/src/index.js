@@ -10,9 +10,14 @@ import GreentapRouter from './routes'
 import 'semantic-ui-css/semantic.min.css'
 import './styles/base.css'
 
-const store = createStore(rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-  applyMiddleware(reduxThunk));
+let store = null
+if(process.env.REACT_APP_ENV === "production") {
+  store = createStore(rootReducer, applyMiddleware(reduxThunk));
+} else {
+  store = createStore(rootReducer, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    applyMiddleware(reduxThunk));
+}
 
 ReactDOM.render(
   <Provider store={store}>
