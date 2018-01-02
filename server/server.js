@@ -3,6 +3,7 @@ const session = require('express-session')
 const logger = require('morgan')
 const router = require('./router')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const helmet = require('helmet')
 var RedisStore = require('connect-redis')(session);
@@ -29,6 +30,7 @@ app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 //allow 50mb body size for sending uploaded images in base64 to server
 app.use(bodyParser.json({ limit: '50mb'}))
+app.use(cookieParser(sessionSecret, null))
 app.use(helmet())
 
 // Enable CORS from client-side
