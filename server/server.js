@@ -1,3 +1,5 @@
+//pulls environment variables from .env and populates process.env. This should go first
+require('dotenv').config()
 const express = require('express')
 const session = require('express-session')
 const logger = require('morgan')
