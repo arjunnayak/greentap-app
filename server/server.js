@@ -1,5 +1,9 @@
-//pulls environment variables from .env and populates process.env. This should go first
-require('dotenv').config()
+//pulls environment variables from .env and populates process.env. This should go first before any other server code
+if(!process.env.ENV_PATH || process.env.ENV_PATH === "") {
+  console.log("ENV_PATH environment variable not set..exiting")
+  process.exit(1)
+}
+const env_config = require('dotenv').config({path: process.env.ENV_PATH})
 const express = require('express')
 const session = require('express-session')
 const logger = require('morgan')

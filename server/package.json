@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon server.js",
+    "server": "ENV_PATH=./.env.dev nodemon server.js",
+    "server:development": "ENV_PATH=./.env.dev nodemon server.js",
+    "server:production": "ENV_PATH=./.env node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
