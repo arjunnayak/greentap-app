@@ -7,8 +7,9 @@ exports.getProducts = (req, res, next) => {
 
   if (!business_id) {
     return res.status(400).json({ error: 'Must provide business id.' });
+  } else if(req.user.business.id != business_id) {
+    return res.status(401).end();
   }
-
   const GET_PRODUCTS = 'SELECT * FROM public.product WHERE business_id=$1;';
   db.query(GET_PRODUCTS, [business_id])
     .then(products => {
@@ -22,14 +23,19 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const id = req.params.id;
-
+  const user_business_id = req.user.business.id
   if (!id) {
     return res.status(400).json({ error: 'Must provide product id.' });
+  } else if(!user_business_id) {
+    return res.status(500).json({ error: 'User business id not found.' });
   }
 
-  const GET_PRODUCT = 'SELECT * FROM public.product WHERE id = $1;';
+  const GET_PRODUCT = 'SELECT * FROM public.product WHERE id=$1;';
   db.one(GET_PRODUCT, [id])
     .then(product => {
+      if(product.business_id != user_business_id) {
+        return res.status(401).end();
+      }
       return res.status(200).json({ product });
     })
     .catch(error => {
@@ -102,8 +108,14 @@ exports.addProduct = (req, res, next) => {
   const image = req.body.product.image;
   const business_id = req.body.business_id;
 
-  if (!business_id || !name || !desc) {
-    return res.status(400).json({ error: 'Must provide all parameters (business_id, name, desc).' });
+  if (!business_id) {
+    return res.status(400).json({ error: 'Must provide a business id.' });
+  } else if(!name) {
+    return res.status(400).json({ error: 'Must provide a name.' });
+  } else if(!desc) {
+    return res.status(400).json({ error: 'Must provide a description.' });
+  } else if(req.user.business.id != business_id) {
+    return res.status(401).end()
   }
 
   optimizeAndStoreImageInS3(image)
@@ -129,16 +141,22 @@ exports.updateProduct = (req, res, next) => {
   const name = req.body.name;
   const description = req.body.description;
   const image = req.body.image;
+  const business_id = req.body.business_id;
   
-  if (!id | !name || !description) {
-    console.log('error for not having params')
-    return res.status(400).json({ error: 'Must provide all parameters to edit a product.' });
+  if (!business_id) {
+    return res.status(400).json({ error: 'Must provide a business id.' });
+  } else if(!name) {
+    return res.status(400).json({ error: 'Must provide a name.' });
+  } else if(!desc) {
+    return res.status(400).json({ error: 'Must provide a description.' });
+  } else if(req.user.business.id != business_id) {
+    return res.status(401).end()
   }
 
-  const UPDATE_PRODUCT = 'UPDATE public.product SET name=$1, description=$2, image=$3 WHERE id=$4 RETURNING id, name, description, image;';
-  //if there already is an image in s3, dont store
+  const UPDATE_PRODUCT = 'UPDATE public.product SET name=$1, description=$2, image=$3 WHERE id=$4 AND business_id=$5 RETURNING id, name, description, image;';
+  //if there already is an image in s3, there is no need to optimize and store image
   if(typeof image === 'string' || image instanceof String) {
-    db.one(UPDATE_PRODUCT, [name, description, image, id])
+    db.one(UPDATE_PRODUCT, [name, description, image, id, business_id])
     .then((product) => {
       return res.status(200).json({ product });
     })
@@ -150,7 +168,7 @@ exports.updateProduct = (req, res, next) => {
     optimizeAndStoreImageInS3(image)
       .then(imageLink => {
         console.log("updating with new image link", imageLink)
-        db.one(UPDATE_PRODUCT, [name, description, imageLink, id])
+        db.one(UPDATE_PRODUCT, [name, description, imageLink, id, business_id])
           .then((product) => {
             return res.status(200).json({ product });
           })
@@ -168,17 +186,35 @@ exports.updateProduct = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
   const id = req.params.id;
+  const user_business_id = req.user.business.id
+
   if (!id) {
-    return res.status(400).json({ error: 'Must provide id.' });
+    return res.status(400).json({ error: 'Must provide an id.' });
+  } else if(!user_business_id) {
+    return res.status(500).json({ error: 'User business id not found.' });
   }
 
-  const DELETE_PRODUCT = 'DELETE FROM public.product WHERE id=$1;';
-  db.none(DELETE_PRODUCT, [id])
-    .then(() => {
-      console.log('got to successful product delete')
-      return res.status(200).json({});
+  const GET_PRODUCT = 'SELECT * FROM public.product WHERE id = $1;';
+  db.one(GET_PRODUCT, [id])
+    .then(product => {
+      if(product.business_id != user_business_id) {
+        console.log('deleteProduct business ids dont match')
+        return res.status(401).end();
+      }
+      const DELETE_PRODUCT = 'DELETE FROM public.product WHERE id=$1 and business_id = $2 RETURNING *;';
+      db.any(DELETE_PRODUCT, [id, user_business_id])
+        .then((deletedProduct) => {
+          if(deletedProduct == []) {
+            return res.status(404).end();
+          }
+          return res.status(200).json({ deletedProduct: deletedProduct[0] });
+        })
+        .catch(error => {
+          return res.status(500).end();
+        });
     })
     .catch(error => {
-      return res.status(500).json({ error: "Error deleting product" });
+      return res.status(404).end();
     });
+
 }

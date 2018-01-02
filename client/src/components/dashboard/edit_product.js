@@ -24,7 +24,8 @@ class EditProduct extends Component {
       id: '',
       name: '',
       description: '',
-      image: ''
+      image: '',
+      business_id: null
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -40,7 +41,9 @@ class EditProduct extends Component {
         id: this.props.product.id,
         name: this.props.product.name,
         description: this.props.product.description,
-        image: this.props.product.image
+        image: this.props.product.image,
+        //grab from user state, not the product as it will be checked that the user owns the product
+        business_id: this.props.user.business.id
       })
     })
   }
@@ -98,7 +101,8 @@ class EditProduct extends Component {
       id: this.state.id,
       name: this.state.name,
       description: this.state.description,
-      image: newImage || this.state.image
+      image: newImage || this.state.image,
+      business_id: this.state.business_id
     }
     this.props.editProduct(editedProduct)
       .then(() => {
@@ -116,6 +120,7 @@ const form = reduxForm({
 
 function mapStateToProps(state) {
   return {
+    user: state.auth.user,
     product: state.products.product,
     errorMessage: state.products.error
   }
