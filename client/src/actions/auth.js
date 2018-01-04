@@ -80,13 +80,15 @@ export function getForgotPasswordToken({ email }) {
         dispatch({
           type: FORGOT_PASSWORD_SUCCESS,
           payload: {
-            email: response.data.email,
-            success: response.data.success
+            email: response.data.email
           }
         })
       })
       .catch(error => {
-        var payload = { success: error.response.data.success }
+        var payload = {}
+        if(error.response.status === 404) {
+          payload.email = error.response.data.email
+        }
         if(error.response.data.error) {
           payload.error = error.response.data.error
         } else if(error.response.data.email){
@@ -107,19 +109,12 @@ export function resetPassword(data) {
     dispatch({ type: RESET_PASSWORD_REQUEST })
     return axios.post(`${API_URL}/auth/reset-password`, data)
       .then(response => {
-        dispatch({
-          type: RESET_PASSWORD_SUCCESS,
-          payload: {
-            success: response.data.success
-          }
-        })
+        dispatch({ type: RESET_PASSWORD_SUCCESS })
       })
       .catch(error => {
-        var payload = { 
-          success: error.response.data.success,
+        var payload = {
           error: error.response.data.error
         }
-        console.log(payload)
         dispatch({
           type: RESET_PASSWORD_FAILURE,
           payload

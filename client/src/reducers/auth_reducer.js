@@ -21,17 +21,17 @@ export default function (state = INITIAL_STATE, action) {
     case REGISTER_FAILURE:
       return { ...state, is_requesting: false, authenticated: false, error: action.payload };
     case FORGOT_PASSWORD_REQUEST:
-      return { ...state, is_requesting: true, email: null, reset_request_success: null, error: '' };
+      return { ...state, is_requesting: true, email: null, forgot_request_success: null, error: null };
     case FORGOT_PASSWORD_SUCCESS:
-      return { ...state, is_requesting: false, email: action.payload.email, reset_request_success: action.payload.success, error: '' };
+      return { ...state, is_requesting: false, email: action.payload.email, forgot_request_success: true };
     case FORGOT_PASSWORD_FAILURE:
-      return { ...state, is_requesting: false, email: action.payload.email, reset_request_success: action.payload.success, error: action.payload.error };
+      return { ...state, is_requesting: false, email: action.payload.email, forgot_request_success: false, error: action.payload.error };
     case RESET_PASSWORD_REQUEST:
-      return { ...state, is_requesting: true, reset_request_success: null, error: '' };
+      return { ...state, is_requesting: true, reset_request_success: null, error: null };
     case RESET_PASSWORD_SUCCESS:
-      return { ...state, is_requesting: false, reset_request_success: action.payload.success, error: '' };
+      return { ...state, is_requesting: false, reset_request_success: true };
     case RESET_PASSWORD_FAILURE:
-      return { ...state, is_requesting: false, reset_request_success: action.payload.success, error: action.payload.error };
+      return { ...state, is_requesting: false, reset_request_success: false, error: action.payload.error };
     default:
       return { ...state }
   }

@@ -41,12 +41,13 @@ class ForgotPassword extends Component {
   }
 
   renderResult() {
-    if(this.props.resetRequestSuccess != null || this.props.resetRequestSuccess != undefined) {
-      if(this.props.resetRequestSuccess === true) {
+    //checking explicitly for null or undefined to properly handle false rather than !this.props.forgotRequestSuccess
+    if(this.props.forgotRequestSuccess != null || this.props.forgotRequestSuccess != undefined) {
+      if(this.props.forgotRequestSuccess === true) {
         return ( <Message positive>Reset password request sent to {this.props.email}</Message> )
       } else {
-        if(this.props.errorMessage !== undefined){
-        return ( <Message negative>{this.props.errorMessage}</Message> )
+        if(this.props.errorMessage != null) {
+          return ( <Message negative>{this.props.errorMessage}</Message> )
         }
         return ( <Message negative>We couldn't find the email: {this.props.email}</Message> )
       }
@@ -59,7 +60,7 @@ class ForgotPassword extends Component {
 function mapStateToProps(state) {
   return {
     email: state.auth.email,
-    resetRequestSuccess: state.auth.reset_request_success,
+    forgotRequestSuccess: state.auth.forgot_request_success,
     errorMessage: state.auth.error
   }
 }

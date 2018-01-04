@@ -21,8 +21,7 @@ class ResetPassword extends Component {
 
   handleFormSubmit(formProps) {
     // add token to request
-    const token = this.props.location.search.split('?token=')[1]
-    formProps.token = token
+    formProps.token = this.props.location.search.split('?token=')[1]
     this.props.resetPassword(formProps)
   }
 
@@ -45,11 +44,12 @@ class ResetPassword extends Component {
   }
 
   renderResult() {
+    //checking explicitly for null or undefined to properly handle false rather than !this.props.forgotRequestSuccess
     if(this.props.resetRequestSuccess != null || this.props.resetRequestSuccess != undefined) {
       if(this.props.resetRequestSuccess === true) {
         return ( <Message positive>Your password reset successfully.</Message> )
       } else {
-        if(this.props.errorMessage !== undefined) {
+        if(!this.props.errorMessage != null) {
           return <Message negative>{this.props.errorMessage}</Message>
         }
         return ( <Message negative>There was an error with resetting your password.</Message> )
