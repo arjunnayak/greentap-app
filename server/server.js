@@ -22,12 +22,10 @@ if(process.env.NODE_ENV != "production") {
   const db = require('./config/db')
   console.log('testing db connection...')
   //test db
-  db.any('SELECT 1 FROM public.business;')
-  .then(function(data) {
-    console.log(data)
-  })
-  .catch(function(error) {
-    console.log(error)
+  db.connect().then(function(data) {
+    console.log('db connection successful')
+  }).catch(function(error) {
+    console.log('db connection failed')
   });
 }
 
