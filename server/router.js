@@ -25,20 +25,27 @@ module.exports = function (app, passport) {
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
   // authRoutes.post('/login', AuthenticationController.login)
-  authRoutes.post('/login', (req, res, next) => {
-    passport.authenticate('local-login', (err, user, info) => {
-      if (err) return next(err) // will generate a 500 error
-      if (!user) return res.status(404).json({ error: 'Incorrect login credentials' })
-      
-      req.logIn(user, loginErr => {
-        if (loginErr) return res.status(404).json({ error: 'Incorrect login credentials' })
-        console.log('req.login user:',user)
-        return res.status(200).json({
-          user
-        })
+  authRoutes.post('/login', function(req, res, next) {
+    passport.authenticate('local-login', (error, user, info) => {
+      if (error) {
+        console.log("passport.authenticate local-login error", error)
+        return next(error) // will generate a 500 error
+      }
+      if (!user) {
+        console.log("passport.authenticate local-login user not found")
+        return res.status(404).json({ error: 'Incorrect login credentials' })
+      }
+      req.login(user, loginError => {
+        if (loginError) {
+          console.log("passport.authenticate local-login req.login loginError", loginError)
+          return res.status(404).json({ error: 'Incorrect login credentials' })
+        }
+        console.log('req.login success user:',user)
+        return res.status(200).json({ user })
       })
     })(req, res, next)
   })
+
   authRoutes.get('/logout', AuthenticationController.logout)
   authRoutes.post('/forgot-password', AuthenticationController.forgotPassword)
   authRoutes.post('/reset-password', AuthenticationController.resetPassword)
