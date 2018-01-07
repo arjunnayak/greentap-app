@@ -39,7 +39,11 @@ app.use(helmet())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  const allowedOrigins = ['http://localhost:3000']
+  const origin = req.headers.origin
+  if(allowedOrigins.indexOf(origin) > -1) {
+    res.header('Access-Control-Allow-Origin', origin)
+  }
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
