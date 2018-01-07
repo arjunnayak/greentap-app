@@ -4,6 +4,7 @@ server/npm-debug.log
 client/npm-debug.log
 
 client/node_modules
+client/build
 
 # Node build artifacts
 server/node_modules
