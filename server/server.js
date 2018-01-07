@@ -41,7 +41,7 @@ app.use(helmet())
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
 });
@@ -59,9 +59,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 1000 * 60 * 60 * 6, // 6 hours
-    secure: false, //use only over https; SHOULD BE true in production
-    // helps protect against cross site scripting by removing access to document.cookie
-    // httpOnly: true
+    secure: false, // use only over https; SHOULD BE true in production
+    // httpOnly: true // helps protect against cross site scripting by removing access to document.cookie
   },
   unset: 'destroy'
 }))
