@@ -66,6 +66,7 @@ const optimizeAndStoreImageInS3 = function(image) {
     //if no image was supplied, return an empty link
     if(image.data == '' || !image.data) {
       resolve('')
+      return
     }
     //strip base64 metadata from FileReader.readDataAsUrl result
     var imageData = image.data.split(',')[1]
@@ -90,13 +91,14 @@ const optimizeAndStoreImageInS3 = function(image) {
           if (error) {
             console.error(`There was an error uploading ${image.filename}: ${error.message}`)
             reject(error.message)
+            return
           }
           console.log(`Successfully uploaded ${image.filename}.`)
           resolve(`https://s3-us-west-1.amazonaws.com/greentap-images/${image.filename}`)
         })
       })
       .catch(error => {
-        console.error(error)
+        console.error(`sharp optimize image error: ${error}`)
         reject(error)
       })
   })

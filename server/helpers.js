@@ -40,6 +40,7 @@ exports.sendEmail = function(recipientEmail, subject, textToSend) {
         if (error) {
           console.log('sendMail error',error);
           reject('Unable to send reset password request email to user.')
+          return
         }
         resolve()
       })
