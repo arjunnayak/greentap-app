@@ -41,7 +41,7 @@ app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000']
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000', 'http://greentap-client.s3-website.us-west-1.amazonaws.com','http://d2erjhz90r74y6.cloudfront.net']
   const origin = req.headers.origin
   if(allowedOrigins.indexOf(origin) > -1) {
     res.header('Access-Control-Allow-Origin', origin)
