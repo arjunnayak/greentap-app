@@ -12,7 +12,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const helmet = require('helmet')
-var RedisStore = require('connect-redis')(session);
+const compression = require('compression')
+const RedisStore = require('connect-redis')(session)
 const passportService = require('./config/passport')
 const sessionSecret = require('./app_config').session_secret
 
@@ -36,6 +37,7 @@ app.use(bodyParser.urlencoded({ extended: 'true' }))
 app.use(bodyParser.json({ limit: '50mb'}))
 app.use(cookieParser(sessionSecret, null))
 app.use(helmet())
+app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
