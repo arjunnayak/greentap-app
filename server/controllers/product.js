@@ -147,7 +147,7 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a business id.' });
   } else if(!name) {
     return res.status(400).json({ error: 'Must provide a name.' });
-  } else if(!desc) {
+  } else if(!description) {
     return res.status(400).json({ error: 'Must provide a description.' });
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
