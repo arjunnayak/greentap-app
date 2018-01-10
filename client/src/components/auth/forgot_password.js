@@ -4,7 +4,11 @@ import { Field, reduxForm } from 'redux-form'
 import { getForgotPasswordToken } from '../../actions/auth'
 import PropTypes from 'prop-types'
 import AuthForm from './auth_form'
-import { Header, Button, Form, Message, Segment } from 'semantic-ui-react'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
+import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
+import Message from 'semantic-ui-react/dist/commonjs/collections/Message'
+import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
+import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
 
 const form = reduxForm({
   form: 'forgotPassword',

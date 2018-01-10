@@ -6,7 +6,9 @@ import { FormGroup } from 'react-bootstrap'
 import { addProduct } from "../../actions/products"
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
-import { Button, Form, Grid } from 'semantic-ui-react'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
+import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 
 const form = reduxForm({
   form: 'add_product',

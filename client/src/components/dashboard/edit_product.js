@@ -5,7 +5,9 @@ import { Field, reduxForm } from 'redux-form'
 import { getProduct, editProduct } from "../../actions/products"
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
-import { Form, Button, Grid } from 'semantic-ui-react'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
+import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 
 const renderField = field => (
   <Form.Field>

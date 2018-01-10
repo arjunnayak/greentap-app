@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom'
 import { Field, reduxForm } from 'redux-form'
 import { getProducts, deleteProduct } from "../../actions/products"
 import Dashboard from './dashboard'
-import { Button, Grid } from 'semantic-ui-react'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 
 const renderField = field => (
   <div>

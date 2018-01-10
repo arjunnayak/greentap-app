@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
+import Input from 'semantic-ui-react/dist/commonjs/elements/Input'
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
+import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import './image_upload.css'
-import { Segment, Button, Image, Input } from 'semantic-ui-react'
 
 class ImageUpload extends React.Component {
   constructor(props) {

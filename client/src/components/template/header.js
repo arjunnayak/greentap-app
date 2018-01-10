@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Container, Menu } from 'semantic-ui-react'
+import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
+import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 
 class Header extends Component {
   render() {

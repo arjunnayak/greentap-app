@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Dashboard from './dashboard'
-import { Grid } from 'semantic-ui-react'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 
 class Inventory extends Component {
 

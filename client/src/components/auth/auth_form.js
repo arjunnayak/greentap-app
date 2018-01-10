@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, Container, Button, Segment, Grid } from 'semantic-ui-react'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
+import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
+import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
+import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import '../../styles/auth.css'
 
 class AuthForm extends Component {

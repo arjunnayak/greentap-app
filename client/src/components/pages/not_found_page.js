@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Header from '../template/header'
-import { Grid } from 'semantic-ui-react'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 
 class NotFoundPage extends Component {
 

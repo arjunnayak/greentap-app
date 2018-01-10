@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import '../../styles/dashboard.css'
 import Header from '../template/header'
 import SideNav from './side_nav'
-import { Grid, Divider } from 'semantic-ui-react'
+import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 
 class Dashboard extends Component {
   render() {
