@@ -1,16 +1,13 @@
 .vscode/
 
-server/npm-debug.log
-client/npm-debug.log
-
 client/node_modules
+client/npm-debug.log
 client/build
+client/build_and_deploy.sh
 
-# Node build artifacts
 server/node_modules
 server/npm-debug.log
 
-# Local development
 *.env
 *.dev
 .DS_Store
