@@ -2,6 +2,7 @@ const config = require('./app_config')
 const uuid = require('uuid/v4')
 const nodemailer = require('nodemailer')
 const db = require('./config/db')
+const randomBytes = require('crypto').randomBytes
 
 // Set user info from request
 exports.setUserInfo = function setUserInfo(request) {
@@ -12,11 +13,10 @@ exports.setUserInfo = function setUserInfo(request) {
     email: request.email
     // role: request.role
   }
-
   return getUserInfo
 }
 
-exports.sendEmail = function(recipientEmail, subject, textToSend) {
+exports.sendEmail = (recipientEmail, subject, textToSend) => {
   return new Promise((resolve, reject) => {
     nodemailer.createTestAccount((err, account) => {
       let transporter = nodemailer.createTransport({
@@ -39,11 +39,15 @@ exports.sendEmail = function(recipientEmail, subject, textToSend) {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.log('sendMail error',error);
-          reject('Unable to send reset password request email to user.')
+          reject('Unable to send email.')
           return
         }
         resolve()
       })
     })
   })
+}
+
+exports.genRandomToken = (size) => {
+  return randomBytes(size).toString('hex')
 }

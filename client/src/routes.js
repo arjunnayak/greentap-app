@@ -12,6 +12,7 @@ import Login from './components/auth/login'
 import Logout from './components/auth/logout'
 import ForgotPassword from './components/auth/forgot_password'
 import ResetPassword from './components/auth/reset_password'
+import VerifyUser from './components/auth/verify_user'
 
 // Import dashboard pages
 import Overview from './components/dashboard/overview'
@@ -46,6 +47,7 @@ class GreentapRouter extends Component {
 
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/reset-password" component={ResetPassword} />
+            <Route path="/verify-user" component={VerifyUser} />
 
             {/* order matters here: router will hit first matching route */}
             <Route path="/dashboard/products/add" component={RequireAuth(AddProduct)}/>

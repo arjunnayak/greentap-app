@@ -11,7 +11,8 @@ const config = {
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
     db_name: process.env.DB_NAME
-  }
+  },
+  client_base_url: process.env.CLIENT_BASE_URL
 }
 
 module.exports = config;

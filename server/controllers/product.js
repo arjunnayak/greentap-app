@@ -1,6 +1,7 @@
 const db = require('../config/db')
 const aws = require('aws-sdk')
 const sharp = require('sharp')
+const uuid = require('uuid/v4')
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
@@ -122,8 +123,8 @@ exports.addProduct = (req, res, next) => {
 
   optimizeAndStoreImageInS3(image)
     .then(imageLink => {
-      const ADD_PRODUCT = 'INSERT INTO public.product(name, description, image, business_id) VALUES ($1, $2, $3, $4) RETURNING *;';
-      db.one(ADD_PRODUCT, [name, desc, imageLink, business_id])
+      const ADD_PRODUCT = 'INSERT INTO public.product(id, name, description, image, business_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
+      db.one(ADD_PRODUCT, [uuid(), name, desc, imageLink, business_id])
         .then(product => {
           return res.status(200).json({ product });
         })
