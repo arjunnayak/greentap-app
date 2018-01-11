@@ -1,9 +1,3 @@
-//pulls environment variables from .env and populates process.env. This should go first before any other server code
-if(!process.env.ENV_PATH || process.env.ENV_PATH === "") {
-  console.log("ENV_PATH environment variable not set..exiting")
-  process.exit(1)
-}
-const env_config = require('dotenv').config({path: process.env.ENV_PATH})
 const express = require('express')
 const session = require('express-session')
 const logger = require('morgan')
@@ -16,6 +10,7 @@ const compression = require('compression')
 const RedisStore = require('connect-redis')(session)
 const passportService = require('./config/passport')
 const sessionSecret = require('./app_config').session_secret
+const clientBaseUrl = require('./app_config').client_base_url
 
 var app = express()
 
@@ -31,7 +26,7 @@ if(process.env.NODE_ENV != "production") {
 }
 
 // app.use(express.static(__dirname + '/public')) // set the static files location /public/img will be /img for users
-app.use(logger('dev'))
+process.env.NODE_ENV === "production" ? app.use(logger('combined')) : app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 //allow 50mb body size for sending uploaded images in base64 to server
 app.use(bodyParser.json({ limit: '50mb'}))
@@ -41,10 +36,8 @@ app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000', 'http://greentap-client.s3-website.us-west-1.amazonaws.com','http://d2erjhz90r74y6.cloudfront.net']
-  const origin = req.headers.origin
-  if(allowedOrigins.indexOf(origin) > -1) {
-    res.header('Access-Control-Allow-Origin', origin)
+  if(req.headers.origin === clientBaseUrl) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin)
   }
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
