@@ -5,7 +5,6 @@
   "dependencies": {
     "axios": "^0.16.1",
     "jest": "^21.2.1",
-    "moment": "^2.18.1",
     "prop-types": "^15.5.9",
     "react": "^15.5.4",
     "react-bootstrap": "^0.31.0",
