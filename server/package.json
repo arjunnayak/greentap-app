@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "server": "npm run server:development",
-    "server:development": "pm2 start ecosystem.config.js --watch && pm2 logs",
-    "server:production": "pm2 start ecosystem.config.js --env production",
+    "server:development": "pm2 startOrReload ecosystem.config.js --watch --attach",
+    "server:production": "pm2 startOrReload ecosystem.config.js --env production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
