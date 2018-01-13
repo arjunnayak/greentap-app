@@ -8,6 +8,7 @@
 
 # production
 /build
+build_and_deploy.sh
 
 # misc
 .DS_Store
