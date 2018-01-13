@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "sh -ac '. .env.prod; react-scripts build'",
     "test": "react-scripts test --env=jsdom",
     "test:jest": "jest",
     "test:jest-watch": "npm test -- --watch",

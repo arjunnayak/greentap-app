@@ -9,6 +9,7 @@
 # production
 /build
 build_and_deploy.sh
+.env.prod
 
 # misc
 .DS_Store
