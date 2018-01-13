@@ -11,25 +11,25 @@ import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, F
 //= ===============================
 //NOTE: withCredentials must be used when expected to send OR receive a cookie, 
 //...hence why it is necessary to use login request..since it is expecting to receive a cookie
-export function loginUser({ email, password }) {
-  return dispatch => {
-    dispatch({ type: LOGIN_REQUEST })
-    return axios.post(`${API_URL}/auth/login`, { email, password }, { withCredentials: true })
-      .then((response) => {
-        var user = response.data.user
-        if(response.data.business) {
-          user.business = response.data.business
-        }
-        dispatch({ 
-          type: LOGIN_SUCCESS,
-          payload: user
-        })
-      })
-      .catch((error) => {    
-        errorHandler(dispatch, error.response, LOGIN_FAILURE)
-      })
-  }
-}
+// export function loginUser({ email, password }) {
+//   return dispatch => {
+//     dispatch({ type: LOGIN_REQUEST })
+//     return axios.post(`${API_URL}/auth/login`, { email, password }, { withCredentials: true })
+//       .then((response) => {
+//         var user = response.data.user
+//         if(response.data.business) {
+//           user.business = response.data.business
+//         }
+//         dispatch({ 
+//           type: LOGIN_SUCCESS,
+//           payload: user
+//         })
+//       })
+//       .catch((error) => {    
+//         errorHandler(dispatch, error.response, LOGIN_FAILURE)
+//       })
+//   }
+// }
 
 export function registerUser(data) {
   return dispatch => {
