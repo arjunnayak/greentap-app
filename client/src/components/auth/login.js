@@ -29,17 +29,14 @@ class Login extends Component {
       if (this.props.authenticated) {
         this.props.history.push("/dashboard")
       }
-    }).catch(error => {
-      // do nothing, leave at login page
     })
   }
   handleFormSubmit(formProps) {
-    this.props.loginUser(formProps)
-      .then(() => {
-        if (this.props.authenticated) {
-          this.props.history.push("/dashboard")
-        }
-      })
+    this.props.loginUser(formProps).then(() => {
+      if (this.props.authenticated) {
+        this.props.history.push("/dashboard")
+      }
+    })
   }
 
   renderAlert() {
