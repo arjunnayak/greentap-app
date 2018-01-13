@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { Link } from 'react-router-dom'
-import { loginUser } from '../../actions/auth'
+import { loginUser, getUserInfo } from '../../actions/auth'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
@@ -22,6 +22,17 @@ const renderField = field => (
 )
 
 class Login extends Component {
+
+  componentDidMount() {
+    // check if user is already logged in
+    this.props.getUserInfo().then(() => {
+      if (this.props.authenticated) {
+        this.props.history.push("/dashboard")
+      }
+    }).catch(error => {
+      // do nothing, leave at login page
+    })
+  }
   handleFormSubmit(formProps) {
     this.props.loginUser(formProps)
       .then(() => {
@@ -72,4 +83,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, { loginUser })(form(Login))
+export default connect(mapStateToProps, { loginUser, getUserInfo })(form(Login))

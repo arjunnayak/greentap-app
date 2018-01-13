@@ -50,6 +50,7 @@ module.exports = function (app, passport) {
   authRoutes.post('/forgot-password', AuthenticationController.forgotPassword)
   authRoutes.post('/reset-password', AuthenticationController.resetPassword)
   authRoutes.get('/verify-user', AuthenticationController.verifyUser)
+  authRoutes.get('/userinfo', AuthenticationController.userInfo)
 
   // User routes
   userRoutes.get('/:userId', requireAuth, UserController.viewProfile)

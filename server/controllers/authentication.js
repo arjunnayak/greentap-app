@@ -46,7 +46,7 @@ exports.register = (req, res, next) => {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name;`
       registerTransactions.push(t.one(CREATE_BIZ, [businessId, userId, businessName, phone, address, city, state, zip]))
     }
-    return t.batch(registerTransactions);
+    return t.batch(registerTransactions)
   })
     .then(data => {
       console.log('create user result data', data[0])
@@ -83,17 +83,13 @@ exports.register = (req, res, next) => {
 }
 
 exports.logout = (req, res, next) => {
-  req.logout()
   req.session.destroy(function (err) {
     if (!err) {
-      //setting session to null will trigger unset: destroy functionality
-      req.session = null
-      res.clearCookie('connect.sid', { path: '/' });
-      // res.cookie("connect.sid", "", { expires: new Date() });
+      res.clearCookie('connect.sid', { path: '/' })
       return res.status(200).end()
     }
     return res.status(500).json({error:'Could not destory session'})
-  });
+  })
 }
 
 exports.forgotPassword = function (req, res, next) {
@@ -109,7 +105,7 @@ exports.forgotPassword = function (req, res, next) {
       const CREATE_RESET_PASSWORD_REQUEST = `INSERT INTO public.reset_password_request(email, token, timestamp)
         VALUES ($1, $2, now()) RETURNING email, token;`
       return t.one(CREATE_RESET_PASSWORD_REQUEST, [email, token])
-    });
+    })
   }).then(resetRequest => {
     const emailText = `Click this link to reset your password: ${config.client_base_url}/reset-password?token=${resetRequest.token}`
     const subject = 'Reset Password Request'
@@ -123,7 +119,7 @@ exports.forgotPassword = function (req, res, next) {
     //no results from query
     if (error.received === 0) return res.status(404).json({ email })
     return res.status(500).json({ error })
-  });
+  })
 }
 
 exports.resetPassword = function (req, res, next) {
@@ -197,4 +193,11 @@ exports.verifyUser = function (req, res, next) {
     else if(error === INVALID_USER) return res.status(400).json({ error: 'Unable to verify user because the email does not match our records.' })
     return res.status(500).json({ error })
   })
+}
+
+exports.userInfo = function (req, res, next) {
+  if(req.isAuthenticated() && req.user) {
+    return res.status(200).json(req.user)
+  }
+  return res.status(401).end()
 }

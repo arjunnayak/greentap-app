@@ -15,7 +15,10 @@ export const LOGIN_REQUEST = 'login_request',
   FORGOT_PASSWORD_FAILURE = 'forgot_password_failure',
   RESET_PASSWORD_REQUEST = 'reset_password_request',
   RESET_PASSWORD_SUCCESS = 'reset_password_success',
-  RESET_PASSWORD_FAILURE = 'reset_password_failure';
+  RESET_PASSWORD_FAILURE = 'reset_password_failure',
+  USER_INFO_REQUEST = 'user_info_request',
+  USER_INFO_SUCCESS = 'user_info_success',
+  USER_INFO_FAILURE = 'user_info_failure';
 
 //= =====================
 // Product Actions

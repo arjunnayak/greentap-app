@@ -2,9 +2,9 @@ import axios from 'axios'
 import { browserHistory } from 'react-router-dom'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, 
-  FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, 
-  RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAILURE, CLEAR_PRODUCT,
-  REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_FAILURE } from './types'
+  FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, 
+  RESET_PASSWORD_FAILURE, CLEAR_PRODUCT, REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_FAILURE,
+  USER_INFO_REQUEST, USER_INFO_SUCCESS, USER_INFO_FAILURE } from './types'
 
 //= ===============================
 // Authentication actions
@@ -53,7 +53,7 @@ export function registerUser(data) {
 
 export function logoutUser(error) {
   return dispatch => {
-    return axios.get(`${API_URL}/auth/logout`)
+    return axios.get(`${API_URL}/auth/logout`, { withCredentials: true })
       .then((response) => {
         dispatch({ type: CLEAR_PRODUCT })
         dispatch({ type: LOGOUT_SUCCESS, payload: error || '' })
@@ -96,10 +96,7 @@ export function getForgotPasswordToken({ email }) {
         }
         console.log('error data',error.response.data)
         console.log(payload)
-        dispatch({
-          type: FORGOT_PASSWORD_FAILURE,
-          payload
-        })
+        errorHandler(dispatch, payload, FORGOT_PASSWORD_FAILURE)
       })
   }
 }
@@ -115,10 +112,24 @@ export function resetPassword(data) {
         var payload = {
           error: error.response.data.error
         }
-        dispatch({
-          type: RESET_PASSWORD_FAILURE,
-          payload
+        errorHandler(dispatch, payload, RESET_PASSWORD_FAILURE)
+      })
+  }
+}
+
+export function getUserInfo() {
+  return dispatch => {
+    dispatch({ type: USER_INFO_REQUEST })
+    return axios.get(`${API_URL}/auth/userinfo`, { withCredentials: true })
+      .then(response => {
+        dispatch({ 
+          type: USER_INFO_SUCCESS,
+          payload: response.data
         })
+      })
+      .catch(error => {
+        // avoid calling errorHandler so that it doesn't redirect to login again
+        dispatch({ type: USER_INFO_FAILURE })
       })
   }
 }
