@@ -107,17 +107,26 @@ class Register extends Component {
             {
               businessTypeValue === "brand" ? (
                 <div>
-                  <Field name="businessName" label="Brand Name" component={renderField} type="text" />
-                  <Field name="phone" label="Phone" component={renderField} type="text" />
-                  <Field name="address" label="Address" component={renderField} type="text" />
-                  <Field name="city" label="City" component={renderField} type="text" />
-                  <Field name="state" label="State" component={renderField} type="select" options={stateOptions}
-                    onSelectChange={this.handleSelectChange} />
-                  <Field name="zip" label="Zip Code" component={renderField} type="text" />
+                  <div>
+                    <Field name="businessName" label="Brand Name" component={renderField} type="text" />
+                    <Field name="phone" label="Phone" component={renderField} type="text" />
+                    <Field name="address" label="Address" component={renderField} type="text" />
+                    <Field name="city" label="City" component={renderField} type="text" />
+                    <Field name="state" label="State" component={renderField} type="select" options={stateOptions}
+                      onSelectChange={this.handleSelectChange} />
+                    <Field name="zip" label="Zip Code" component={renderField} type="text" />
+                  </div>
+                  <br/>
                 </div>
               ) : null
             }
-            <Button primary>Create Account</Button>
+            {
+              this.props.isRequesting ? (
+                <Button loading primary>Create Account</Button>
+              ) : (
+                <Button primary>Create Account</Button>
+              )
+            }
           </Segment>
         </Form>
       </AuthForm>
@@ -138,6 +147,7 @@ const selector = formValueSelector(formName)
 function mapStateToProps(state) {
   return {
     authenticated: state.auth.authenticated,
+    isRequesting: state.auth.is_requesting,
     errorMessage: state.auth.error,
     user: state.auth.user,
     businessTypeValue: selector(state, 'businessType')

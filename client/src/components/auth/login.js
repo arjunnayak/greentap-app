@@ -23,19 +23,29 @@ const renderField = field => (
 
 class Login extends Component {
 
+  constructor(props) {
+    super(props);
+    this.routeBasedOnAuth = this.routeBasedOnAuth.bind(this);
+  }
+
+  routeBasedOnAuth() {
+    if (this.props.user.business_type === "brand") {
+      this.props.history.push("/dashboard")
+    } else {
+      this.props.history.push("/marketplace")
+    }
+  }
+
   componentDidMount() {
     // check if user is already logged in
     this.props.getUserInfo().then(() => {
-      if (this.props.authenticated) {
-        this.props.history.push("/dashboard")
-      }
+      this.routeBasedOnAuth()
     })
   }
+
   handleFormSubmit(formProps) {
     this.props.loginUser(formProps).then(() => {
-      if (this.props.authenticated) {
-        this.props.history.push("/dashboard")
-      }
+      this.routeBasedOnAuth()
     })
   }
 
@@ -59,7 +69,13 @@ class Login extends Component {
           <Segment>
             <Field name="email" label="Email" component={renderField} type="text" />
             <Field name="password" label="Password" component={renderField} type="password" />
-            <Button primary fluid size='large'>Login</Button>
+            {
+              this.props.isRequesting ? (
+                <Button loading primary fluid size='large'>Login</Button>
+              ) : (
+                <Button primary fluid size='large'>Login</Button>
+              )
+            }
           </Segment>
         </Form>
         <Message>
@@ -76,7 +92,9 @@ function mapStateToProps(state) {
   return {
     errorMessage: state.auth.error,
     message: state.auth.message,
-    authenticated: state.auth.authenticated
+    authenticated: state.auth.authenticated,
+    isRequesting: state.auth.is_requesting,
+    user: state.auth.user
   }
 }
 
