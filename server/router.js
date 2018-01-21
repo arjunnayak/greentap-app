@@ -14,7 +14,7 @@ function requireAuth(req, res, next) {
   res.status(401).end()
 }
 
-module.exports = function (app, passport) {
+module.exports = (app, passport) => {
   // Initializing route groups
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
@@ -25,7 +25,7 @@ module.exports = function (app, passport) {
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
   // authRoutes.post('/login', AuthenticationController.login)
-  authRoutes.post('/login', function(req, res, next) {
+  authRoutes.post('/login', (req, res, next) => {
     passport.authenticate('local-login', (error, user, info) => {
       if (error) {
         console.log("passport.authenticate local-login error", error)

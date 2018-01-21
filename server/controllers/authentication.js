@@ -7,6 +7,7 @@ const sendEmail = require('../helpers').sendEmail
 const genRandomToken = require('../helpers').genRandomToken
 const config = require('../app_config')
 const uuid = require('uuid/v4')
+const bcrypt = require('bcrypt')
 
 exports.register = (req, res, next) => {
   const email = req.body.email
@@ -30,8 +31,10 @@ exports.register = (req, res, next) => {
     const CREATE_USER_VERIFICATION_RECORD = `INSERT INTO public.user_verification(token, email) 
       VALUES($1, $2) RETURNING token, email;`
     const userId = uuid()
-    var registerTransactions = [
-      t.one(CREATE_USER, [userId, firstName, lastName, email, password, businessType]),
+    const hashedPassword = bcrypt.hashSync(password, 10)
+
+    let registerTransactions = [
+      t.one(CREATE_USER, [userId, firstName, lastName, email, hashedPassword, businessType]),
       t.one(CREATE_USER_VERIFICATION_RECORD, [genRandomToken(32), email])
     ]
     if(businessType === "brand") {
@@ -47,11 +50,10 @@ exports.register = (req, res, next) => {
       registerTransactions.push(t.one(CREATE_BIZ, [businessId, userId, businessName, phone, address, city, state, zip]))
     }
     return t.batch(registerTransactions)
-  })
-    .then(data => {
+  }).then(data => {
       console.log('create user result data', data[0])
       console.log('create user verification record data', data[1])
-      var user = data[0]
+      let user = data[0]
       if(user.business_type === "brand" && data[2]) {
         user.business = data[2]
       }
@@ -60,9 +62,9 @@ exports.register = (req, res, next) => {
 
       Thanks for signing up with GreenTap. Please take a moment to verify the email address associated with your GreenTap account by clicking the link below:
       ${config.client_base_url}/verify-user?email=${verificationRecord.email}&token=${verificationRecord.token}
-      
-      If you have not signed up for a GreenTap account, please ignore this email.`
 
+      If you have not signed up for a GreenTap account, please ignore this email.`
+      
       const subject = 'Please Verify Your Email Address'
       sendEmail(verificationRecord.email, subject, emailText).then(() => {
         console.log('successfully sent verification email')
@@ -74,16 +76,16 @@ exports.register = (req, res, next) => {
     })
     .catch(errors => {
       // if error is thrown, the transaction will rollback
-      if(errors.first.code === "23505" && errors.first.constraint === "user_pkey1") {
+      if(errors.first && errors.first.code === "23505" && errors.first.constraint === "user_pkey1") {
         return res.status(409).json({ error: 'Email already in use.' })  
       }
-      console.error('register transaction errors', errors)
+      console.error('register transaction .catch() errors', errors)
       return res.status(500).json({ error: 'There was an error creating your account.' })
     })
 }
 
 exports.logout = (req, res, next) => {
-  req.session.destroy(function (err) {
+  req.session.destroy(err => {
     if (!err) {
       res.clearCookie('connect.sid', { path: '/' })
       return res.status(200).end()
@@ -92,7 +94,7 @@ exports.logout = (req, res, next) => {
   })
 }
 
-exports.forgotPassword = function (req, res, next) {
+exports.forgotPassword = (req, res, next) => {
   const email = req.body.email
 
   if (!email) return res.status(400).json({ error: 'You must enter an email address.' })
@@ -122,7 +124,7 @@ exports.forgotPassword = function (req, res, next) {
   })
 }
 
-exports.resetPassword = function (req, res, next) {
+exports.resetPassword = (req, res, next) => {
   const password = req.body.password
   const confirmPassword = req.body.confirmPassword
   const token = req.body.token
@@ -170,7 +172,7 @@ exports.resetPassword = function (req, res, next) {
   })
 }
 
-exports.verifyUser = function (req, res, next) {
+exports.verifyUser = (req, res, next) => {
   const email = req.query.email
   const token = req.query.token
 
@@ -195,7 +197,7 @@ exports.verifyUser = function (req, res, next) {
   })
 }
 
-exports.userInfo = function (req, res, next) {
+exports.userInfo = (req, res, next) => {
   if(req.isAuthenticated() && req.user) {
     return res.status(200).json(req.user)
   }

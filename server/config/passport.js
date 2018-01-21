@@ -1,24 +1,32 @@
 const LocalStrategy = require('passport-local').Strategy
 const db = require('./db')
+const bcrypt = require('bcrypt')
 
-module.exports = passport => {
+module.exports = (passport) => {
 
   const localOptions = {
     usernameField: 'email'
   }
   
   passport.use('local-login', new LocalStrategy(localOptions, (email, password, done) => {
-    const GET_USER = 'SELECT id, email, first_name, last_name, business_type FROM public.user WHERE email = $1 and password = $2;'
+    const GET_USER = 'SELECT id, email, password, first_name, last_name, business_type FROM public.user WHERE email = $1;'
     var user = null;
     db.task(t => {
-      return t.one(GET_USER, [email, password])
-        .then(authedUser => {
-          user = authedUser   
+      return t.one(GET_USER, [email])
+        .then(selectedUser => {
+          if(!bcrypt.compareSync(password, selectedUser.password)) {
+            console.error('bcrypt.compareSync false')
+            return null
+          }
+
+          // remove password from response
+          delete selectedUser.password
+          user = selectedUser
           if(user.business_type === "brand") {
             const GET_BUSINESS = 'SELECT * FROM public.business WHERE user_id = $1';
             return t.one(GET_BUSINESS, [user.id])
           } else {
-            return done(null, user)
+            return null
           }
         })
         .catch(error => {
@@ -28,8 +36,13 @@ module.exports = passport => {
         })
     }).then(business => {
         if(!user) return done(null, false)
+        if(!business) {
+          // returns non-brand user
+          return done(null, user)
+        }
+
         user.business = business
-        console.log('successfully got user and business and logged in')
+        // returns brand user
         return done(null, user)
       })
       .catch(error => {
