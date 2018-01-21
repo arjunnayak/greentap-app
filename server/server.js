@@ -55,6 +55,7 @@ app.use(session({
   secret: config.session_secret,
   resave: false,
   saveUninitialized: false,
+  name: config.cookie_name,
   cookie: {
     maxAge: 1000 * 60 * 60 * 6, // 6 hours
     secure: false, // use only over https; SHOULD BE true in production

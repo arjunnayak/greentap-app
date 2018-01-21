@@ -8,6 +8,7 @@ const genRandomToken = require('../helpers').genRandomToken
 const config = require('../app_config')
 const uuid = require('uuid/v4')
 const bcrypt = require('bcrypt')
+const cookieName = require('../app_config').cookie_name
 
 exports.register = (req, res, next) => {
   const email = req.body.email
@@ -87,7 +88,7 @@ exports.register = (req, res, next) => {
 exports.logout = (req, res, next) => {
   req.session.destroy(err => {
     if (!err) {
-      res.clearCookie('connect.sid', { path: '/' })
+      res.clearCookie(cookieName, { path: '/' })
       return res.status(200).end()
     }
     return res.status(500).json({error:'Could not destory session'})

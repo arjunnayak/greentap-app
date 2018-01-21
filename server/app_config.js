@@ -13,7 +13,8 @@ const config = {
     db_name: process.env.DB_NAME
   },
   client_base_url: process.env.CLIENT_BASE_URL,
-  port: process.env.PORT || 3001
+  port: process.env.PORT || 3001,
+  cookie_name: '__greentap_cookie'
 }
 
 module.exports = config;
