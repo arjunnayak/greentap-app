@@ -9,18 +9,17 @@ const helmet = require('helmet')
 const compression = require('compression')
 const RedisStore = require('connect-redis')(session)
 const passportService = require('./config/passport')
-const sessionSecret = require('./app_config').session_secret
-const clientBaseUrl = require('./app_config').client_base_url
+const config = require('./app_config')
 
-var app = express()
+let app = express()
 
 if(process.env.NODE_ENV != "production") {
   const db = require('./config/db')
   console.log('testing db connection...')
   //test db
-  db.connect().then(function(data) {
+  db.connect().then(data => {
     console.log('db connection successful')
-  }).catch(function(error) {
+  }).catch(error => {
     console.log('db connection failed')
   });
 }
@@ -30,13 +29,13 @@ process.env.NODE_ENV === "production" ? app.use(logger('combined')) : app.use(lo
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 //allow 50mb body size for sending uploaded images in base64 to server
 app.use(bodyParser.json({ limit: '50mb'}))
-app.use(cookieParser(sessionSecret, null))
+app.use(cookieParser(config.session_secret, null))
 app.use(helmet())
 app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
-  if(req.headers.origin === clientBaseUrl) {
+  if(req.headers.origin === config.client_base_url) {
     res.header('Access-Control-Allow-Origin', req.headers.origin)
   }
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
@@ -53,7 +52,7 @@ passportService(passport)
 // - session will get destroyed in redis on expiration
 app.use(session({
   store: new RedisStore(),
-  secret: sessionSecret,
+  secret: config.session_secret,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -67,11 +66,11 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Import routes to be served
+// Import routes into app
 router(app, passport)
 
 // start app
-const port = process.env.PORT || 3001
+const port = config.port
 const server = app.listen(port)
 console.log("Your app is listening on ", port)
 
