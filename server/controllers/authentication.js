@@ -27,16 +27,22 @@ exports.register = (req, res, next) => {
   else if(!businessType) return res.status(422).json({ error: 'You must enter a business type.' })    
   
   db.tx(t => {
-    const CREATE_USER = `INSERT INTO public.user(id, first_name, last_name, email, password, business_type, verified) 
-    VALUES ($1, $2, $3, $4, $5, $6, false) RETURNING id, first_name, last_name, email, business_type;`
-    const CREATE_USER_VERIFICATION_RECORD = `INSERT INTO public.user_verification(token, email) 
-      VALUES($1, $2) RETURNING token, email;`
     const userId = uuid()
     const hashedPassword = bcrypt.hashSync(password, 10)
 
     let registerTransactions = [
-      t.one(CREATE_USER, [userId, firstName, lastName, email, hashedPassword, businessType]),
-      t.one(CREATE_USER_VERIFICATION_RECORD, [genRandomToken(32), email])
+      t.one({
+        name: 'create-user',
+        text: `INSERT INTO public.user(id, first_name, last_name, email, password, business_type, verified) 
+          VALUES ($1, $2, $3, $4, $5, $6, false) RETURNING id, first_name, last_name, email, business_type;`,
+        values: [userId, firstName, lastName, email, hashedPassword, businessType]
+      }),
+      t.one({
+        name: 'create-user-verification-record',
+        text: `INSERT INTO public.user_verification(token, email) 
+          VALUES($1, $2) RETURNING token, email;`,
+        values: [genRandomToken(32), email]
+      })
     ]
     if(businessType === "brand") {
       const businessName = req.body.businessName
@@ -46,9 +52,12 @@ exports.register = (req, res, next) => {
       const state = req.body.state
       const zip = req.body.zip
       const businessId = uuid()
-      const CREATE_BIZ = `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name;`
-      registerTransactions.push(t.one(CREATE_BIZ, [businessId, userId, businessName, phone, address, city, state, zip]))
+      registerTransactions.push(t.one({
+        name: 'create-business',
+        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name;`,
+        values: [businessId, userId, businessName, phone, address, city, state, zip]
+      }))
     }
     return t.batch(registerTransactions)
   }).then(data => {
@@ -102,12 +111,19 @@ exports.forgotPassword = (req, res, next) => {
 
   const GET_USER = 'SELECT email FROM public.user WHERE email=$1;'
   db.task(t => {
-    return t.one(GET_USER, [email]).then(userEmail => {
+    return t.one({
+      name: 'get-user',
+      text: 'SELECT email FROM public.user WHERE email=$1;',
+      values: [email]
+    }).then(userEmail => {
       const token = genRandomToken(32)
       console.log(`Creating password request for ${email} with token=${token}`)
-      const CREATE_RESET_PASSWORD_REQUEST = `INSERT INTO public.reset_password_request(email, token, timestamp)
-        VALUES ($1, $2, now()) RETURNING email, token;`
-      return t.one(CREATE_RESET_PASSWORD_REQUEST, [email, token])
+      return t.one({
+        name: 'create-reset-password-request',
+        text: `INSERT INTO public.reset_password_request(email, token, timestamp)
+          VALUES ($1, $2, now()) RETURNING email, token;`,
+        values: [email, token]
+      })
     })
   }).then(resetRequest => {
     const emailText = `Click this link to reset your password: ${config.client_base_url}/reset-password?token=${resetRequest.token}`
@@ -136,16 +152,22 @@ exports.resetPassword = (req, res, next) => {
   
   const ALREADY_USED_ERROR = 'Reset request already used'
   const EXPIRED_ERROR = 'Reset request expired'
-  const GET_RESET_REQUEST = 'SELECT * FROM public.reset_password_request WHERE token=$1;'
   db.task(t => {
-    return t.one(GET_RESET_REQUEST, [token]).then(resetPasswordRequest => {
+    return t.one({
+      name: 'get-reset-password-request',
+      text: 'SELECT * FROM public.reset_password_request WHERE token=$1;',
+      values: [token]
+    }).then(resetPasswordRequest => {
       if(resetPasswordRequest.used === true) return Promise.reject(ALREADY_USED_ERROR)
       const ts = new Date(resetPasswordRequest.timestamp)
       const now = new Date()
       const timeDiff = now.getTime() - ts.getTime()
       if(timeDiff > config.reset_password_expiration) return Promise.reject(EXPIRED_ERROR)
-      const UPDATE_USER_PASSWORD = 'UPDATE public.user SET password=$1 WHERE email=$2 RETURNING email;'
-      return t.one(UPDATE_USER_PASSWORD, [password, resetPasswordRequest.email])
+      return t.one({
+        name: 'update-user-password',
+        text: 'UPDATE public.user SET password=$1 WHERE email=$2 RETURNING email;',
+        values: [password, resetPasswordRequest.email]
+      })
     })
   }).then(result => {
     const emailText = 'You are receiving this email because you changed your password.\nIf you did not request this change, please contact us immediately at team@greentap.io.'
@@ -157,8 +179,11 @@ exports.resetPassword = (req, res, next) => {
       console.log('reset password request sendEmail error', error)
     })
     
-    const SET_USED_PASSWORD_REQUEST = 'UPDATE public.reset_password_request SET used=true WHERE token=$1;'
-    db.none(SET_USED_PASSWORD_REQUEST, [token]).then(()=> {
+    db.none({
+      name: 'set-used-password-request',
+      text: 'UPDATE public.reset_password_request SET used=true WHERE token=$1;',
+      values: [token]
+    }).then(()=> {
       return res.status(200).end()
     }).catch(error => {
       console.log('set used to true failure', error)
@@ -181,12 +206,18 @@ exports.verifyUser = (req, res, next) => {
   else if(!token) return res.status(400).json({ error: 'Token not provided.' })
   
   const INVALID_USER = 'Invalid user'
-  const GET_VERIFICATION_DATA = 'SELECT * FROM public.user_verification WHERE token=$1;'
   db.task(t => {
-    return t.one(GET_VERIFICATION_DATA, token).then(verificationData => {
+    return t.one({
+      name: 'get-verification-data',
+      text: 'SELECT * FROM public.user_verification WHERE token=$1;',
+      values: [token]
+    }).then(verificationData => {
       if(verificationData.email != email) return Promise.reject(INVALID_USER)
-      const UPDATE_USER_VERIFIED = 'UPDATE public.user SET verified=true WHERE email=$1 RETURNING email;'
-      return t.one(UPDATE_USER_VERIFIED, email)
+      return t.one({
+        name: 'update-user-verified',
+        text: 'UPDATE public.user SET verified=true WHERE email=$1 RETURNING email;',
+        values: [email]
+      })
     })
   }).then(result => {
     return res.status(200).end()

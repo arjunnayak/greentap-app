@@ -11,9 +11,11 @@ exports.getProducts = (req, res, next) => {
   } else if(req.user.business.id != business_id) {
     return res.status(401).end();
   }
-  const GET_PRODUCTS = 'SELECT * FROM public.product WHERE business_id=$1;';
-  db.query(GET_PRODUCTS, [business_id])
-    .then(products => {
+  db.query({
+    name: 'get-products',
+    text: 'SELECT * FROM public.product WHERE business_id=$1;',
+    values: [business_id]
+  }).then(products => {
       return res.status(200).json({ products });
     })
     .catch(error => {
@@ -31,9 +33,11 @@ exports.getProduct = (req, res, next) => {
     return res.status(500).json({ error: 'User business id not found.' });
   }
 
-  const GET_PRODUCT = 'SELECT * FROM public.product WHERE id=$1;';
-  db.one(GET_PRODUCT, [id])
-    .then(product => {
+  db.one({
+    name: 'get-product',
+    text: 'SELECT * FROM public.product WHERE id=$1;',
+    values: [id]
+  }).then(product => {
       if(product.business_id != user_business_id) {
         return res.status(401).end();
       }
@@ -123,9 +127,12 @@ exports.addProduct = (req, res, next) => {
 
   optimizeAndStoreImageInS3(image)
     .then(imageLink => {
-      const ADD_PRODUCT = 'INSERT INTO public.product(id, name, description, image, business_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
-      db.one(ADD_PRODUCT, [uuid(), name, desc, imageLink, business_id])
-        .then(product => {
+      db.one({
+        name: 'add-product',
+        text: `INSERT INTO public.product(id, name, description, image, business_id) 
+          VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+        values: [uuid(), name, desc, imageLink, business_id]
+      }).then(product => {
           return res.status(200).json({ product });
         })
         .catch(error => {
@@ -156,11 +163,14 @@ exports.updateProduct = (req, res, next) => {
     return res.status(401).end()
   }
 
-  const UPDATE_PRODUCT = 'UPDATE public.product SET name=$1, description=$2, image=$3 WHERE id=$4 AND business_id=$5 RETURNING id, name, description, image;';
   //if there already is an image in s3, there is no need to optimize and store image
   if(typeof image === 'string' || image instanceof String) {
-    db.one(UPDATE_PRODUCT, [name, description, image, id, business_id])
-    .then((product) => {
+    db.one({
+      name: 'update-product',
+      text: `UPDATE public.product SET name=$1, description=$2, image=$3 
+        WHERE id=$4 AND business_id=$5 RETURNING id, name, description, image;`,
+      values: [name, description, image, id, business_id]
+    }).then((product) => {
       return res.status(200).json({ product });
     })
     .catch(error => {
@@ -171,8 +181,12 @@ exports.updateProduct = (req, res, next) => {
     optimizeAndStoreImageInS3(image)
       .then(imageLink => {
         console.log("updating with new image link", imageLink)
-        db.one(UPDATE_PRODUCT, [name, description, imageLink, id, business_id])
-          .then((product) => {
+        db.one({
+          name: 'update-product',
+          text: `UPDATE public.product SET name=$1, description=$2, image=$3 
+            WHERE id=$4 AND business_id=$5 RETURNING id, name, description, image;`,
+          values: [name, description, imageLink, id, business_id]
+        }).then((product) => {
             return res.status(200).json({ product });
           })
           .catch(error => {
@@ -197,16 +211,20 @@ exports.deleteProduct = (req, res, next) => {
     return res.status(500).json({ error: 'User business id not found.' });
   }
 
-  const GET_PRODUCT = 'SELECT * FROM public.product WHERE id = $1;';
-  db.one(GET_PRODUCT, [id])
-    .then(product => {
+  db.one({
+    name: 'get-product',
+    text: 'SELECT * FROM public.product WHERE id = $1;',
+    values: [id]
+  }).then(product => {
       if(product.business_id != user_business_id) {
         console.log('deleteProduct business ids dont match')
         return res.status(401).end();
       }
-      const DELETE_PRODUCT = 'DELETE FROM public.product WHERE id=$1 and business_id = $2 RETURNING *;';
-      db.any(DELETE_PRODUCT, [id, user_business_id])
-        .then((deletedProduct) => {
+      db.any({
+        name: 'delete-product',
+        text: 'DELETE FROM public.product WHERE id=$1 and business_id = $2 RETURNING *;',
+        values: [id, user_business_id]
+      }).then((deletedProduct) => {
           if(deletedProduct == []) {
             return res.status(404).end();
           }

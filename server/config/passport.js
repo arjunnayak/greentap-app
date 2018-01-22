@@ -9,11 +9,13 @@ module.exports = (passport) => {
   }
   
   passport.use('local-login', new LocalStrategy(localOptions, (email, password, done) => {
-    const GET_USER = 'SELECT id, email, password, first_name, last_name, business_type FROM public.user WHERE email = $1;'
     var user = null;
     db.task(t => {
-      return t.one(GET_USER, [email])
-        .then(selectedUser => {
+      return t.one({
+        name: 'get-user',
+        text: 'SELECT id, email, password, first_name, last_name, business_type FROM public.user WHERE email = $1;',
+        values: [email]
+      }).then(selectedUser => {
           if(!bcrypt.compareSync(password, selectedUser.password)) {
             console.error('bcrypt.compareSync false')
             return null
@@ -23,8 +25,11 @@ module.exports = (passport) => {
           delete selectedUser.password
           user = selectedUser
           if(user.business_type === "brand") {
-            const GET_BUSINESS = 'SELECT * FROM public.business WHERE user_id = $1';
-            return t.one(GET_BUSINESS, [user.id])
+            return t.one({
+              name: 'get-business',
+              text: 'SELECT * FROM public.business WHERE user_id = $1;',
+              values: [user.id]
+            })
           } else {
             return null
           }
