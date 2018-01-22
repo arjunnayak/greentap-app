@@ -2,7 +2,8 @@
 npm-debug.log
 
 server/node_modules
-server/npm-debug.log
+server/npm-debug.log*
+server/.env*
 server/ecosystem.config.js
 
 *.env

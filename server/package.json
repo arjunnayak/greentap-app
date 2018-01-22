@@ -7,7 +7,7 @@
     "server": "npm run server:development",
     "server:development": "pm2 startOrReload ecosystem.config.js --watch --attach",
     "server:production": "pm2 startOrReload ecosystem.config.js --env production",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test mocha test",
     "lint": "eslint ."
   },
   "license": "",
@@ -33,11 +33,15 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.1.0",
+    "chai": "^4.1.2",
+    "dotenv": "^4.0.0",
     "eslint": "^3.9.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
-    "nodemon": "^1.11.0"
+    "mocha": "^5.0.0",
+    "nodemon": "^1.11.0",
+    "supertest": "^3.0.0"
   }
 }
