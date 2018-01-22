@@ -14,7 +14,8 @@ export function errorHandler(dispatch, error, type) {
   }
   console.log('errorHandler: ', error);
   let errorMessage = null
-  if(error.data.error) errorMessage = error.data.error
+  if(error.data && error.data.error) errorMessage = error.data.error
+  else if(error.error) errorMessage = error.error
   else if(error.data) errorMessage = error.data
   else errorMessage = error;
 
@@ -24,7 +25,6 @@ export function errorHandler(dispatch, error, type) {
     dispatch(logoutUser(errorMessage));
     return
   }
-
   dispatch({
     type,
     payload: errorMessage,

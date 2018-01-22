@@ -162,11 +162,12 @@ exports.resetPassword = (req, res, next) => {
       const ts = new Date(resetPasswordRequest.timestamp)
       const now = new Date()
       const timeDiff = now.getTime() - ts.getTime()
+      const hashedPassword = bcrypt.hashSync(password, 10)
       if(timeDiff > config.reset_password_expiration) return Promise.reject(EXPIRED_ERROR)
       return t.one({
         name: 'update-user-password',
         text: 'UPDATE public.user SET password=$1 WHERE email=$2 RETURNING email;',
-        values: [password, resetPasswordRequest.email]
+        values: [hashedPassword, resetPasswordRequest.email]
       })
     })
   }).then(result => {
@@ -194,6 +195,7 @@ exports.resetPassword = (req, res, next) => {
     if(error.received === 0) return res.status(400).json({ error: 'Invalid token.' })
     else if(error === ALREADY_USED_ERROR) return res.status(400).json({ error: 'This request to reset your password has already been used.' })
     else if(error === EXPIRED_ERROR) return res.status(400).json({ error: 'This request to reset your password has expired.' })
+    console.error('reset password fail', error)
     return res.status(500).json({ error })
   })
 }
