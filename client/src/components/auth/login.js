@@ -29,10 +29,12 @@ class Login extends Component {
   }
 
   routeBasedOnAuth() {
-    if (this.props.user.business_type === "brand") {
-      this.props.history.push("/dashboard")
-    } else {
-      this.props.history.push("/marketplace")
+    if(this.props.authenticated) {
+      if(this.props.user.business_type === "brand") {
+        this.props.history.push("/dashboard")
+      } else {
+        this.props.history.push("/marketplace")
+      }
     }
   }
 
