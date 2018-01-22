@@ -18,13 +18,13 @@ exports.register = (req, res, next) => {
   const confirmPassword = req.body.confirmPassword
   const businessType = req.body.businessType
 
-  if(!email) return res.status(422).json({ error: 'You must enter an email address.' })
-  else if(!firstName) return res.status(422).json({ error: 'You must enter your first name.' })
-  else if(!lastName) return res.status(422).json({ error: 'You must enter your last name.' })
-  else if(!password) return res.status(422).json({ error: 'You must enter a password.' })
-  else if(!confirmPassword) return res.status(422).json({ error: 'You must confirm your password.' })    
-  else if(password !== confirmPassword) return res.status(422).json({ error: 'Passwords do not match.' })    
-  else if(!businessType) return res.status(422).json({ error: 'You must enter a business type.' })    
+  if(!email) return res.status(400).json({ error: 'You must enter an email address.' })
+  else if(!firstName) return res.status(400).json({ error: 'You must enter your first name.' })
+  else if(!lastName) return res.status(400).json({ error: 'You must enter your last name.' })
+  else if(!password) return res.status(400).json({ error: 'You must enter a password.' })
+  else if(!confirmPassword) return res.status(400).json({ error: 'You must confirm your password.' })    
+  else if(password !== confirmPassword) return res.status(400).json({ error: 'Passwords do not match.' })    
+  else if(!businessType) return res.status(400).json({ error: 'You must enter a business type.' })    
   
   db.tx(t => {
     const userId = uuid()
