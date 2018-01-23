@@ -2,6 +2,7 @@ const db = require('../config/db')
 const aws = require('aws-sdk')
 const sharp = require('sharp')
 const uuid = require('uuid/v4')
+const QueryResultError = require('pg-promise').errors.QueryResultError
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
@@ -30,7 +31,7 @@ exports.getProduct = (req, res, next) => {
   if (!id) {
     return res.status(400).json({ error: 'Must provide product id.' });
   } else if(!user_business_id) {
-    return res.status(500).json({ error: 'User business id not found.' });
+    return res.status(400).json({ error: 'User business id not found.' });
   }
 
   db.one({
@@ -44,6 +45,9 @@ exports.getProduct = (req, res, next) => {
       return res.status(200).json({ product });
     })
     .catch(error => {
+      if(error instanceof QueryResultError) return res.status(404).end()
+      // product id not in correct uuid format i.e. 123-456-789
+      else if(error.code === '22P02') return res.status(404).end()
       return res.status(500).json({ error: "Error retrieving product" });
     });
 }
@@ -133,7 +137,7 @@ exports.addProduct = (req, res, next) => {
           VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
         values: [uuid(), name, desc, imageLink, business_id]
       }).then(product => {
-          return res.status(200).json({ product });
+          return res.status(201).json({ product });
         })
         .catch(error => {
           console.error(`error adding product to database ${error}`)
