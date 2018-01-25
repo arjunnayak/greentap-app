@@ -4,18 +4,6 @@ const nodemailer = require('nodemailer')
 const db = require('./config/db')
 const randomBytes = require('crypto').randomBytes
 
-// Set user info from request
-exports.setUserInfo = function setUserInfo(request) {
-  const getUserInfo = {
-    _id: request._id,
-    firstName: request.first_name,
-    lastName: request.last_name,
-    email: request.email
-    // role: request.role
-  }
-  return getUserInfo
-}
-
 exports.sendEmail = (recipientEmail, subject, textToSend) => {
   return new Promise((resolve, reject) => {
     nodemailer.createTestAccount((err, account) => {

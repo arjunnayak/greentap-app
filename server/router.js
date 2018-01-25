@@ -1,5 +1,4 @@
 const AuthenticationController = require('./controllers/authentication')
-const UserController = require('./controllers/user')
 const ProductController = require('./controllers/product')
 const BrandController = require('./controllers/brand')
 const express = require('express')
@@ -18,7 +17,6 @@ module.exports = (app, passport) => {
   // Initializing route groups
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
-    userRoutes = express.Router(),
     productRoutes = express.Router(),
     brandRoutes = express.Router();
 
@@ -45,15 +43,11 @@ module.exports = (app, passport) => {
       })
     })(req, res, next)
   })
-
   authRoutes.get('/logout', AuthenticationController.logout)
   authRoutes.post('/forgot-password', AuthenticationController.forgotPassword)
   authRoutes.post('/reset-password', AuthenticationController.resetPassword)
   authRoutes.get('/verify-user', AuthenticationController.verifyUser)
   authRoutes.get('/userinfo', AuthenticationController.userInfo)
-
-  // User routes
-  userRoutes.get('/:userId', requireAuth, UserController.viewProfile)
 
   // Product routes (session required)
   productRoutes.get('/imageUploadSign', requireAuth, ProductController.getImageUploadSign)
@@ -67,14 +61,8 @@ module.exports = (app, passport) => {
   brandRoutes.get('/', BrandController.getBrands)
   brandRoutes.get('/:id', BrandController.getBrand)
 
-  // Test protected route
-  apiRoutes.get('/protected', requireAuth, (req, res) => {
-    res.send({ content: 'The protected test route is functional!' })
-  })
-
   // Tie them together
   apiRoutes.use('/auth', authRoutes)
-  apiRoutes.use('/user', userRoutes)
   apiRoutes.use('/products', productRoutes)
   apiRoutes.use('/brands', brandRoutes)
 

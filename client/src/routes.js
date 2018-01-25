@@ -3,9 +3,6 @@ import { BrowserRouter as Router, browserHistory, Route, Switch } from 'react-ro
 
 import NotFoundPage from './components/pages/not_found_page'
 
-// import ContactPage from './components/pages/contact-page'
-// import ComponentSamplesPage from './components/pages/component-samples'
-
 // Import authentication related pages
 import Register from './components/auth/register'
 import Login from './components/auth/login'
@@ -25,7 +22,7 @@ import Settings from './components/dashboard/settings'
 // Import marketplace pages
 import Marketplace from './components/marketplace/marketplace'
 import BrandPage from './components/marketplace/brand_page'
-import Product from './components/marketplace/product'
+import ProductPage from './components/marketplace/product_page'
 
 // Import higher order components
 import RequireAuth from './components/auth/require_auth'
@@ -38,12 +35,10 @@ class GreentapRouter extends Component {
         <div>
           <Switch>
             <Route exact path="/" component={RequireAuth(Overview)}/>
-            {/* Each components needs to include a header if it needs it */}
+
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route path="/logout" component={Logout} />
-            {/*<Route path="contact-us" component={ContactPage} />*/}
-            {/*<Route path="component-samples" component={RequireAuth(ComponentSamplesPage)} />*/}
 
             <Route path="/forgot-password" component={ForgotPassword} />
             <Route path="/reset-password" component={ResetPassword} />
@@ -57,7 +52,7 @@ class GreentapRouter extends Component {
             <Route path="/dashboard/settings" component={RequireAuth(Settings)}/>
             <Route exact path="/dashboard" component={RequireAuth(Overview)}/>
 
-            <Route path="/marketplace/product/:id" component={Product}/>
+            <Route path="/marketplace/product/:id" component={ProductPage}/>
             <Route path="/marketplace/brand/:id" component={BrandPage}/>
             <Route exact path="/marketplace" component={Marketplace}/>
 
