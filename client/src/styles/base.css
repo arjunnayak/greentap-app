@@ -5,3 +5,7 @@ body * {
 p.copyright > span {
   color: #777;
 }
+
+.form-red-error {
+  color: red
+}

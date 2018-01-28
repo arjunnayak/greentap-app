@@ -3,6 +3,7 @@ const aws = require('aws-sdk')
 const sharp = require('sharp')
 const uuid = require('uuid/v4')
 const QueryResultError = require('pg-promise').errors.QueryResultError
+const productCategories = require('../app_config').categories
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
@@ -114,6 +115,7 @@ const optimizeAndStoreImageInS3 = function(image) {
 }
 
 exports.addProduct = (req, res, next) => {
+  const category = req.body.product.category;
   const name = req.body.product.name;
   const desc = req.body.product.desc;
   const image = req.body.product.image;
@@ -125,17 +127,21 @@ exports.addProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a name.' });
   } else if(!desc) {
     return res.status(400).json({ error: 'Must provide a description.' });
+  } else if(!category || category == "") {
+    return res.status(400).json({ error: 'Must provide a category.' });
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
+  // else if(productCategories.indexOf(category) < 0) {
+  // } 
 
   optimizeAndStoreImageInS3(image)
     .then(imageLink => {
       db.one({
         name: 'add-product',
-        text: `INSERT INTO public.product(id, name, description, image, business_id) 
-          VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
-        values: [uuid(), name, desc, imageLink, business_id]
+        text: `INSERT INTO public.product(id, category, name, description, image, business_id) 
+          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
+        values: [uuid(), category, name, desc, imageLink, business_id]
       }).then(product => {
           return res.status(201).json({ product });
         })
@@ -152,6 +158,7 @@ exports.addProduct = (req, res, next) => {
 
 exports.updateProduct = (req, res, next) => {
   const id = req.body.id;
+  const category = req.body.category;
   const name = req.body.name;
   const description = req.body.description;
   const image = req.body.image;
@@ -163,6 +170,8 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a name.' });
   } else if(!description) {
     return res.status(400).json({ error: 'Must provide a description.' });
+  } else if(!category || category == "") {
+    return res.status(400).json({ error: 'Must provide a category.' });
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
@@ -171,9 +180,9 @@ exports.updateProduct = (req, res, next) => {
   if(typeof image === 'string' || image instanceof String) {
     db.one({
       name: 'update-product',
-      text: `UPDATE public.product SET name=$1, description=$2, image=$3 
-        WHERE id=$4 AND business_id=$5 RETURNING id, name, description, image;`,
-      values: [name, description, image, id, business_id]
+      text: `UPDATE public.product SET name=$1, description=$2, image=$3, category=$4
+        WHERE id=$5 AND business_id=$6 RETURNING *;`,
+      values: [name, description, image, category, id, business_id]
     }).then((product) => {
       return res.status(200).json({ product });
     })
@@ -184,12 +193,12 @@ exports.updateProduct = (req, res, next) => {
   } else {
     optimizeAndStoreImageInS3(image)
       .then(imageLink => {
-        console.log("updating with new image link", imageLink)
+        console.log("PUT /product/:id: updating with new image link", imageLink)
         db.one({
           name: 'update-product',
-          text: `UPDATE public.product SET name=$1, description=$2, image=$3 
-            WHERE id=$4 AND business_id=$5 RETURNING id, name, description, image;`,
-          values: [name, description, imageLink, id, business_id]
+          text: `UPDATE public.product SET name=$1, description=$2, image=$3, category=$4 
+            WHERE id=$5 AND business_id=$6 RETURNING *;`,
+          values: [name, description, imageLink, category, id, business_id]
         }).then((product) => {
             return res.status(200).json({ product });
           })

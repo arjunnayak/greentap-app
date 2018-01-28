@@ -14,7 +14,15 @@ const config = {
   },
   client_base_url: process.env.CLIENT_BASE_URL,
   port: process.env.PORT || 3001,
-  cookie_name: '__greentap_cookie'
+  cookie_name: '__greentap_cookie',
+  categories: {
+    flower: 'flower',
+    vape_cartridge: 'vape_catridge',
+    vape_pen: 'vape_pen',
+    edible: 'edible',
+    concentrate: 'concentrate',
+    accessory: 'accessory'
+  }
 }
 
 module.exports = config;

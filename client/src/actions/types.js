@@ -27,6 +27,7 @@ export const GET_PRODUCTS = 'get_products',
   GET_PRODUCT = 'get_product', 
   ADD_PRODUCT = 'add_product', 
   EDIT_PRODUCT = 'edit_product', 
+  LOAD_EDIT_PRODUCT = 'load_edit_product', 
   DELETE_PRODUCT = 'delete_product', 
   PRODUCT_ERROR = 'product_error',
   CLEAR_PRODUCT = 'clear_product';
