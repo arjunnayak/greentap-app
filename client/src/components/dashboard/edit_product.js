@@ -10,33 +10,6 @@ import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import { CLEAR_PRODUCT, LOAD_EDIT_PRODUCT } from '../../actions/types';
 
-const renderField = field => {
-  if(field.type === "text" || field.type === "password" || field.type === "textarea") {
-    return ( 
-      <Form.Field>
-        <label>{field.label}</label>
-        <Form.Input type={field.type} {...field.input} /> 
-      </Form.Field>
-    )
-  } else if(field.type === "select") {
-    return ( 
-      <Form.Field>
-        <label>{field.label}</label>
-        <Form.Select value={field.input.value} options={field.options} {...field.input} onChange={field.onSelectChange}/>
-      </Form.Field>
-    )
-  } else {
-    return null
-  }
-}
-
-
-const categoryOptions = [
-  { text: 'Flower', value: 'flower' },
-  { text: 'Vape Cartridge', value: 'vape_cartridge' },
-  { text: 'Edible', value: 'edible' }
-]
-
 class EditProduct extends Component {
 
   constructor(props) {
@@ -80,22 +53,16 @@ class EditProduct extends Component {
     let formResult = null
     switch (category) {
       case 'flower':
-        formResult = (
-          <div>
-            <Field name="name" label="Title" component={renderField} type="text" />
-            <Field name="description" label="Description" component={renderField} type="textarea" />
-            <Field name="thc_level" label="THC Level" component={renderField} type="text" />
-            <Field name="cbd_level" label="CBD Level" component={renderField} type="text" />
-          </div>
-        )
-        break
       case 'vape_cartridge':
+        const label = category === 'flower' ? 'Flower' : 'Cartridge'
         formResult = (
           <div>
             <Field name="name" label="Title" component={renderField} type="text" />
             <Field name="description" label="Description" component={renderField} type="textarea" />
-            <Field name="thc_level" label="Cartridge THC Level" component={renderField} type="text" />
-            <Field name="cbd_level" label="Cartridge CBD Level" component={renderField} type="text" />
+            <Field name="strain_type" label="Strain Type" component={renderField} type="select" 
+              options={strainTypeOptions} onSelectChange={this.handleSelectChange} />
+            <Field name="thc_level" label={`${label} THC Level %`} component={renderField} type="text" />
+            <Field name="cbd_level" label={`${label} CBD Level %`} component={renderField} type="text" />
           </div>
         )
         break
@@ -160,6 +127,11 @@ class EditProduct extends Component {
       image: imageToUpload,
       business_id: formProps.business_id
     }
+    if(editedProduct.category === 'flower' || editedProduct.category === 'vape_cartridge') {
+      editedProduct.strain_type = formProps.strain_type
+      editedProduct.thc_level = formProps.thc_level
+      editedProduct.cbd_level = formProps.cbd_level
+    }
     this.props.editProduct(editedProduct)
       .then(() => {
         //checks if empty or undefined/null
@@ -169,11 +141,44 @@ class EditProduct extends Component {
       })
   }
 
-  handleSelectChange(e, res) { 
+  handleSelectChange(e, res) {
     this.props.change(res.name, res.value) 
   }
 
 }
+
+const renderField = field => {
+  if(field.type === "text" || field.type === "password" || field.type === "textarea") {
+    return ( 
+      <Form.Field>
+        <label>{field.label}</label>
+        <Form.Input type={field.type} {...field.input} /> 
+      </Form.Field>
+    )
+  } else if(field.type === "select") {
+    return ( 
+      <Form.Field>
+        <label>{field.label}</label>
+        <Form.Select value={field.input.value} options={field.options} {...field.input} onChange={field.onSelectChange}/>
+      </Form.Field>
+    )
+  } else {
+    return null
+  }
+}
+
+
+const categoryOptions = [
+  { text: 'Flower', value: 'flower' },
+  { text: 'Vape Cartridge', value: 'vape_cartridge' },
+  { text: 'Edible', value: 'edible' }
+]
+
+const strainTypeOptions = [
+  { text: 'Sativa', value: 'sativa' },
+  { text: 'Indica', value: 'indica' },
+  { text: 'Hybrid', value: 'hybrid' }
+]
 
 const formName = 'edit_product'
 const selector = formValueSelector(formName)

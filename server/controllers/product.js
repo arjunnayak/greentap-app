@@ -35,22 +35,41 @@ exports.getProduct = (req, res, next) => {
     return res.status(400).json({ error: 'User business id not found.' });
   }
 
-  db.one({
-    name: 'get-product',
-    text: 'SELECT * FROM public.product WHERE id=$1;',
-    values: [id]
-  }).then(product => {
+  let product = null
+  db.task(t => {
+    return t.one({
+      name: 'get-product',
+      text: 'SELECT * FROM public.product WHERE id=$1;',
+      values: [id]
+    }).then(foundProduct => {
+      product = foundProduct
       if(product.business_id != user_business_id) {
+        console.log('different business ids', product.business_id, user_business_id)
         return res.status(401).end();
       }
-      return res.status(200).json({ product });
+      let updateDetailText = null
+      if(product.category === 'flower') updateDetailText = 'SELECT * FROM public.flower WHERE product_id=$1;'
+      else if(product.category === 'vape_cartridge') updateDetailText = 'SELECT * FROM public.vape_cartridge WHERE product_id=$1;'
+      else if(product.category === 'edible') updateDetailText = 'SELECT * FROM public.edible WHERE product_id=$1;'
+      else return res.status(201).json({ product });
+
+      return t.one({
+        name: 'get-product-detail-'+uuid(),
+        text: updateDetailText,
+        values: [product.id]
+      })
     })
-    .catch(error => {
-      if(error instanceof QueryResultError) return res.status(404).end()
-      // product id not in correct uuid format i.e. 123-456-789
-      else if(error.code === '22P02') return res.status(404).end()
-      return res.status(500).json({ error: "Error retrieving product" });
-    });
+  }).then(productDetail => {
+    // put all properties of productDetail into product
+    Object.assign(product, productDetail)
+    return res.status(200).json({ product })
+  }).catch(error => {
+    console.error('get product error', error)
+    if(error instanceof QueryResultError) return res.status(404).end()
+    // product id not in correct uuid format i.e. 123-456-789
+    else if(error.code === '22P02') return res.status(404).end()
+    return res.status(500).json({ error: "Error retrieving product" })
+  })
 }
 
 exports.getImageUploadSign = (req, res, next) => {
@@ -115,20 +134,26 @@ const optimizeAndStoreImageInS3 = function(image) {
 }
 
 exports.addProduct = (req, res, next) => {
-  const category = req.body.product.category;
-  const name = req.body.product.name;
-  const desc = req.body.product.desc;
-  const image = req.body.product.image;
-  const business_id = req.body.business_id;
+  const category = req.body.product.category
+  const name = req.body.product.name
+  const desc = req.body.product.desc
+  const image = req.body.product.image
+  const business_id = req.body.business_id
+  let strain_type, thc_level, cbd_level = null
 
   if (!business_id) {
-    return res.status(400).json({ error: 'Must provide a business id.' });
+    return res.status(400).json({ error: 'Must provide a business id.' })
   } else if(!name) {
-    return res.status(400).json({ error: 'Must provide a name.' });
+    return res.status(400).json({ error: 'Must provide a name.' })
   } else if(!desc) {
-    return res.status(400).json({ error: 'Must provide a description.' });
+    return res.status(400).json({ error: 'Must provide a description.' })
   } else if(!category || category == "") {
-    return res.status(400).json({ error: 'Must provide a category.' });
+    return res.status(400).json({ error: 'Must provide a category.' })
+  } else if(category === 'flower' || category === 'vape_cartridge') {
+    strain_type = req.body.product.strain_type
+    thc_level = req.body.product.thc_level
+    cbd_level = req.body.product.cbd_level
+    if(!strain_type) return res.status(400).json({ error: 'Must provide a strain type.' })
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
@@ -137,21 +162,56 @@ exports.addProduct = (req, res, next) => {
 
   optimizeAndStoreImageInS3(image)
     .then(imageLink => {
-      db.one({
-        name: 'add-product',
-        text: `INSERT INTO public.product(id, category, name, description, image, business_id) 
-          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
-        values: [uuid(), category, name, desc, imageLink, business_id]
-      }).then(product => {
-          return res.status(201).json({ product });
-        })
-        .catch(error => {
-          console.error(`error adding product to database ${error}`)
-          return res.status(500).json({ error: "Error adding product" });
-        });
+      const product_id = uuid()
+      db.tx(t => {
+        let addProductTransactions = [
+          t.one({
+            name: 'add-product',
+            text: `INSERT INTO public.product(id, category, name, description, image, business_id) 
+              VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
+            values: [product_id, category, name, desc, imageLink, business_id]
+          })
+        ]
+        switch(category) {
+          case 'flower':
+            addProductTransactions.push(t.none({
+              name: 'create-flower',
+              text: `INSERT INTO public.flower(business_id, product_id, strain_type, thc_level, cbd_level) 
+                VALUES ($1, $2, $3, $4, $5);`,
+                values: [business_id, product_id, strain_type, thc_level, cbd_level]
+            }))
+            break
+          case 'vape_cartridge':
+            addProductTransactions.push(t.none({
+              name: 'create-vape-catridge',
+              text: `INSERT INTO public.vape_cartridge(business_id, product_id, strain_type, thc_level, cbd_level) 
+              VALUES ($1, $2, $3, $4, $5);`,
+              values: [business_id, product_id, strain_type, thc_level, cbd_level]
+            }))
+            break
+          case 'edible':
+            addProductTransactions.push(t.none({
+              name: 'create-edible',
+              text: `INSERT INTO public.edible(business_id, product_id) 
+                VALUES ($1, $2);`,
+              values: [business_id, product_id]
+            }))
+            break
+        }
+        return t.batch(addProductTransactions)
+      }).then(data => {
+        let product = data[0]
+        let specificProduct = data[1]
+        console.log('created specific product', specificProduct)
+        return res.status(201).json({ product });
+      }).catch(errors => {
+        console.log(errors)
+        console.error(`add product transaction errors adding product to database ${errors}`)
+        return res.status(500).json({ error: "Error adding product" });
+      });
     })
     .catch(error => {
-      console.error(`error uploading product image ${error}`)
+      console.error(`errors uploading product image ${errors}`)
       return res.status(500).json({ error: 'Error uploading image.' });      
     })
 }
@@ -172,45 +232,118 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a description.' });
   } else if(!category || category == "") {
     return res.status(400).json({ error: 'Must provide a category.' });
+  } else if(category === 'flower' || category === 'vape_cartridge') {
+    strain_type = req.body.strain_type
+    thc_level = req.body.thc_level
+    cbd_level = req.body.cbd_level
+    if(!strain_type) return res.status(400).json({ error: 'Must provide a strain type.' })
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
 
+  // db.tx(t => {
+  //   let addProductTransactions = [
+  //     t.one({
+  //       name: 'add-product',
+  //       text: `INSERT INTO public.product(id, category, name, description, image, business_id) 
+  //         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
+  //       values: [product_id, category, name, desc, imageLink, business_id]
+  //     })
+  //   ]
+    // switch(category) {
+    //   case 'flower':
+    //     addProductTransactions.push(t.none({
+    //       name: 'create-flower',
+    //       text: `INSERT INTO public.flower(business_id, product_id, strain_type, thc_level, cbd_level) 
+    //         VALUES ($1, $2, $3, $4, $5);`,
+    //         values: [business_id, product_id, strain_type, thc_level, cbd_level]
+    //     }))
+    //     break
+    //   case 'vape_cartridge':
+    //     addProductTransactions.push(t.none({
+    //       name: 'create-vape-catridge',
+    //       text: `INSERT INTO public.vape_cartridge(business_id, product_id, strain_type, thc_level, cbd_level) 
+    //       VALUES ($1, $2, $3, $4, $5);`,
+    //       values: [business_id, product_id, strain_type, thc_level, cbd_level]
+    //     }))
+    //     break
+    //   case 'edible':
+    //     addProductTransactions.push(t.none({
+    //       name: 'create-edible',
+    //       text: `INSERT INTO public.edible(business_id, product_id) 
+    //         VALUES ($1, $2);`,
+    //       values: [business_id, product_id]
+    //     }))
+    //     break
+    // }
+  //   return t.batch(addProductTransactions)
+  // }).then(data => {
+  //   let product = data[0]
+  //   let specificProduct = data[1]
+  //   console.log('created specific product', specificProduct)
+  //   return res.status(201).json({ product });
+  // }).catch(errors => {
+  //   console.log(errors)
+  //   console.error(`add product transaction errors adding product to database ${errors}`)
+  //   return res.status(500).json({ error: "Error adding product" });
+  // });
+
   //if there already is an image in s3, there is no need to optimize and store image
   if(typeof image === 'string' || image instanceof String) {
-    db.one({
-      name: 'update-product',
-      text: `UPDATE public.product SET name=$1, description=$2, image=$3, category=$4
-        WHERE id=$5 AND business_id=$6 RETURNING *;`,
-      values: [name, description, image, category, id, business_id]
-    }).then((product) => {
-      return res.status(200).json({ product });
+    db.tx(t => {
+      t.one({
+        name: 'update-product',
+        text: `UPDATE public.product SET name=$1, description=$2, image=$3, category=$4
+          WHERE id=$5 AND business_id=$6 RETURNING *;`,
+        values: [name, description, image, category, id, business_id]
+      }).then((product) => {
+        let updateDetailSql = {}
+        if(product.category === 'flower') {
+          updateDetailSql.text = `UPDATE public.flower SET strain_type=$1, thc_level=$2, cbd_level=$3
+            WHERE product_id=$4 AND business_id=$5;`
+        } else if(product.category === 'vape_cartridge') {
+          updateDetailSql.text = `UPDATE public.vape_cartridge SET strain_type=$1, thc_level=$2, cbd_level=$3
+          WHERE product_id=$4 AND business_id=$5;`
+        } else if(product.category === 'edible') {
+          // updateDetailSql.text = `UPDATE public.edible SET strain_type=$1, thc_level=$2, cbd_level=$3
+          //   WHERE product_id=$4 AND business_id=$5;`
+          return res.status(200).json({ product })
+        } else {
+          const msg = 'update product: cannot identify product category, not updating'
+          console.log(msg)
+          return res.status(500).json({error: msg})
+        }
+        updateDetailSql.name = 'update-product-detail'
+        updateDetailSql.values = [strain_type, thc_level, cbd_level, product.id, product.business_id]
+        t.none(updateDetailSql).then(() => {
+          return res.status(200).json({ product })
+        }).catch(error => {
+          return res.status(200).json({ product })
+        })
+      }).catch(error => {
+        console.log('error from db call', error)
+        return res.status(500).json({ error: "Error editing product" });
+      })
     })
-    .catch(error => {
-      console.log('error from db call', error)
-      return res.status(500).json({ error: "Error editing product" });
-    });
+    
   } else {
-    optimizeAndStoreImageInS3(image)
-      .then(imageLink => {
-        console.log("PUT /product/:id: updating with new image link", imageLink)
-        db.one({
-          name: 'update-product',
-          text: `UPDATE public.product SET name=$1, description=$2, image=$3, category=$4 
-            WHERE id=$5 AND business_id=$6 RETURNING *;`,
-          values: [name, description, imageLink, category, id, business_id]
-        }).then((product) => {
-            return res.status(200).json({ product });
-          })
-          .catch(error => {
-            console.log('error from db call', error)
-            return res.status(500).json({ error: "Error editing product" });
-          });
-      })
-      .catch(error => {
-        console.error(`error uploading product image ${error}`)
-        return res.status(500).json({ error: 'Error uploading image.' });
-      })
+    optimizeAndStoreImageInS3(image).then(imageLink => {
+      console.log("PUT /product/:id: updating with new image link", imageLink)
+      db.one({
+        name: 'update-product',
+        text: `UPDATE public.product SET name=$1, description=$2, image=$3, category=$4 
+          WHERE id=$5 AND business_id=$6 RETURNING *;`,
+        values: [name, description, imageLink, category, id, business_id]
+      }).then((product) => {
+          return res.status(200).json({ product });
+      }).catch(error => {
+          console.log('error from db call', error)
+          return res.status(500).json({ error: "Error editing product" });
+      });
+    }).catch(error => {
+      console.error(`error uploading product image ${error}`)
+      return res.status(500).json({ error: 'Error uploading image.' });
+    })
   }
 }
 

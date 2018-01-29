@@ -7,6 +7,8 @@ import { getProducts, deleteProduct } from "../../actions/products"
 import Dashboard from './dashboard'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
+import Table from 'semantic-ui-react/dist/commonjs/collections/Table'
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 
 const renderField = field => (
   <div>
@@ -47,25 +49,45 @@ class Products extends Component {
   renderProducts() {
     const productRows = _.map(this.props.products, product => {
       return (
-        <tr key={product.id}>
-          <td><Link to={`/dashboard/products/edit/${product.id}`}>{product.name}</Link></td>
-          <td>{product.description}</td>
-          <td><Button primary onClick={() => {this.handleDeleteProduct(product)}}>Delete</Button></td>
-        </tr>
+        <Table.Row key={product.id}>
+          <Table.Cell collapsing>
+            <Image src={product.image} rounded size='mini' />
+          </Table.Cell>
+
+          <Table.Cell collapsing>
+            <Link to={`/dashboard/products/edit/${product.id}`}>{product.name}</Link>
+          </Table.Cell>
+          
+          <Table.Cell>
+            {product.description}
+          </Table.Cell>
+
+          <Table.Cell>
+            {product.category}
+          </Table.Cell>
+          
+          <Table.Cell collapsing textAlign='right'>
+            <Button primary onClick={() => {this.handleDeleteProduct(product)}}>Delete</Button>
+          </Table.Cell>
+        </Table.Row>
       )
     })
     return (
-      <table className="ui single line striped selectable table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          { productRows }
-        </tbody>
-      </table>
+      <Table celled striped selectable>
+        <Table.Header>
+          <Table.Row>
+          <Table.HeaderCell>Image</Table.HeaderCell>
+            <Table.HeaderCell>Title</Table.HeaderCell>
+            <Table.HeaderCell>Description</Table.HeaderCell>
+            <Table.HeaderCell>Category</Table.HeaderCell>
+            <Table.HeaderCell>Action</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          {productRows}
+        </Table.Body>
+      </Table>
     )
   }
 }

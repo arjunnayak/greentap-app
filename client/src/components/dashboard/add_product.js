@@ -21,20 +21,17 @@ class AddProduct extends Component {
     const { handleSubmit, categoryValue } = this.props
     return (
       <Dashboard header="Add Product">
-        {/* <Grid.Row>
-          
-        </Grid.Row> */}
         <Grid.Row columns={2}>
+          {this.renderAlert()}
           <Grid.Column>
-            {this.renderAlert()}
-            <Form onSubmit={handleSubmit(this.submitAddProduct.bind(this))}>
-              <Field name="category" label="Category" component={renderField} 
-                type="select" options={categoryOptions} onSelectChange={this.handleSelectChange} />
-              {this.renderFormBasedOnCategory(categoryValue)}
-            </Form>
+          <Form onSubmit={handleSubmit(this.submitAddProduct.bind(this))}>
+            <Field name="category" label="Category" component={renderField} 
+              type="select" options={categoryOptions} onSelectChange={this.handleSelectChange} />
+            {this.renderFormBasedOnCategory(categoryValue)}
+          </Form>
           </Grid.Column>
           <Grid.Column>
-            <ImageUpload name="image" ref="imageUpload" />
+          <ImageUpload name="image" ref="imageUpload" />
           </Grid.Column>
         </Grid.Row>
       </Dashboard>
@@ -51,8 +48,10 @@ class AddProduct extends Component {
             <Field name="desc" label="Description" component={renderField} type="textarea" />
             <Field name="strain_type" label="Strain Type" component={renderField} type="select" 
               options={strainTypeOptions} onSelectChange={this.handleSelectChange} />
-            <Field name="thc_level" label="THC Level %" component={renderField} type="text" />
-            <Field name="cbd_level" label="CBD Level %" component={renderField} type="text" />
+             <Form.Group widths='equal'>
+              <Field name="thc_level" label="THC Level %" component={renderField} type="text" />
+              <Field name="cbd_level" label="CBD Level %" component={renderField} type="text" />
+            </Form.Group>
           </div>
         )
         break
@@ -85,7 +84,13 @@ class AddProduct extends Component {
       <div>
         {formResult}
         <br/>
-        <Button type="submit" primary>Add</Button>
+        {
+          this.props.isRequesting ? (
+            <Button type="submit" loading primary>Add</Button>
+          ) : (
+            <Button type="submit" primary>Add</Button>
+          )
+        }
         <Link to="/dashboard/products">Cancel</Link>
       </div>
     )
@@ -165,7 +170,8 @@ function mapStateToProps(state) {
     initialValues: {category: 'flower', strain_type:'sativa' },
     user: state.auth.user,
     errorMessage: state.products.error,
-    categoryValue: selector(state, 'category')
+    categoryValue: selector(state, 'category'),
+    isRequesting: state.products.is_requesting
   }
 }
 
