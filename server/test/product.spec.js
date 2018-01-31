@@ -42,6 +42,10 @@ describe('Product Controller', () => {
               business_id: authedUser.business.id,
               product: {
                 name: 'test title',
+                category: 'flower',
+                strain_type: 'hybrid',
+                thc_level: '20',
+                cbd_level: '5',
                 desc: 'test description',
                 image: { data: '' }
               }
@@ -51,6 +55,9 @@ describe('Product Controller', () => {
               business_id: authedUser.business.id,
               product: {
                 name: 'product with image title',
+                category: 'flower',
+                strain_type: 'sativa',
+                thc_level: '40',
                 desc: 'product with image description',
                 image: { 
                   data: `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N
@@ -87,7 +94,8 @@ describe('Product Controller', () => {
         if (err) done(err)
         productToAddNoImageResultId = res.body.product.id
         expect(res.body.product).to.include({ business_id: authedUser.business.id, 
-          description: productToAdd.product.desc, name: productToAdd.product.name, image: '' })
+          description: productToAdd.product.desc, name: productToAdd.product.name, 
+          category: productToAdd.product.category, image: '' })
         done()
       })
   })
@@ -104,7 +112,8 @@ describe('Product Controller', () => {
         if (err) done(err)
         productToAddWithImageResultId = res.body.product.id
         expect(res.body.product).to.include({ business_id: productToAddWithImage.business_id, 
-          description: productToAddWithImage.product.desc, name: productToAddWithImage.product.name })
+          description: productToAddWithImage.product.desc, name: productToAddWithImage.product.name,
+          category: productToAddWithImage.product.category })
         
         productToAddWithImage.imageLink = `https://s3-us-west-1.amazonaws.com/greentap-images/${filename}`
         expect(res.body.product.image).to.equal(productToAddWithImage.imageLink)
@@ -143,19 +152,23 @@ describe('Product Controller', () => {
     let productToUpdate = {
       id: productToAddNoImageResultId,
       name: 'updated title',
-      description: productToAdd.product.desc,
-      image: '',
-      business_id: productToAdd.business_id
+      category: productToAdd.product.category, // should be the same category
+      description: 'updated description',
+      image: productToAdd.product.image.data,
+      business_id: productToAdd.business_id,
+      strain_type: productToAdd.product.strain_type
     }
+    console.log('>>>>>>>>>>>>>>>',productToUpdate)
     request(server)
       .put(`/api/products/${productToAddNoImageResultId}`)
       .set('Cookie', userCookie)
       .send(productToUpdate)
       .expect(200)
       .end((err, res) => {
-        if (err) done(err)
-        expect(res.body.product).to.include({ name: productToUpdate.name, 
-          image: productToUpdate.image, description: productToUpdate.description })
+        if (err) console.log(err); done(err);
+        expect(res.body.product).to.include({ name: productToUpdate.name, image: productToUpdate.image, 
+          category: productToUpdate.category, strain_type: productToUpdate.strain_type, 
+          description: productToUpdate.description, business_id: productToUpdate.business_id })
         done()
       })
   })
@@ -164,9 +177,13 @@ describe('Product Controller', () => {
     let productWithImageToUpdate = {
       id: productToAddWithImageResultId,
       name: 'updated title with image',
+      category: 'vape_cartridge', // updates category too, should have been flower when initially added
       description: productToAddWithImage.product.desc,
       image: productToAddWithImage.imageLink,
-      business_id: productToAddWithImage.business_id
+      business_id: productToAddWithImage.business_id,
+      strain_type: 'hybrid',
+      thc_level: '15',
+      cbd_level: '10'
     }
     request(server)
       .put(`/api/products/${productToAddWithImageResultId}`)
@@ -176,7 +193,8 @@ describe('Product Controller', () => {
       .end((err, res) => {
         if (err) done(err)
         expect(res.body.product).to.include({ name: productWithImageToUpdate.name, 
-          image: productWithImageToUpdate.image, description: productWithImageToUpdate.description })
+          image: productWithImageToUpdate.image, description: productWithImageToUpdate.description,
+          category: productWithImageToUpdate.category })
         done()
       })
   })

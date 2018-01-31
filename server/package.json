@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "server": "npm run server:development",
-    "server:development": "pm2 startOrReload ecosystem.config.js --watch --attach",
-    "server:production": "pm2 startOrReload ecosystem.config.js --env production",
-    "test": "NODE_ENV=test mocha test",
+    "server:development": "pm2 startOrRestart ecosystem.config.js --watch --attach",
+    "server:production": "pm2 startOrRestart ecosystem.config.js --env production",
+    "test": "pm2 stop greentap-api; NODE_ENV=test; mocha test",
     "lint": "eslint ."
   },
   "license": "",
