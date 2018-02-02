@@ -19,11 +19,10 @@ exports.getProducts = (req, res, next) => {
     values: [business_id]
   }).then(products => {
       return res.status(200).json({ products });
-    })
-    .catch(error => {
-      console.log(error);
-      return res.status(500).json({ error: "Error retrieving products" });
-    });
+  }).catch(error => {
+    console.error('get products error 500', error);
+    return res.status(500).json({ error: "Error retrieving products" });
+  });
 }
 
 exports.getProduct = (req, res, next) => {
@@ -36,6 +35,7 @@ exports.getProduct = (req, res, next) => {
   }
 
   let product = null
+  let UNAUTHORIZED_USER_ERROR = 'unauthorized user'
   db.task(t => {
     return t.one({
       name: 'get-product',
@@ -44,8 +44,8 @@ exports.getProduct = (req, res, next) => {
     }).then(foundProduct => {
       product = foundProduct
       if(product.business_id != user_business_id) {
-        console.log('different business ids', product.business_id, user_business_id)
-        return res.status(401).end();
+        console.log('business id mismatch on add product', product.business_id, user_business_id)
+        return UNAUTHORIZED_USER_ERROR
       }
       let updateDetailText = null
       if(product.category === 'flower') updateDetailText = 'SELECT * FROM public.flower WHERE product_id=$1;'
@@ -60,6 +60,7 @@ exports.getProduct = (req, res, next) => {
       })
     })
   }).then(productDetail => {
+    if(productDetail === UNAUTHORIZED_USER_ERROR) return res.status(401).end()
     // put all properties of productDetail into product
     Object.assign(product, productDetail)
     return res.status(200).json({ product })
@@ -162,7 +163,13 @@ exports.updateProduct = (req, res, next) => {
   const description = req.body.description;
   const image = req.body.image;
   const business_id = req.body.business_id;
-  
+  let strain_type = req.body.strain_type
+  let thc_level = req.body.thc_level
+  let cbd_level = req.body.cbd_level
+
+  let isFlowerOrVape = category === 'flower' || category === 'vape_cartridge'
+  let hasInvalidStrain = !strain_type || strain_type == ""
+
   if (!business_id) {
     return res.status(400).json({ error: 'Must provide a business id.' });
   } else if(!name) {
@@ -173,11 +180,8 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a category.' });
   } else if(['flower','vape_cartridge','edible'].indexOf(category) < 0) {
     return res.status(400).json({ error: 'Category not supported' })
-  } else if(category === 'flower' || category === 'vape_cartridge') {
-    strain_type = req.body.strain_type
-    thc_level = req.body.thc_level
-    cbd_level = req.body.cbd_level
-    if(!strain_type) return res.status(400).json({ error: 'Must provide a strain type.' })
+  } else if(isFlowerOrVape && hasInvalidStrain) {
+    return res.status(400).json({ error: 'Must provide a strain type.' })
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
@@ -246,6 +250,7 @@ exports.updateProduct = (req, res, next) => {
           values: updateDetailValues
         }))
       }
+
       return t.batch(updateTransactions)
     }).then(data => {
       let updatedProduct = data[0]
