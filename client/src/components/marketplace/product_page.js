@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-class Product extends Component {
+class ProductPage extends Component {
 
   render() {
     return (
@@ -15,4 +15,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(Product)
+export default connect(mapStateToProps)(ProductPage)

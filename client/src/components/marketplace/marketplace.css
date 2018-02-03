@@ -1,0 +1,17 @@
+.mar
+{
+	margin:5%;
+}
+
+
+.am
+{
+	width: 60px;
+}
+
+
+@media only screen and (max-width: 500px) {
+    .extra {
+        width: 100% !important;
+    }
+}
