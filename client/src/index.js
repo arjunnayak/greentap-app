@@ -4,10 +4,13 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import reduxThunk from 'redux-thunk'
 import rootReducer from './reducers/index'
+
+import 'semantic-ui-css/semantic.min.css'
+
+//allow css in components code to be loaded after semantic ui
 import GreentapRouter from './routes'
 
 // Import stylesheets
-import 'semantic-ui-css/semantic.min.css'
 import './styles/base.css'
 
 let store = null
