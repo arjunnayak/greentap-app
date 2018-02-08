@@ -5,28 +5,41 @@ import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Input from 'semantic-ui-react/dist/commonjs/elements/Input'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
+import { Icon } from 'semantic-ui-react'
+
+const categoryOptions = [
+  { key: 1, text: 'Flowers', value: 'flower' },
+  { key: 2, text: 'Concentrates', value: 'concentrate' },
+  { key: 3, text: 'Vape Catridges', value: 'vape_cartridge' },
+  { key: 4, text: 'Edibles', value: 'edible' },
+  { key: 5, text: 'Medical', value: 'medical' },
+]
 
 class MarketplaceHeader extends Component {
   render() {
     return (
-      <Menu fixed='top' size='huge' borderless fluid >
-        <Container>
-        <Menu.Item as={Link} to='/' header>GreenTap</Menu.Item>
-        <Dropdown item text='Categories'>
-          <Dropdown.Menu>
-            <Dropdown.Item>Flowers</Dropdown.Item>
-            <Dropdown.Item>Concentrates</Dropdown.Item>
-            <Dropdown.Item>Edibles</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-        <Menu.Item>
-          <Input icon='search' placeholder='Search...' />
-        </Menu.Item>
-        <Menu.Menu position='right'>
-          {this.renderLinks()}
-        </Menu.Menu>
-        </Container>
-      </Menu>
+      // <!--Menu Start -->
+      <div className="marketplace-header">
+        <Menu borderless size='massive' id='marketplace-menu' attached='top' inverted fluid>
+
+          <Menu.Item header>Greentap</Menu.Item>
+          
+          <Menu.Item>
+            <Dropdown placeholder='Categories' className='head' selection options={categoryOptions} />
+          </Menu.Item>
+
+          <Menu.Item>
+            <Input icon='search' placeholder='Search for strains, oil, producers...' />
+          </Menu.Item>
+
+          <Menu.Menu position='right'>
+            <Menu.Item name='login'>Login</Menu.Item>
+            <Menu.Item name='register'>Register</Menu.Item>
+            <Menu.Item name='cart'><Icon name='video camera'/></Menu.Item>
+          </Menu.Menu>
+        </Menu>
+      </div>
+      // {/* // <!--Menu End --> */}
     )
   }
 

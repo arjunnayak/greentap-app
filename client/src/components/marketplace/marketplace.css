@@ -15,3 +15,11 @@
         width: 100% !important;
     }
 }
+
+#marketplace-menu {
+    background-color: #273238;
+}
+
+#marketplace-menu .menu > .item {
+    color: white;
+}
