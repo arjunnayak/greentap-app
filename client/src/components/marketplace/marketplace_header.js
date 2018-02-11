@@ -35,7 +35,7 @@ class MarketplaceHeader extends Component {
           <Menu.Menu position='right'>
             <Menu.Item name='login'>Login</Menu.Item>
             <Menu.Item name='register'>Register</Menu.Item>
-            <Menu.Item name='cart'><Icon name='video camera'/></Menu.Item>
+            <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
           </Menu.Menu>
         </Menu>
       </div>

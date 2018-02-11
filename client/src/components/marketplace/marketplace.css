@@ -23,3 +23,46 @@
 #marketplace-menu .menu > .item {
     color: white;
 }
+
+.mhome .main {
+    background-color: #f4f7f9;
+    height: 100%;
+    padding-top: 25px;
+    margin-top: 15px;
+    padding-left: 1rem;
+}
+
+.mhome .sidebar {
+    max-width: 276px !important;
+    margin-left: 50px;
+}
+
+.mhome .card-menu {
+    padding-right: 15px;
+}
+
+.mhome .container {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+@media only screen and (max-width: 767px) {
+    .mhome .filter {
+        display: none;
+    }
+
+    .ui.container {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.filter .header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #484d55; 
+}
