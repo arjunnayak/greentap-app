@@ -36,7 +36,8 @@ class Products extends Component {
   }
 
   handleDeleteProduct(product) {
-    var confirmDelete = confirm("Are you sure you want to delete this product?")
+    // var confirmDelete = confirm("Are you sure you want to delete this product?")
+    var confirmDelete = true
     if (confirmDelete === true) {
       this.props.deleteProduct(product)
         .then(() => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, browserHistory, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import NotFoundPage from './components/pages/not_found_page'
 
@@ -31,7 +31,7 @@ class GreentapRouter extends Component {
 
   render () {
     return (
-      <Router history={browserHistory} >
+      <Router>
         <div>
           <Switch>
             <Route exact path="/" component={RequireAuth(Overview)}/>
