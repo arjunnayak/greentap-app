@@ -23,7 +23,8 @@ export const LOGIN_REQUEST = 'login_request',
 //= =====================
 // Product Actions
 //= =====================
-export const GET_PRODUCTS = 'get_products', 
+export const GET_PRODUCTS = 'get_products',
+  GET_MARKETPLACE_PRODUCTS = 'get_marketplace_products',
   GET_PRODUCT = 'get_product', 
   ADD_PRODUCT_SUBMIT = 'add_product_submit',
   ADD_PRODUCT_SUCCESS = 'add_product_success',
