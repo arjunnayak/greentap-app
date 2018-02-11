@@ -25,17 +25,15 @@ class MarketplaceHeader extends Component {
           <Menu.Item header>Greentap</Menu.Item>
           
           <Menu.Item>
-            <Dropdown placeholder='Categories' className='head' selection options={categoryOptions} />
+            <Dropdown placeholder='CATEGORIES' id='categories-dropdown' selection options={categoryOptions} />
           </Menu.Item>
 
           <Menu.Item>
-            <Input icon='search' placeholder='Search for strains, oil, producers...' />
+            <Input className='search' icon='search' placeholder='Search for strains, oil, producers...' />
           </Menu.Item>
 
-          <Menu.Menu position='right'>
-            <Menu.Item name='login'>Login</Menu.Item>
-            <Menu.Item name='register'>Register</Menu.Item>
-            <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
+          <Menu.Menu position='right' className='right-menu'>
+            {this.renderRightMenuLinks(this.props.authenticated)}
           </Menu.Menu>
         </Menu>
       </div>
@@ -43,16 +41,19 @@ class MarketplaceHeader extends Component {
     )
   }
 
-  renderLinks() {
-    if (this.props.authenticated) {
-      return [
-        <Menu.Item key='Home'><a href="https://arjunnayak.github.io/greentap">Home</a></Menu.Item>,
-        <Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>
-      ]
+  renderRightMenuLinks(authenticated) {
+    if(authenticated) {
+      return (
+        <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
+      )
     } else {
-      return [
-        <Menu.Item key='Login' as={Link} to='/login'>Login</Menu.Item>,
-      ]
+      return (
+        <div>
+          <Menu.Item name='login'>Login</Menu.Item>
+          <Menu.Item name='register'>Register</Menu.Item>
+          <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
+        </div>
+      )
     }
   }
 }
