@@ -25,6 +25,19 @@ exports.getProducts = (req, res, next) => {
   });
 }
 
+exports.getMarketplaceProducts = (req, res, next) => {
+  db.query({
+    name: 'get-marketplace-products',
+    text: `SELECT p.*, b.name as business_name from public.product p, public.business b where p.business_id = b.id;`,
+    values: []
+  }).then(products => {
+    return res.status(200).json({ products });
+  }).catch(error => {
+    console.error('get marketplace products error 500', error);
+    return res.status(500).json({ error: "Error retrieving products" });
+  });
+}
+
 exports.getProduct = (req, res, next) => {
   const id = req.params.id;
   const user_business_id = req.user.business.id

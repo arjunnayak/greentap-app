@@ -52,6 +52,7 @@ module.exports = (app, passport) => {
   // Product routes (session required)
   productRoutes.get('/imageUploadSign', requireAuth, ProductController.getImageUploadSign)
   productRoutes.get('/', requireAuth, ProductController.getProducts)
+  productRoutes.get('/marketplace', requireAuth, ProductController.getMarketplaceProducts)
   productRoutes.get('/:id', requireAuth, ProductController.getProduct)
   productRoutes.post('/add', requireAuth, ProductController.addProduct)
   productRoutes.put('/:id', requireAuth, ProductController.updateProduct)
