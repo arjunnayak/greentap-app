@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -48,7 +47,7 @@ class Products extends Component {
   }
 
   renderProducts() {
-    const productRows = _.map(this.props.products, product => {
+    const productRows = this.props.products.map(product => {
       return (
         <Table.Row key={product.id}>
           <Table.Cell collapsing>
