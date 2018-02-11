@@ -20,6 +20,28 @@
     background-color: #273238;
 }
 
+.marketplace-header {
+    height: 92px;
+}
+
+.marketplace-header #categories-dropdown {
+    background-color: transparent;
+    border: 2px solid white;
+    width: 160px !important;
+    height: 45px !important;
+    color: rgba(191,191,191,.87);
+    font-size: 17px;
+    min-width: 160px;
+}
+
+.marketplace-header .search {
+    width: 50%;
+}
+
+.marketplace-header .right-menu {
+    margin-left: 0px;
+}
+
 #marketplace-menu .menu > .item {
     color: white;
 }

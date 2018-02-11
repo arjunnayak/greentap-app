@@ -1,53 +1,108 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import _ from 'lodash'
 import MarketplaceHeader from './marketplace_header'
-import { getBrands } from "../../actions/brands"
-import BrandCard from './brand_card'
+import { getMarketplaceProducts } from "../../actions/products"
+import ProductCard from './product_card'
 import './marketplace.css'
-
-// import './prafull-marketplace.css'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
-import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
-import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import List from 'semantic-ui-react/dist/commonjs/elements/List'
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon'
-import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 
 const sortByOptions = [
   { key: 1, text: 'Price: Low to High', value: 'price-lh' },
   { key: 2, text: 'Price: High to Low', value: 'price-hl' }
 ]
 
-const ProductCard = (props) => (
-  <Card>
-    <Image src={props.image} />
-    <Card.Content>
-      <Card.Header>
-        Product Name
-      </Card.Header>
-      <Card.Meta>
-        Company A
-      </Card.Meta>
-      <Grid colums={2}>
-        <div className="two column row">
-          <Grid.Column> THC: 25.0%</Grid.Column>
-          <Grid.Column> CBD: 0.00%</Grid.Column>
-        </div>
-      </Grid>
-    </Card.Content>
-    <Card.Content extra>
-      <Button fluid primary>Add To Cart</Button>
-    </Card.Content>
-  </Card>
-)
+class Marketplace extends Component {
+
+  constructor(props) {
+    super(props)
+    this.renderProductGrid = this.renderProductGrid.bind(this)
+  }
+
+  componentDidMount() {
+    this.props.getMarketplaceProducts()
+  }
+
+  render() {
+    console.log('render marketplace products', this.props.products)
+    const hasProducts = (this.props.products && this.props.products != []) ? this.props.products : null
+    return (
+      <div className='mhome'>
+        <MarketplaceHeader />
+
+        <Container fluid style={{ marginTop: '5vh' }}>
+          <Grid stackable columns={2}>
+            <Grid.Column width={12}>
+              <h1>Flowers</h1>
+            </Grid.Column>
+            <Grid.Column width={4}>
+              <Dropdown placeholder='Sort by' selection options={sortByOptions} />
+            </Grid.Column>
+          </Grid>
+        </Container>
+
+        <Container fluid className='main'>
+          <Grid stackable columns={2}>
+            <Grid.Column width={4}>
+              {Filter}
+            </Grid.Column>
+
+            <Grid.Column width={12}>
+              {hasProducts ? (
+                <div className='card-menu'>
+                  {this.renderProductGrid(3)}
+                </div>
+              ) : <h2>No products available</h2>}
+            </Grid.Column>
+          </Grid>
+        </Container>
+
+        {/* <!-- Footer --> */}
+        {Footer}
+        {/* <!-- Footer End --> */}
+      </div>  
+    )
+  }
+
+  renderProductGrid(numColumns=3) {
+    console.log('marketplace receive products', this.props.products)
+    if(this.props.products && this.props.products != []) {
+      const productRows = []
+      let tempProducts = JSON.parse(JSON.stringify(this.props.products))
+      while(tempProducts.length != 0) {
+        productRows.push(tempProducts.splice(0, numColumns))
+      }
+      console.log('only displaying 25 products or less')
+      const productRowsToRender = productRows.map(row => {
+        const arrayofProductColumns = row.map(product => {
+          return (
+            <Grid.Column key={product.id}>
+              <ProductCard product={product}/>
+            </Grid.Column>
+          )
+        })
+
+        return (
+          <Grid columns={numColumns}>
+            {arrayofProductColumns}
+          </Grid>
+        )
+      })
+
+      console.log('productRowsToRender', productRowsToRender)
+      return productRowsToRender
+    } else {
+      return null
+    }
+  }
+}
 
 const Filter = (
   <div className='filter'>
@@ -108,85 +163,30 @@ const Filter = (
   </div>
 )
 
-class Marketplace extends Component {
-  componentDidMount() {
-    this.props.getBrands()
-  }
 
-  render() {
-
-    return (
-      <div className='mhome'>
-        <MarketplaceHeader />
-
-        <Container fluid style={{ marginTop: '5vh' }}>
-          <Grid stackable columns={2}>
-            <Grid.Column width={12}>
-              <h1>Flowers</h1>
-            </Grid.Column>
-            <Grid.Column width={4}>
-              <Dropdown placeholder='Sort by' selection options={sortByOptions} />
-            </Grid.Column>
-          </Grid>
-        </Container>
-
-        <Container fluid className='main'>
-          <Grid stackable columns={2}>
-            <Grid.Column width={4}>
-              {Filter}
-            </Grid.Column>
-
-            <Grid.Column width={12}>
-              <div className='card-menu'>
-                <Grid columns={3}>
-                  <Grid.Column>
-                    {<ProductCard image='images/sample_flower.png'/>}
-                    {<ProductCard image='images/sample_flower.png'/>}
-                    {<ProductCard image='images/sample_flower.png'/>}
-                  </Grid.Column>
-
-                  <Grid.Column>
-                    {<ProductCard image='images/sample_flower.png'/>}
-                    {<ProductCard image='images/sample_flower.png'/>}
-                    {<ProductCard image='images/sample_flower.png'/>}
-                  </Grid.Column>
-
-                  <Grid.Column>
-                    {<ProductCard image='images/sample_flower.png'/>}
-                    {<ProductCard image='images/sample_flower.png'/>}
-                    {<ProductCard image='images/sample_flower.png'/>}
-                  </Grid.Column>
-                </Grid>
-              </div>
-            </Grid.Column>
-          </Grid>
-        </Container>
-
-        {/* <!-- Footer --> */}
-        {/* <div className="ui container-fluid ftr" >
-          <div className="ftr header">
-            <h1>What brands do you want to see here?</h1>
+const Footer = () => {
+  return (
+    <div className="ui container-fluid ftr" >
+      <div className="ftr header">
+        <h1>What brands do you want to see here?</h1>
+      </div>
+      <div className="ui container">
+        <div className="ui search">
+          <div className="ui icon input src">
+            <input type="text" placeholder="" />
+            <button className="ui button ftr">Submit</button>
           </div>
-          <div className="ui container">
-            <div className="ui search">
-              <div className="ui icon input src">
-                <input type="text" placeholder="" />
-                <button className="ui button ftr">Submit</button>
-              </div>
-              <div className="results"></div>
-            </div>
-          </div>
-        </div> */}
-        {/* <!-- Footer End --> */}
-      </div>  
-    )
-  }
+          <div className="results"></div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function mapStateToProps(state) {
   return {
-    brands: state.brands.brands
+    products: state.products.products
   }
 }
 
-export default connect(mapStateToProps, {getBrands})(Marketplace)
+export default connect(mapStateToProps, {getMarketplaceProducts})(Marketplace)
