@@ -21,7 +21,8 @@ class Header extends Component {
   renderLinks() {
     if (this.props.authenticated) {
       return [
-        <Menu.Item key='Home'><a href="https://arjunnayak.github.io/greentap">Home</a></Menu.Item>,
+        // <Menu.Item key='Home'><a href="https://arjunnayak.github.io/greentap">Home</a></Menu.Item>,
+        <Menu.Item key='Home' as={Link} to='/marketplace'>Marketplace</Menu.Item>,
         <Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>
       ]
     } else {
