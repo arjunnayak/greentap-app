@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Input from 'semantic-ui-react/dist/commonjs/elements/Input'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 import { Icon } from 'semantic-ui-react'
+import { CHANGE_CATEGORY } from '../../actions/types';
 
 const categoryOptions = [
   { key: 1, text: 'Flowers', value: 'flower' },
@@ -16,6 +16,7 @@ const categoryOptions = [
 ]
 
 class MarketplaceHeader extends Component {
+
   render() {
     return (
       // <!--Menu Start -->
@@ -25,7 +26,7 @@ class MarketplaceHeader extends Component {
           <Menu.Item header>Greentap</Menu.Item>
           
           <Menu.Item>
-            <Dropdown placeholder='CATEGORIES' id='categories-dropdown' selection options={categoryOptions} />
+            <Dropdown placeholder='CATEGORIES' onChange={() => {this.handleCategoryChange}} id='categories-dropdown' selection options={categoryOptions} />
           </Menu.Item>
 
           <Menu.Item>
@@ -41,8 +42,15 @@ class MarketplaceHeader extends Component {
     )
   }
 
-  renderRightMenuLinks(authenticated) {
-    if(authenticated) {
+  handleCategoryChange(event, data) {
+    this.props.dispatch({
+      type: CHANGE_CATEGORY,
+      category: data.value
+    })
+  }
+
+  renderRightMenuLinks() {
+    if(this.props.authenticated) {
       return (
         <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
       )
@@ -58,10 +66,4 @@ class MarketplaceHeader extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    authenticated: state.auth.authenticated
-  }
-}
-
-export default connect(mapStateToProps)(MarketplaceHeader)
+export default MarketplaceHeader

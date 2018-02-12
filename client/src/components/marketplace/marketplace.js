@@ -35,7 +35,7 @@ class Marketplace extends Component {
     const hasProducts = (this.props.products && this.props.products != []) ? this.props.products : null
     return (
       <div className='mhome'>
-        <MarketplaceHeader />
+        <MarketplaceHeader authenticated={this.props.authenticated}/>
 
         <Container fluid style={{ marginTop: '5vh' }}>
           <Grid stackable columns={2}>
