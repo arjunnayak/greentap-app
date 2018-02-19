@@ -4,6 +4,9 @@ const sharp = require('sharp')
 const uuid = require('uuid/v4')
 const QueryResultError = require('pg-promise').errors.QueryResultError
 const productCategories = require('../app_config').categories
+const pgp = require('pg-promise')();
+
+const CATEGORIES = ['flower', 'vape_cartridge', 'concentrate', 'edible', 'medical']
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
@@ -26,16 +29,28 @@ exports.getProducts = (req, res, next) => {
 }
 
 exports.getMarketplaceProducts = (req, res, next) => {
-  db.query({
-    name: 'get-marketplace-products',
-    text: `SELECT p.*, b.name as business_name from public.product p, public.business b where p.business_id = b.id;`,
-    values: []
-  }).then(products => {
-    return res.status(200).json({ products });
-  }).catch(error => {
-    console.error('get marketplace products error 500', error);
-    return res.status(500).json({ error: "Error retrieving products" });
-  });
+  const category = req.query.category;
+  const uniqueTransactionIdentifier = uuid().substring(0, 10)
+  if(!category) {
+    return res.status(400).json({ erro: 'Product category required.'})
+  } else if(CATEGORIES.indexOf(category) < 0) {
+    return res.status(400).json({ erro: 'Invalid product category.'})
+  }
+  console.log('retrieving', category)
+  db.task(t => {
+    return t.any({
+      name: `get-marketplace-products-and-pricings-${uuid()}`,
+      text: `select distinct product.*, ${category}.*, business.name as business_name
+      from product right join ${category} on product.id = ${category}.product_id
+      left join business on ${category}.business_id=business.id;`,
+      values: []
+    }).then(products => {
+      return res.status(200).json({ products })
+    }).catch(error => {
+      console.error('get marketplace products error 500', error);
+      return res.status(500).json({ error: "Error retrieving products" });
+    })
+  })
 }
 
 exports.getProduct = (req, res, next) => {
@@ -191,7 +206,7 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a description.' });
   } else if(!category || category == "") {
     return res.status(400).json({ error: 'Must provide a category.' });
-  } else if(['flower','vape_cartridge','edible'].indexOf(category) < 0) {
+  } else if(CATEGORIES.indexOf(category) < 0) {
     return res.status(400).json({ error: 'Category not supported' })
   } else if(isFlowerOrVape && hasInvalidStrain) {
     return res.status(400).json({ error: 'Must provide a strain type.' })

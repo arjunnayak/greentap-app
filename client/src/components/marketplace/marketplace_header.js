@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Input from 'semantic-ui-react/dist/commonjs/elements/Input'
@@ -17,28 +18,27 @@ const categoryOptions = [
 
 class MarketplaceHeader extends Component {
 
+  constructor(props) {
+    super(props)
+    this.handleCategoryChange = this.handleCategoryChange.bind(this)
+  }
+
   render() {
     return (
-      // <!--Menu Start -->
       <div className="marketplace-header">
         <Menu borderless size='massive' id='marketplace-menu' attached='top' inverted fluid>
-
           <Menu.Item header>Greentap</Menu.Item>
-          
           <Menu.Item>
-            <Dropdown placeholder='CATEGORIES' onChange={() => {this.handleCategoryChange}} id='categories-dropdown' selection options={categoryOptions} />
+            <Dropdown placeholder='CATEGORIES' onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
           </Menu.Item>
-
           <Menu.Item>
             <Input className='search' icon='search' placeholder='Search for strains, oil, producers...' />
           </Menu.Item>
-
           <Menu.Menu position='right' className='right-menu'>
             {this.renderRightMenuLinks(this.props.authenticated)}
           </Menu.Menu>
         </Menu>
       </div>
-      // {/* // <!--Menu End --> */}
     )
   }
 
@@ -66,4 +66,8 @@ class MarketplaceHeader extends Component {
   }
 }
 
-export default MarketplaceHeader
+const mapStateToProps = (state) => {
+  return {}
+}
+
+export default connect(mapStateToProps)(MarketplaceHeader)

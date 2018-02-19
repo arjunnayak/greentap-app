@@ -9,7 +9,7 @@ import DefaultImage from '../template/sample_flower.png'
 const ProductCard = (props) => {
   const product = props.product
   return (
-    <Card>
+    <Card href={`/products/${product.id}`}>
       <Image size='large' src={(!product.image || product.image === '') ? DefaultImage : product.image } />`
       <Card.Content>
         <Card.Header>
@@ -18,16 +18,19 @@ const ProductCard = (props) => {
         <Card.Meta>
           {product.business_name}
         </Card.Meta>
-        { product.thcLevel ? (
-          <Grid colums={2}>
-            <div className="two column row">
-              <div>
-                <Grid.Column> THC: 25.0%</Grid.Column>
-                <Grid.Column> CBD: 0.00%</Grid.Column>
-              </div>
-            </div>
-          </Grid>
-        ) : null }
+        <Card.Description>
+          { product.thc_level ? (
+            <Grid>
+              <Grid.Row columns={2}>
+                <Grid.Column> THC: {product.thc_level}%</Grid.Column>
+                <Grid.Column> CBD: {product.cbd_level}%</Grid.Column>
+              </Grid.Row>
+            </Grid>
+          ) : null }
+          { product.price ? (
+            <div>{product.price}</div>
+          ) : null }
+        </Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Button fluid primary>Add To Cart</Button>

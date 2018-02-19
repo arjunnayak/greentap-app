@@ -13,6 +13,8 @@ import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import List from 'semantic-ui-react/dist/commonjs/elements/List'
+import Card from 'semantic-ui-react/dist/commonjs/views/Card'
+
 
 const sortByOptions = [
   { key: 1, text: 'Price: Low to High', value: 'price-lh' },
@@ -24,14 +26,24 @@ class Marketplace extends Component {
   constructor(props) {
     super(props)
     this.renderProductGrid = this.renderProductGrid.bind(this)
+    this.getCategoryHeader = this.getCategoryHeader.bind(this)
   }
 
   componentDidMount() {
-    this.props.getMarketplaceProducts()
+    console.log('componentDidMount')
+    this.props.getMarketplaceProducts(this.props.category)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('componentWillReceiveProps')
+    if(nextProps.category != this.props.category) {
+      this.props.getMarketplaceProducts(nextProps.category)
+    }
   }
 
   render() {
     console.log('render marketplace products', this.props.products)
+    console.log('render marketplace category', this.props.category)
     const hasProducts = (this.props.products && this.props.products != []) ? this.props.products : null
     return (
       <div className='mhome'>
@@ -40,9 +52,9 @@ class Marketplace extends Component {
         <Container fluid style={{ marginTop: '5vh' }}>
           <Grid stackable columns={2}>
             <Grid.Column width={12}>
-              <h1>Flowers</h1>
+              <h1>{this.getCategoryHeader(this.props.category)}</h1>
             </Grid.Column>
-            <Grid.Column width={4}>
+            <Grid.Column floated='right' width={4}>
               <Dropdown placeholder='Sort by' selection options={sortByOptions} />
             </Grid.Column>
           </Grid>
@@ -64,42 +76,43 @@ class Marketplace extends Component {
           </Grid>
         </Container>
 
-        {/* <!-- Footer --> */}
         {Footer}
-        {/* <!-- Footer End --> */}
       </div>  
     )
   }
 
   renderProductGrid(numColumns=3) {
-    console.log('marketplace receive products', this.props.products)
     if(this.props.products && this.props.products != []) {
       const productRows = []
       let tempProducts = JSON.parse(JSON.stringify(this.props.products))
       while(tempProducts.length != 0) {
         productRows.push(tempProducts.splice(0, numColumns))
       }
-      console.log('only displaying 25 products or less')
-      const productRowsToRender = productRows.map(row => {
-        const arrayofProductColumns = row.map(product => {
-          return (
-            <Grid.Column key={product.id}>
-              <ProductCard product={product}/>
-            </Grid.Column>
-          )
+      const productRowsToRender = productRows.map((row, index) => {
+        const productRows = row.map(product => {
+          return (<ProductCard key={product.id} product={product}/>)
         })
 
         return (
-          <Grid columns={numColumns}>
-            {arrayofProductColumns}
-          </Grid>
+          <Card.Group key={index} itemsPerRow={3}>
+            {productRows}
+          </Card.Group>
         )
       })
-
-      console.log('productRowsToRender', productRowsToRender)
       return productRowsToRender
     } else {
       return null
+    }
+  }
+
+  getCategoryHeader(category) {
+    switch(category) {
+      case 'flower': return 'Flowers'
+      case 'vape_cartridge': return 'Vape Cartridges'
+      case 'edible': return 'Edibles'
+      case 'concentrate': return 'Concentrates'
+      case 'medical': return 'Medical'
+      default: return 'Flowers'
     }
   }
 }
@@ -185,7 +198,8 @@ const Footer = () => {
 
 function mapStateToProps(state) {
   return {
-    products: state.products.products
+    products: state.marketplace.products,
+    category: state.marketplace.category
   }
 }
 

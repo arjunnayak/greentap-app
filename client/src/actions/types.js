@@ -42,6 +42,12 @@ export const GET_BRANDS = 'get_brands',
   GET_BRAND_PRODUCT = 'get_brand_product', 
   BRAND_ERROR = 'brand_error';
 
+
+//= =====================
+// Marketplace Actions
+//= =====================
+export const CHANGE_CATEGORY = 'change_category';
+
 //= =====================
 // Messaging Actions
 //= =====================
