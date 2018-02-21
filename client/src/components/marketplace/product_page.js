@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { Link } from 'react-router-dom'
 import { getMarketplaceProduct } from '../../actions/marketplace'
 import MarketplaceHeader from './marketplace_header'
 import './marketplace.css'
@@ -10,8 +12,17 @@ import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import Breadcrumb from 'semantic-ui-react/dist/commonjs/collections/Breadcrumb'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
+import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
+import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
+import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
+import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';
 
 class ProductPage extends Component {
+
+  constructor(props) {
+    super(props)
+    this.handlePricingChange = this.handlePricingChange.bind(this)
+  }
 
   componentDidMount() {
     const productId = this.props.match.params.id
@@ -39,21 +50,42 @@ class ProductPage extends Component {
               <Grid stackable columns={2}>
                 <Grid.Column width={12}>
                   <Segment>
-                    <Grid stackable columns={2}>
-                      <Grid.Column width={6}>
-                        <Image size='large' src={product.image}/>
-                      </Grid.Column>
-                      <Grid.Column width={12}>
-                        <h1>{product.name}</h1>
-                        {/* <h3>{product.business.name}</h3> */}
-                      </Grid.Column>
+                    <Grid stackable columns={2} style={{ padding: '20px' }}>
+                      <Grid.Row>
+                        <Grid.Column width={6}>
+                          {product.detail && product.detail.strain_type ? (
+                            <label>{product.detail.strain_type.charAt(0).toUpperCase() + product.detail.strain_type.slice(1)}</label>
+                          ) : null}
+                          <Image size='large' src={product.image} />
+                        </Grid.Column>
+                        <Grid.Column width={10}>
+                          <Grid>
+                            <Grid.Row style={{paddingBottom: '0px'}}>
+                              <Grid.Column width={10}>
+                                <Header as='h1'>{product.name}</Header>
+                                {product.business ? (<Link style={{ fontWeight: 'bold' }} to={`/marketplace/brand/${product.business.id}`}>{product.business.name.toUpperCase()}</Link>) : null}
+                                <Divider />
+                              </Grid.Column>
+                            </Grid.Row>
+
+                            {product.detail && product.detail.thc_level != null ? (<Grid.Row style={{paddingBottom: '0px'}}><Grid.Column>THC: {product.detail.thc_level}%</Grid.Column></Grid.Row>) : null}
+                            <br />
+                            {product.detail && product.detail.cbd_level != null ? (<Grid.Row><Grid.Column>CBD: {product.detail.cbd_level}%</Grid.Column></Grid.Row>) : null}
+                            
+                            <Grid.Row>
+                              <Grid.Column>
+                                <Header as='h3'>Description</Header>
+                                <p>{product.description}</p>
+                              </Grid.Column>
+                            </Grid.Row>
+                          </Grid>
+                        </Grid.Column>
+                      </Grid.Row>
                     </Grid>
                   </Segment>
                 </Grid.Column>
                 <Grid.Column width={4}>
-                  <Segment>
-                    <Button positive>Add to cart</Button>
-                  </Segment>
+                  { product.pricing && this.renderPricingSegment(product.pricing) } 
                 </Grid.Column>
               </Grid>
             ) : null }
@@ -62,13 +94,48 @@ class ProductPage extends Component {
       </div>  
     )
   }
+
+  renderPricingSegment(prices) {
+    if(!prices && prices.length <= 0) {
+      return null
+    }
+
+    const pricingOptions = prices.map((price, index) => {
+      return { key: index, text: String(price.unit_count), value: String(price.unit_count) }
+    })
+    return (
+      <Segment>
+        <Header as='h3'>${prices[this.props.selectedPricingIndex].unit_price / 100.00}/{prices[this.props.selectedPricingIndex].unit_count_type}</Header>
+        <div>
+          Qty:{' '}
+          <Dropdown onChange={this.handlePricingChange} defaultValue={pricingOptions[0].value} selection options={pricingOptions} compact/>
+        </div>
+        <Button fluid primary style={{marginTop: '15px'}}>Add to cart</Button>
+      </Segment>
+    )
+  }
+
+  handlePricingChange(event, data) {
+    console.log('handle pricing change', event.target)
+    console.log('handle pricing change', data)
+    this.props.dispatch({
+      type: CHANGE_PRODUCT_DETAIL_PRICING,
+      pricingIndex: parseInt(data.value) - 1
+    })
+  }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     product: state.marketplace.product,
+    selectedPricingIndex: state.marketplace.selectedPricingIndex,
     authenticated: state.auth.authenticated
   }
 }
 
-export default connect(mapStateToProps, { getMarketplaceProduct })(ProductPage)
+const mapDispatchToProps = (dispatch) => {
+  let actions = bindActionCreators({ getMarketplaceProduct }, dispatch)
+  return { ...actions, dispatch }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)
