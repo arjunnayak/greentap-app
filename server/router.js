@@ -1,5 +1,6 @@
 const AuthenticationController = require('./controllers/authentication')
 const ProductController = require('./controllers/product')
+const MarketplaceController = require('./controllers/marketplace')
 const BrandController = require('./controllers/brand')
 const express = require('express')
 const config = require('./app_config')
@@ -18,6 +19,7 @@ module.exports = (app, passport) => {
   const apiRoutes = express.Router(),
     authRoutes = express.Router(),
     productRoutes = express.Router(),
+    marketplaceRoutes = express.Router(),
     brandRoutes = express.Router();
 
   // Auth Routes
@@ -52,11 +54,14 @@ module.exports = (app, passport) => {
   // Product routes (session required)
   productRoutes.get('/imageUploadSign', requireAuth, ProductController.getImageUploadSign)
   productRoutes.get('/', requireAuth, ProductController.getProducts)
-  productRoutes.get('/marketplace', requireAuth, ProductController.getMarketplaceProducts)
   productRoutes.get('/:id', requireAuth, ProductController.getProduct)
   productRoutes.post('/add', requireAuth, ProductController.addProduct)
   productRoutes.put('/:id', requireAuth, ProductController.updateProduct)
   productRoutes.delete('/:id', requireAuth, ProductController.deleteProduct)
+
+  // Marketplace routes
+  marketplaceRoutes.get('/products', requireAuth, MarketplaceController.getProducts)
+  marketplaceRoutes.get('/product/:id', requireAuth, MarketplaceController.getProduct)
 
   // Brand routes
   brandRoutes.get('/', BrandController.getBrands)
@@ -65,6 +70,7 @@ module.exports = (app, passport) => {
   // Tie them together
   apiRoutes.use('/auth', authRoutes)
   apiRoutes.use('/products', productRoutes)
+  apiRoutes.use('/marketplace', marketplaceRoutes)
   apiRoutes.use('/brands', brandRoutes)
 
   // Group sub routes together for API

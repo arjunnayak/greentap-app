@@ -47,11 +47,14 @@
 }
 
 .mhome .main {
-    background-color: #f4f7f9;
     height: 100%;
     padding-top: 25px;
     margin-top: 15px;
     padding-left: 1rem;
+}
+
+.mhome .light-bg {
+    background-color: #f4f7f9;
 }
 
 .mhome .sidebar {

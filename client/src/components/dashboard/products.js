@@ -50,22 +50,10 @@ class Products extends Component {
     const productRows = this.props.products.map(product => {
       return (
         <Table.Row key={product.id}>
-          <Table.Cell collapsing>
-            <Image src={product.image} rounded size='mini' />
-          </Table.Cell>
-
-          <Table.Cell collapsing>
-            <Link to={`/dashboard/products/edit/${product.id}`}>{product.name}</Link>
-          </Table.Cell>
-          
-          <Table.Cell>
-            {product.description}
-          </Table.Cell>
-
-          <Table.Cell>
-            {product.category}
-          </Table.Cell>
-          
+          <Table.Cell collapsing><Image src={product.image} rounded size='mini' /></Table.Cell>
+          <Table.Cell collapsing><Link to={`/dashboard/products/edit/${product.id}`}>{product.name}</Link></Table.Cell>
+          <Table.Cell>{product.description}</Table.Cell>
+          <Table.Cell>{product.category}</Table.Cell>
           <Table.Cell collapsing textAlign='right'>
             <Button primary onClick={() => {this.handleDeleteProduct(product)}}>Delete</Button>
           </Table.Cell>

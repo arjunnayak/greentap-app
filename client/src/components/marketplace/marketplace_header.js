@@ -21,22 +21,21 @@ class MarketplaceHeader extends Component {
   constructor(props) {
     super(props)
     this.handleCategoryChange = this.handleCategoryChange.bind(this)
+    this.renderRightMenuLinks = this.renderRightMenuLinks.bind(this)
   }
 
   render() {
     return (
       <div className="marketplace-header">
         <Menu borderless size='massive' id='marketplace-menu' attached='top' inverted fluid>
-          <Menu.Item header>Greentap</Menu.Item>
+          <Menu.Item header as={Link} to='/marketplace'>Greentap</Menu.Item>
           <Menu.Item>
             <Dropdown placeholder='CATEGORIES' onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
           </Menu.Item>
           <Menu.Item>
             <Input className='search' icon='search' placeholder='Search for strains, oil, producers...' />
           </Menu.Item>
-          <Menu.Menu position='right' className='right-menu'>
-            {this.renderRightMenuLinks(this.props.authenticated)}
-          </Menu.Menu>
+          {this.renderRightMenuLinks(this.props.authenticated)}
         </Menu>
       </div>
     )
@@ -52,15 +51,17 @@ class MarketplaceHeader extends Component {
   renderRightMenuLinks() {
     if(this.props.authenticated) {
       return (
-        <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
+        <Menu.Menu position='right' className='right-menu'>
+          <Menu.Item as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
+        </Menu.Menu>
       )
     } else {
       return (
-        <div>
-          <Menu.Item name='login'>Login</Menu.Item>
-          <Menu.Item name='register'>Register</Menu.Item>
-          <Menu.Item name='cart'><Icon name='cart' size='large'/></Menu.Item>
-        </div>
+        <Menu.Menu position='right' className='right-menu'>
+          <Menu.Item as={Link} to='/login' name='login'>Login</Menu.Item>
+          <Menu.Item as={Link} to='/register' name='register'>Register</Menu.Item>
+          <Menu.Item as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
+        </Menu.Menu>
       )
     }
   }

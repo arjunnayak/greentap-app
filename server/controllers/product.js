@@ -28,31 +28,6 @@ exports.getProducts = (req, res, next) => {
   });
 }
 
-exports.getMarketplaceProducts = (req, res, next) => {
-  const category = req.query.category;
-  const uniqueTransactionIdentifier = uuid().substring(0, 10)
-  if(!category) {
-    return res.status(400).json({ erro: 'Product category required.'})
-  } else if(CATEGORIES.indexOf(category) < 0) {
-    return res.status(400).json({ erro: 'Invalid product category.'})
-  }
-  console.log('retrieving', category)
-  db.task(t => {
-    return t.any({
-      name: `get-marketplace-products-and-pricings-${uuid()}`,
-      text: `select distinct product.*, ${category}.*, business.name as business_name
-      from product right join ${category} on product.id = ${category}.product_id
-      left join business on ${category}.business_id=business.id;`,
-      values: []
-    }).then(products => {
-      return res.status(200).json({ products })
-    }).catch(error => {
-      console.error('get marketplace products error 500', error);
-      return res.status(500).json({ error: "Error retrieving products" });
-    })
-  })
-}
-
 exports.getProduct = (req, res, next) => {
   const id = req.params.id;
   const user_business_id = req.user.business.id

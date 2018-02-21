@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import MarketplaceHeader from './marketplace_header'
-import { getMarketplaceProducts } from "../../actions/products"
+import { getMarketplaceProducts } from "../../actions/marketplace"
 import ProductCard from './product_card'
 import './marketplace.css'
 
@@ -60,7 +60,7 @@ class Marketplace extends Component {
           </Grid>
         </Container>
 
-        <Container fluid className='main'>
+        <Container fluid className='main light-bg'>
           <Grid stackable columns={2}>
             <Grid.Column width={4}>
               {Filter}
@@ -84,13 +84,16 @@ class Marketplace extends Component {
   renderProductGrid(numColumns=3) {
     if(this.props.products && this.props.products != []) {
       const productRows = []
-      let tempProducts = JSON.parse(JSON.stringify(this.props.products))
+      let tempProducts = Object.assign({}, {products:this.props.products})
+      tempProducts = tempProducts.products
       while(tempProducts.length != 0) {
         productRows.push(tempProducts.splice(0, numColumns))
       }
+      
       const productRowsToRender = productRows.map((row, index) => {
         const productRows = row.map(product => {
-          return (<ProductCard key={product.id} product={product}/>)
+          return (<ProductCard key={product.id} product={product}
+            onCardClick={() => {this.props.history.push(`/marketplace/product/${product.id}`)} }/>)
         })
 
         return (
@@ -199,7 +202,8 @@ const Footer = () => {
 function mapStateToProps(state) {
   return {
     products: state.marketplace.products,
-    category: state.marketplace.category
+    category: state.marketplace.category,
+    authenticated: state.auth.authenticated
   }
 }
 

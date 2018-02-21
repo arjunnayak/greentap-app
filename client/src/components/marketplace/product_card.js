@@ -9,7 +9,7 @@ import DefaultImage from '../template/sample_flower.png'
 const ProductCard = (props) => {
   const product = props.product
   return (
-    <Card href={`/products/${product.id}`}>
+    <Card onClick={props.onCardClick}>
       <Image size='large' src={(!product.image || product.image === '') ? DefaultImage : product.image } />`
       <Card.Content>
         <Card.Header>

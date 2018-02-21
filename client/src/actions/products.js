@@ -17,22 +17,6 @@ export function getProducts(business_id) {
   };
 }
 
-export function getMarketplaceProducts(category) {
-  return dispatch => {
-    return axios.get(`${API_URL}/products/marketplace?category=${category}`, { withCredentials: true })
-      .then((response) => {
-        dispatch({
-          type: GET_MARKETPLACE_PRODUCTS,
-          payload: response.data.products
-        })
-        console.log('marketplace products ', response.data.products)
-      })
-      .catch((error) => {
-        errorHandler(dispatch, error.response, PRODUCT_ERROR);
-      });
-  };
-}
-
 export function getProduct(productId) {
   return dispatch => {
     return axios.get(`${API_URL}/products/${productId}`, { withCredentials: true })
