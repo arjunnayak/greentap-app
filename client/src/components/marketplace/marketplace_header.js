@@ -30,7 +30,7 @@ class MarketplaceHeader extends Component {
         <Menu borderless size='massive' id='marketplace-menu' attached='top' inverted fluid>
           <Menu.Item header as={Link} to='/marketplace'>Greentap</Menu.Item>
           <Menu.Item>
-            <Dropdown placeholder='CATEGORIES' onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
+            <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
           </Menu.Item>
           <Menu.Item>
             <Input className='search' icon='search' placeholder='Search for strains, oil, producers...' />
