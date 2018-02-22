@@ -20,7 +20,7 @@ import Inventory from './components/dashboard/inventory'
 import Settings from './components/dashboard/settings'
 
 // Import marketplace pages
-import Marketplace from './components/marketplace/marketplace'
+import MarketplaceHome from './components/marketplace/home'
 import BrandPage from './components/marketplace/brand_page'
 import ProductPage from './components/marketplace/product_page'
 
@@ -54,7 +54,7 @@ class GreentapRouter extends Component {
 
             <Route path="/marketplace/product/:id" component={RequireAuth(ProductPage)}/>
             <Route path="/marketplace/brand/:id" component={RequireAuth(BrandPage)}/>
-            <Route exact path="/marketplace" component={RequireAuth(Marketplace)}/>
+            <Route exact path="/marketplace" component={RequireAuth(MarketplaceHome)}/>
 
             <Route component={NotFoundPage} />
           </Switch>

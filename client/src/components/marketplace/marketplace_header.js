@@ -68,7 +68,9 @@ class MarketplaceHeader extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {}
+  return {
+    authenticated: state.auth.authenticated
+  }
 }
 
 export default connect(mapStateToProps)(MarketplaceHeader)

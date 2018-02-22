@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { getMarketplaceProduct } from '../../actions/marketplace'
-import MarketplaceHeader from './marketplace_header'
-import './marketplace.css'
+import Marketplace from './marketplace'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
@@ -34,20 +33,19 @@ class ProductPage extends Component {
     console.log('product page render', this.props.product)
     const product = this.props.product
     return (
-      <div className='mhome'>
-        <MarketplaceHeader authenticated={this.props.authenticated}/>
-
-        <Container fluid style={{ marginTop: '2vh' }} className='main'>
-          <Grid stackable>
-            <Grid.Column width={16}>
-              <Breadcrumb>
-                <Breadcrumb.Section link onClick={() => { this.props.history.push('/marketplace') }}>Products</Breadcrumb.Section>
-                <Breadcrumb.Divider icon='right angle'/>
-                { product ? ( <Breadcrumb.Section active>{product.name}</Breadcrumb.Section> ) : null }
-              </Breadcrumb>
-            </Grid.Column>
-          </Grid>
-          { product ? (
+      <Marketplace>
+        <div className='mhome'>
+          <Container fluid style={{ marginTop: '2vh' }} className='main'>
+            <Grid stackable>
+              <Grid.Column width={16}>
+                <Breadcrumb>
+                  <Breadcrumb.Section link onClick={() => { this.props.history.push('/marketplace') }}>Products</Breadcrumb.Section>
+                  <Breadcrumb.Divider icon='right angle'/>
+                  { product ? ( <Breadcrumb.Section active>{product.name}</Breadcrumb.Section> ) : null }
+                </Breadcrumb>
+              </Grid.Column>
+            </Grid>
+            { product ? (
               <Grid stackable columns={2}>
                 <Grid.Column width={12}>
                   <Segment raised>
@@ -90,9 +88,9 @@ class ProductPage extends Component {
                 </Grid.Column>
               </Grid>
             ) : null }
-
-        </Container>
-      </div>  
+          </Container>
+        </div>
+      </Marketplace>
     )
   }
 
@@ -117,8 +115,6 @@ class ProductPage extends Component {
   }
 
   handlePricingChange(event, data) {
-    console.log('handle pricing change', event.target)
-    console.log('handle pricing change', data)
     this.props.dispatch({
       type: CHANGE_PRODUCT_DETAIL_PRICING,
       pricingIndex: parseInt(data.value) - 1
