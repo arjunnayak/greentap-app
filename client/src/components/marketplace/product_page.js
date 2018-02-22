@@ -15,6 +15,7 @@ import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
+import Label from 'semantic-ui-react/dist/commonjs/elements/Label'
 import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';
 
 class ProductPage extends Component {
@@ -49,13 +50,13 @@ class ProductPage extends Component {
           { product ? (
               <Grid stackable columns={2}>
                 <Grid.Column width={12}>
-                  <Segment>
+                  <Segment raised>
+                    {product.detail && product.detail.strain_type ? (
+                        <Label color='blue' ribbon>{product.detail.strain_type.charAt(0).toUpperCase() + product.detail.strain_type.slice(1)}</Label>
+                      ) : null}
                     <Grid stackable columns={2} style={{ padding: '20px' }}>
                       <Grid.Row>
                         <Grid.Column width={6}>
-                          {product.detail && product.detail.strain_type ? (
-                            <label>{product.detail.strain_type.charAt(0).toUpperCase() + product.detail.strain_type.slice(1)}</label>
-                          ) : null}
                           <Image size='large' src={product.image} />
                         </Grid.Column>
                         <Grid.Column width={10}>
@@ -104,7 +105,7 @@ class ProductPage extends Component {
       return { key: index, text: String(price.unit_count), value: String(price.unit_count) }
     })
     return (
-      <Segment>
+      <Segment raised>
         <Header as='h3'>${prices[this.props.selectedPricingIndex].unit_price / 100.00}/{prices[this.props.selectedPricingIndex].unit_count_type}</Header>
         <div>
           Qty:{' '}
