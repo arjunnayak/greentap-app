@@ -33,7 +33,7 @@ class MarketplaceHeader extends Component {
             <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
           </Menu.Item>
           <Menu.Item>
-            <Input className='search' icon='search' placeholder='Search for strains, oil, producers...' />
+            <Input className='search' icon='search' id='search' placeholder='Search for strains, oil, producers...' />
           </Menu.Item>
           {this.renderRightMenuLinks(this.props.authenticated)}
         </Menu>
@@ -52,7 +52,8 @@ class MarketplaceHeader extends Component {
     if(this.props.authenticated) {
       return (
         <Menu.Menu position='right' className='right-menu'>
-          <Menu.Item as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
+          <Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>
+          <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
         </Menu.Menu>
       )
     } else {

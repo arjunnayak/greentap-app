@@ -29,13 +29,15 @@
     border: 2px solid white;
     width: 160px !important;
     height: 45px !important;
-    color: rgba(191,191,191,.87);
-    font-size: 17px;
-    min-width: 160px;
+    color: rgba(255, 255, 255, 0.87);
+    font-size: 16px;
 }
 
-.marketplace-header .search {
-    width: 50%;
+.marketplace-header #search {
+    width: 50vw;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 3rem;
 }
 
 .marketplace-header .right-menu {
