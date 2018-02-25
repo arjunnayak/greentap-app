@@ -38,7 +38,7 @@ class MarketplaceHome extends Component {
   }
 
   render() {
-    const hasProducts = (this.props.products && this.props.products != []) ? this.props.products : null
+    const hasProducts = (this.props.products && this.props.products != [])
     return (
       <Marketplace>
         <div className='mhome'>
@@ -75,27 +75,26 @@ class MarketplaceHome extends Component {
   }
 
   renderProductGrid(numColumns=3) {
-    if(this.props.products && this.props.products != []) {
+    const products = this.props.products
+    if(products && products != []) {
       const productRows = []
-      let tempProducts = Object.assign({}, {products:this.props.products})
-      tempProducts = tempProducts.products
-      while(tempProducts.length != 0) {
-        productRows.push(tempProducts.splice(0, numColumns))
+      for (let i = 0; i < products.length; i += numColumns) {
+        productRows.push(products.slice(i, i + numColumns))
       }
       
-      const productRowsToRender = productRows.map((row, index) => {
-        const productRows = row.map(product => {
+      const groupRowsToRender = productRows.map((row, index) => {
+        const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
             onCardClick={() => {this.props.history.push(`/marketplace/product/${product.id}`)} }/>)
         })
 
         return (
           <Card.Group key={index} itemsPerRow={3}>
-            {productRows}
+            {productRowsToRender}
           </Card.Group>
         )
       })
-      return productRowsToRender
+      return groupRowsToRender
     } else {
       return null
     }
@@ -195,8 +194,7 @@ const Footer = () => {
 function mapStateToProps(state) {
   return {
     products: state.marketplace.products,
-    category: state.marketplace.category,
-    authenticated: state.auth.authenticated
+    category: state.marketplace.category
   }
 }
 

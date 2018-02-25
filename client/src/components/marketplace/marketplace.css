@@ -33,6 +33,10 @@
     font-size: 16px;
 }
 
+.marketplace-header #categories-dropdown>.text:not(.default) {
+    color: rgba(255, 255, 255, 0.87);
+}
+
 .marketplace-header #search {
     width: 50vw;
     height: 40px;
@@ -69,8 +73,8 @@
 }
 
 .mhome .container {
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: 8.5%;
+    padding-right: 8.5%;
 }
 
 @media only screen and (max-width: 767px) {

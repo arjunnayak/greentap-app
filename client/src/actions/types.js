@@ -40,8 +40,8 @@ export const GET_PRODUCTS = 'get_products',
 // Brand Actions
 //= =====================
 export const GET_BRANDS = 'get_brands', 
-  GET_BRAND = 'get_brand', 
-  GET_BRAND_PRODUCT = 'get_brand_product', 
+  REQUEST_BRAND = 'request_brand',
+  GET_BRAND = 'get_brand',
   BRAND_ERROR = 'brand_error';
 
 

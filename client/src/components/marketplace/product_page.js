@@ -125,8 +125,7 @@ class ProductPage extends Component {
 const mapStateToProps = (state) => {
   return {
     product: state.marketplace.product,
-    selectedPricingIndex: state.marketplace.selectedPricingIndex,
-    authenticated: state.auth.authenticated
+    selectedPricingIndex: state.marketplace.selectedPricingIndex
   }
 }
 

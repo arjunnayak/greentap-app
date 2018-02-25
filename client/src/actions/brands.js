@@ -4,7 +4,7 @@ import { GET_BRANDS, GET_BRAND, GET_BRAND_PRODUCT, BRAND_ERROR } from './types'
 
 export function getBrands() {
   return dispatch => {
-    return axios.get(`${API_URL}/brands`)
+    return axios.get(`${API_URL}/brands`, { withCredentials: true })
       .then((response) => {
         dispatch({
           type: GET_BRANDS,
@@ -19,12 +19,12 @@ export function getBrands() {
 
 export function getBrand(brandId) {
   return dispatch => {
-    return axios.get(`${API_URL}/brands/${brandId}`)
+    return axios.get(`${API_URL}/brands/${brandId}`, { withCredentials: true })
       .then((response) => {
         console.log(response)
         dispatch({
           type: GET_BRAND,
-          payload: response.data.brand
+          payload: response.data.business
         })
       })
       .catch((error) => {

@@ -1,6 +1,6 @@
 import { GET_MARKETPLACE_PRODUCTS, CHANGE_CATEGORY, PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING } from '../actions/types'
 
-const INITIAL_STATE = { category: 'flower', products: [], product: {}, selectedPricingIndex: 0, brands: [], brand: {}, error: '', is_requesting: false };
+const INITIAL_STATE = { category: 'flower', products: [], product: {}, selectedPricingIndex: 0, error: '', is_requesting: false };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -12,8 +12,6 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, product: action.payload, error: '' };
     case CHANGE_PRODUCT_DETAIL_PRICING:
       return { ...state, selectedPricingIndex: action.pricingIndex, error: '' };
-    default:
-      return INITIAL_STATE;
   }
   return state;
 }
