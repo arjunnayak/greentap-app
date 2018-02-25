@@ -1,7 +1,7 @@
 const uuid = require('uuid/v4')
 const db = require('../config/db')
+const CATEGORIES = require('../app_config').categories_list
 
-const CATEGORIES = ['flower', 'vape_cartridge', 'concentrate', 'edible', 'medical']
 
 exports.getProducts = (req, res, next) => {
   const category = req.query.category;

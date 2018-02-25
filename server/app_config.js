@@ -22,7 +22,8 @@ const config = {
     edible: 'edible',
     concentrate: 'concentrate',
     accessory: 'accessory'
-  }
+  },
+  categories_list: ['flower', 'vape_cartridge', 'concentrate', 'edible', 'medical']
 }
 
 module.exports = config;

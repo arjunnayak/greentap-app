@@ -64,8 +64,8 @@ module.exports = (app, passport) => {
   marketplaceRoutes.get('/product/:id', requireAuth, MarketplaceController.getProduct)
 
   // Brand routes
-  brandRoutes.get('/', BrandController.getBrands)
-  brandRoutes.get('/:id', BrandController.getBrand)
+  brandRoutes.get('/', requireAuth, BrandController.getBrands)
+  brandRoutes.get('/:id', requireAuth, BrandController.getBrand)
 
   // Tie them together
   apiRoutes.use('/auth', authRoutes)
