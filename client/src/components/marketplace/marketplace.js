@@ -6,7 +6,7 @@ class Marketplace extends Component {
   render() {  
     return (
       <div>
-        <MarketplaceHeader />
+        <MarketplaceHeader noCategoriesDropdown={this.props.noCategoriesDropdown}/>
         {this.props.children}
       </div>
     )

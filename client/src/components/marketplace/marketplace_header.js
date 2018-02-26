@@ -25,13 +25,18 @@ class MarketplaceHeader extends Component {
   }
 
   render() {
+    const showCategoriesDropdown = !this.props.noCategoriesDropdown
     return (
       <div className="marketplace-header">
         <Menu borderless size='massive' id='marketplace-menu' attached='top' inverted fluid>
           <Menu.Item header as={Link} to='/marketplace'>Greentap</Menu.Item>
-          <Menu.Item>
-            <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
-          </Menu.Item>
+          {
+            showCategoriesDropdown ? (
+              <Menu.Item>
+                <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
+              </Menu.Item>
+            ) : null 
+          }
           <Menu.Item>
             <Input className='search' icon='search' id='search' placeholder='Search for strains, oil, producers...' />
           </Menu.Item>
