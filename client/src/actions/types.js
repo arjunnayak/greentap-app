@@ -24,7 +24,9 @@ export const LOGIN_REQUEST = 'login_request',
 // Product Actions
 //= =====================
 export const GET_PRODUCTS = 'get_products',
+  REQUEST_MARKETPLACE_PRODUCTS = 'request_marketplace_products',
   GET_MARKETPLACE_PRODUCTS = 'get_marketplace_products',
+  PRESET_PRODUCT_DETAIL = 'set_product_detail',
   PRODUCT_DETAIL = 'marketplace_product_detail',
   CHANGE_PRODUCT_DETAIL_PRICING = 'change_product_detail_pricing',
   GET_PRODUCT = 'get_product', 

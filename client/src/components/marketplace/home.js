@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Marketplace from './marketplace'
 import { getMarketplaceProducts } from "../../actions/marketplace"
+import { bindActionCreators } from 'redux'
 import ProductCard from './product_card'
+import { PRESET_PRODUCT_DETAIL, REQUEST_MARKETPLACE_PRODUCTS } from '../../actions/types'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
@@ -12,7 +14,7 @@ import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import List from 'semantic-ui-react/dist/commonjs/elements/List'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
-
+import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
 
 const sortByOptions = [
   { key: 1, text: 'Price: Low to High', value: 'price-lh' },
@@ -28,6 +30,7 @@ class MarketplaceHome extends Component {
   }
 
   componentDidMount() {
+    this.props.dispatch({ type: REQUEST_MARKETPLACE_PRODUCTS })
     this.props.getMarketplaceProducts(this.props.category)
   }
 
@@ -53,22 +56,28 @@ class MarketplaceHome extends Component {
             </Grid>
           </Container>
 
-          <Container fluid className='main light-bg'>
-            <Grid stackable columns={2}>
-              <Grid.Column width={4}>
-                {Filter}
-              </Grid.Column>
+          { this.props.isRequesting ? ( 
+            <Loader active/> 
+          ) : (
+            <div>
+              <Container fluid className='main light-bg'>
+                <Grid stackable columns={2}>
+                  <Grid.Column width={4}>
+                    {Filter}
+                  </Grid.Column>
 
-              <Grid.Column width={12}>
-                {hasProducts ? (
-                  <div className='card-menu'>
-                    {this.renderProductGrid(3)}
-                  </div>
-                ) : <h2>No products available</h2>}
-              </Grid.Column>
-            </Grid>
-          </Container>
-          {Footer}
+                  <Grid.Column width={12}>
+                    {hasProducts ? (
+                      <div className='card-menu'>
+                        {this.renderProductGrid(3)}
+                      </div>
+                    ) : <h2>No products available</h2>}
+                  </Grid.Column>
+                </Grid>
+              </Container>
+              {Footer}
+            </div>
+          )}
         </div>
       </Marketplace>
     )
@@ -85,7 +94,13 @@ class MarketplaceHome extends Component {
       const groupRowsToRender = productRows.map((row, index) => {
         const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
-            onCardClick={() => {this.props.history.push(`/marketplace/product/${product.id}`)} }/>)
+            onCardClick={() => {
+              this.props.dispatch({
+                type: PRESET_PRODUCT_DETAIL,
+                payload: product
+              })
+              this.props.history.push(`/marketplace/product/${product.id}`)
+            }}/>)
         })
 
         return (
@@ -194,8 +209,14 @@ const Footer = () => {
 function mapStateToProps(state) {
   return {
     products: state.marketplace.products,
-    category: state.marketplace.category
+    category: state.marketplace.category,
+    isRequesting: state.marketplace.is_requesting
   }
 }
 
-export default connect(mapStateToProps, {getMarketplaceProducts})(MarketplaceHome)
+const mapDispatchToProps = (dispatch) => {
+  let actions = bindActionCreators({ getMarketplaceProducts }, dispatch)
+  return { ...actions, dispatch }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MarketplaceHome)
