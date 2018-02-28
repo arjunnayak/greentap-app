@@ -7,12 +7,11 @@ import Marketplace from './marketplace'
 import { REQUEST_BRAND, PRESET_PRODUCT_DETAIL } from '../../actions/types'
 
 import ProductCard from './product_card'
+import Filter from './filter'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
-import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
-import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import List from 'semantic-ui-react/dist/commonjs/elements/List'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
@@ -89,6 +88,7 @@ class BrandPage extends Component {
       
       const groupRowsToRender = productRows.map((row, index) => {
 
+        // returns array of product cards
         const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
             onCardClick={() => {
@@ -100,12 +100,15 @@ class BrandPage extends Component {
             } }/>)
         })
 
+        // returns array of product groups
         return (
           <Card.Group key={index} itemsPerRow={3}>
             {productRowsToRender}
           </Card.Group>
         )
       })
+
+      // returns array of categories
       return (
         <Grid stackable>
           <Grid.Column>

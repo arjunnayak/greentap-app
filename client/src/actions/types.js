@@ -36,7 +36,9 @@ export const GET_PRODUCTS = 'get_products',
   LOAD_EDIT_PRODUCT = 'load_edit_product', 
   DELETE_PRODUCT = 'delete_product', 
   PRODUCT_ERROR = 'product_error',
-  CLEAR_PRODUCT = 'clear_product';
+  CLEAR_PRODUCT = 'clear_product',
+  ADD_FILTER = 'add_filter',
+  CLEAR_FILTERS = 'clear_filters';
 
 //= =====================
 // Brand Actions

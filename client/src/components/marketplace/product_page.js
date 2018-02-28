@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { getMarketplaceProduct } from '../../actions/marketplace'
+import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';
 import Marketplace from './marketplace'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
@@ -15,7 +16,7 @@ import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 import Label from 'semantic-ui-react/dist/commonjs/elements/Label'
-import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';
+import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
 
 class ProductPage extends Component {
 
@@ -49,9 +50,9 @@ class ProductPage extends Component {
               <Grid stackable columns={2}>
                 <Grid.Column width={12}>
                   <Segment raised>
-                    {product.detail && product.detail.strain_type ? (
-                        <Label color='blue' ribbon>{product.detail.strain_type.charAt(0).toUpperCase() + product.detail.strain_type.slice(1)}</Label>
-                      ) : null}
+                    { product.detail && product.detail.strain_type ? (
+                      <Label color='blue' ribbon>{product.detail.strain_type.charAt(0).toUpperCase() + product.detail.strain_type.slice(1)}</Label>
+                    ) : null}
                     <Grid stackable columns={2} style={{ padding: '20px' }}>
                       <Grid.Row>
                         <Grid.Column width={6}>
@@ -66,11 +67,9 @@ class ProductPage extends Component {
                                 <Divider />
                               </Grid.Column>
                             </Grid.Row>
-
                             {product.detail && product.detail.thc_level != null ? (<Grid.Row style={{paddingBottom: '0px'}}><Grid.Column>THC: {product.detail.thc_level}%</Grid.Column></Grid.Row>) : null}
                             <br />
                             {product.detail && product.detail.cbd_level != null ? (<Grid.Row><Grid.Column>CBD: {product.detail.cbd_level}%</Grid.Column></Grid.Row>) : null}
-                            
                             <Grid.Row>
                               <Grid.Column>
                                 <Header as='h3'>Description</Header>
@@ -87,7 +86,7 @@ class ProductPage extends Component {
                   { product.pricing && this.renderPricingSegment(product.pricing) } 
                 </Grid.Column>
               </Grid>
-            ) : null }
+            ) : <Loader active /> }
           </Container>
         </div>
       </Marketplace>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL, errorHandler } from './index';
-import { GET_MARKETPLACE_PRODUCTS, PRODUCT_DETAIL, PRODUCT_ERROR } from './types';
+import { GET_MARKETPLACE_PRODUCTS, PRODUCT_DETAIL, PRODUCT_ERROR, ADD_FILTER, CLEAR_FILTERS } from './types';
 
 export function getMarketplaceProducts(category) {
   return dispatch => {
@@ -32,4 +32,26 @@ export function getMarketplaceProduct(id) {
         errorHandler(dispatch, error.response, PRODUCT_ERROR);
       });
   };
+}
+
+export function addFilter(filterEventData) {
+  return dispatch => {
+    switch(filterEventData['type']) {
+      case "checkbox":
+        dispatch({
+          type: ADD_FILTER,
+          payload: `${filterEventData.name}:${filterEventData.value}`
+        })
+        break
+      case 'a':
+        console.log('got a')
+        break
+    }
+  }
+}
+
+export function clearFilters() {
+  return dispatch => {
+    dispatch({ type: CLEAR_FILTERS })
+  }
 }
