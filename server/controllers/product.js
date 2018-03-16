@@ -76,6 +76,7 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.addProduct = (req, res, next) => {
+  if(!req.body.product) return res.status(400).json({ error: 'Must provide product information.' })
   const category = req.body.product.category
   const name = req.body.product.name
   const desc = req.body.product.desc
@@ -99,8 +100,6 @@ exports.addProduct = (req, res, next) => {
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
-  // else if(productCategories.indexOf(category) < 0) {
-  // } 
 
   optimizeAndStoreImageInS3(image)
     .then(imageLink => {
@@ -153,7 +152,7 @@ exports.addProduct = (req, res, next) => {
       });
     })
     .catch(error => {
-      console.error(`errors uploading product image ${errors}`)
+      console.error(`error uploading product image ${error}`)
       return res.status(500).json({ error: 'Error uploading image.' });      
     })
 }
@@ -180,6 +179,10 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a description.' });
   } else if(!category || category == "") {
     return res.status(400).json({ error: 'Must provide a category.' });
+  } else if(thc_level && !parseInt(thc_level)) {
+    return res.status(400).json({ error: 'Invalid THC level.' });
+  } else if(cbd_level && !parseInt(cbd_level)) {
+    return res.status(400).json({ error: 'Invalid CBD level.' });
   } else if(CATEGORIES.indexOf(category) < 0) {
     return res.status(400).json({ error: 'Category not supported' })
   } else if(isFlowerOrConcentrate && hasInvalidStrain) {
@@ -188,6 +191,8 @@ exports.updateProduct = (req, res, next) => {
     return res.status(401).end()
   }
 
+  thc_level = parseInt(thc_level) ? parseInt(thc_level) : null
+  cbd_level = parseInt(cbd_level) ? parseInt(cbd_level) : null
   const uniqueTransactionIdentifier = uuid().substring(0, 10)
   db.task(t => {
     return t.one({
