@@ -171,7 +171,7 @@ setTimeout(() => {
         let productWithImageToUpdate = {
           id: productToAddWithImageResultId,
           name: 'updated title with image',
-          category: 'vape_cartridge', // updates category too, should have been flower when initially added
+          category: 'concentrate', // updates category too, should have been flower when initially added
           description: productToAddWithImage.product.desc,
           image: productToAddWithImage.imageLink,
           business_id: productToAddWithImage.business_id,
