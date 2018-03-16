@@ -188,9 +188,8 @@ class MarketplaceHome extends Component {
   getCategoryHeader(category) {
     switch(category) {
       case 'flower': return 'Flowers'
-      case 'vape_cartridge': return 'Vape Cartridges'
-      case 'edible': return 'Edibles'
       case 'concentrate': return 'Concentrates'
+      case 'edible': return 'Edibles'
       case 'medical': return 'Medical'
       default: return 'Flowers'
     }

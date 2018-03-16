@@ -55,7 +55,7 @@ class AddProduct extends Component {
           </div>
         )
         break
-      case 'vape_cartridge':
+      case 'concentrate':
         formResult = (
           <div>
             <Field name="name" label="Title" component={renderField} type="text" />
@@ -148,7 +148,7 @@ const renderField = field => {
 
 const categoryOptions = [
   { text: 'Flower', value: 'flower' },
-  { text: 'Vape Cartridge', value: 'vape_cartridge' },
+  { text: 'Concentrate', value: 'concentrate' },
   { text: 'Edible', value: 'edible' }
 ]
 

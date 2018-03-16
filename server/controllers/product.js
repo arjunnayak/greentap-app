@@ -3,10 +3,9 @@ const aws = require('aws-sdk')
 const sharp = require('sharp')
 const uuid = require('uuid/v4')
 const QueryResultError = require('pg-promise').errors.QueryResultError
-const productCategories = require('../app_config').categories
 const pgp = require('pg-promise')();
 
-const CATEGORIES = ['flower', 'vape_cartridge', 'concentrate', 'edible', 'medical']
+const CATEGORIES = require('../app_config').categories_list
 
 exports.getProducts = (req, res, next) => {
   const business_id = req.query.business_id;
@@ -52,7 +51,7 @@ exports.getProduct = (req, res, next) => {
       }
       let updateDetailText = null
       if(product.category === 'flower') updateDetailText = 'SELECT * FROM public.flower WHERE product_id=$1;'
-      else if(product.category === 'vape_cartridge') updateDetailText = 'SELECT * FROM public.vape_cartridge WHERE product_id=$1;'
+      else if(product.category === 'concentrate') updateDetailText = 'SELECT * FROM public.concentrate WHERE product_id=$1;'
       else if(product.category === 'edible') updateDetailText = 'SELECT * FROM public.edible WHERE product_id=$1;'
       else return res.status(201).json({ product });
 
@@ -92,7 +91,7 @@ exports.addProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a description.' })
   } else if(!category || category == "") {
     return res.status(400).json({ error: 'Must provide a category.' })
-  } else if(category === 'flower' || category === 'vape_cartridge') {
+  } else if(category === 'flower' || category === 'concentrate') {
     strain_type = req.body.product.strain_type
     thc_level = req.body.product.thc_level
     cbd_level = req.body.product.cbd_level
@@ -124,10 +123,10 @@ exports.addProduct = (req, res, next) => {
                 values: [business_id, product_id, strain_type, thc_level, cbd_level]
             }))
             break
-          case 'vape_cartridge':
+          case 'concentrate':
             addProductTransactions.push(t.none({
-              name: 'create-vape-catridge',
-              text: `INSERT INTO public.vape_cartridge(business_id, product_id, strain_type, thc_level, cbd_level) 
+              name: 'create-concentrate',
+              text: `INSERT INTO public.concentrate(business_id, product_id, strain_type, thc_level, cbd_level) 
               VALUES ($1, $2, $3, $4, $5);`,
               values: [business_id, product_id, strain_type, thc_level, cbd_level]
             }))
@@ -170,7 +169,7 @@ exports.updateProduct = (req, res, next) => {
   let thc_level = req.body.thc_level
   let cbd_level = req.body.cbd_level
 
-  let isFlowerOrVape = category === 'flower' || category === 'vape_cartridge'
+  let isFlowerOrConcentrate = category === 'flower' || category === 'concentrate'
   let hasInvalidStrain = !strain_type || strain_type == ""
 
   if (!business_id) {
@@ -183,7 +182,7 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a category.' });
   } else if(CATEGORIES.indexOf(category) < 0) {
     return res.status(400).json({ error: 'Category not supported' })
-  } else if(isFlowerOrVape && hasInvalidStrain) {
+  } else if(isFlowerOrConcentrate && hasInvalidStrain) {
     return res.status(400).json({ error: 'Must provide a strain type.' })
   } else if(req.user.business.id != business_id) {
     return res.status(401).end()
@@ -217,8 +216,8 @@ exports.updateProduct = (req, res, next) => {
           insertDetailText = `INSERT into public.flower(business_id, product_id, strain_type, thc_level, cbd_level) 
             VALUES ($1, $2, $3, $4, $5);`
           insertDetailValues = [business_id, foundProduct.id, strain_type, thc_level, cbd_level]
-        } else if(category === 'vape_cartridge') {
-          insertDetailText = `INSERT into public.vape_cartridge(business_id, product_id, strain_type, thc_level, cbd_level) 
+        } else if(category === 'concentrate') {
+          insertDetailText = `INSERT into public.concentrate(business_id, product_id, strain_type, thc_level, cbd_level) 
             VALUES ($1, $2, $3, $4, $5);`
           insertDetailValues = [business_id, foundProduct.id, strain_type, thc_level, cbd_level]
         } else if(category === 'edible') {
@@ -237,8 +236,8 @@ exports.updateProduct = (req, res, next) => {
           updateDetailText = `UPDATE public.flower SET strain_type=$1, thc_level=$2, cbd_level=$3
             WHERE product_id=$4 AND business_id=$5;`
           updateDetailValues = [strain_type, thc_level, cbd_level, foundProduct.id, business_id]
-        } else if(category === 'vape_cartridge') {
-          updateDetailText =  `UPDATE public.vape_cartridge SET strain_type=$1, thc_level=$2, cbd_level=$3
+        } else if(category === 'concentrate') {
+          updateDetailText =  `UPDATE public.concentrate SET strain_type=$1, thc_level=$2, cbd_level=$3
             WHERE product_id=$4 AND business_id=$5;`
           updateDetailValues = [strain_type, thc_level, cbd_level, foundProduct.id, business_id]
         } else if(category === 'edible') {

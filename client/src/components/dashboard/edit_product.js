@@ -53,8 +53,8 @@ class EditProduct extends Component {
     let formResult = null
     switch (category) {
       case 'flower':
-      case 'vape_cartridge':
-        const label = category === 'flower' ? 'Flower' : 'Cartridge'
+      case 'concentrate':
+        const label = category === 'flower' ? 'Flower' : 'Concentrate'
         formResult = (
           <div>
             <Field name="name" label="Title" component={renderField} type="text" />
@@ -127,7 +127,7 @@ class EditProduct extends Component {
       image: imageToUpload,
       business_id: formProps.business_id
     }
-    if(editedProduct.category === 'flower' || editedProduct.category === 'vape_cartridge') {
+    if(editedProduct.category === 'flower' || editedProduct.category === 'concentrate') {
       editedProduct.strain_type = formProps.strain_type
       editedProduct.thc_level = formProps.thc_level
       editedProduct.cbd_level = formProps.cbd_level
@@ -170,8 +170,9 @@ const renderField = field => {
 
 const categoryOptions = [
   { text: 'Flower', value: 'flower' },
-  { text: 'Vape Cartridge', value: 'vape_cartridge' },
-  { text: 'Edible', value: 'edible' }
+  { text: 'Concentrate', value: 'concentrate' },
+  { text: 'Edible', value: 'edible' },
+  { text: 'Medical', value: 'medical' },
 ]
 
 const strainTypeOptions = [

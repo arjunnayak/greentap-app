@@ -17,13 +17,11 @@ const config = {
   cookie_name: '__greentap_cookie',
   categories: {
     flower: 'flower',
-    vape_cartridge: 'vape_catridge',
-    vape_pen: 'vape_pen',
-    edible: 'edible',
     concentrate: 'concentrate',
-    accessory: 'accessory'
+    edible: 'edible',
+    medical: 'medical'
   },
-  categories_list: ['flower', 'vape_cartridge', 'concentrate', 'edible', 'medical']
+  categories_list: ['flower', 'concentrate', 'edible', 'medical']
 }
 
 module.exports = config;

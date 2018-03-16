@@ -11,9 +11,8 @@ import { CHANGE_CATEGORY } from '../../actions/types';
 const categoryOptions = [
   { key: 1, text: 'Flowers', value: 'flower' },
   { key: 2, text: 'Concentrates', value: 'concentrate' },
-  { key: 3, text: 'Vape Catridges', value: 'vape_cartridge' },
-  { key: 4, text: 'Edibles', value: 'edible' },
-  { key: 5, text: 'Medical', value: 'medical' },
+  { key: 3, text: 'Edibles', value: 'edible' },
+  { key: 4, text: 'Medical', value: 'medical' },
 ]
 
 class MarketplaceHeader extends Component {
