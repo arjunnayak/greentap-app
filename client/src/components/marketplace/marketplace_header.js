@@ -46,10 +46,12 @@ class MarketplaceHeader extends Component {
   }
 
   handleCategoryChange(event, data) {
-    this.props.dispatch({
-      type: CHANGE_CATEGORY,
-      category: data.value
-    })
+    if(data.value !== this.props.category) {
+      this.props.dispatch({
+        type: CHANGE_CATEGORY,
+        category: data.value
+      })
+    }
   }
 
   renderRightMenuLinks() {
@@ -74,7 +76,8 @@ class MarketplaceHeader extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    authenticated: state.auth.authenticated
+    authenticated: state.auth.authenticated,
+    category: state.marketplace.category
   }
 }
 
