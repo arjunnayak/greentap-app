@@ -3,37 +3,37 @@ const aws = require('aws-sdk')
 const sharp = require('sharp')
 const uuid = require('uuid/v4')
 const QueryResultError = require('pg-promise').errors.QueryResultError
-const pgp = require('pg-promise')();
+const pgp = require('pg-promise')()
 
 const CATEGORIES = require('../app_config').categories_list
 
 exports.getProducts = (req, res, next) => {
-  const business_id = req.query.business_id;
+  const business_id = req.query.business_id
 
   if (!business_id) {
-    return res.status(400).json({ error: 'Must provide business id.' });
+    return res.status(400).json({ error: 'Must provide business id.' })
   } else if(req.user.business.id != business_id) {
-    return res.status(401).end();
+    return res.status(401).end()
   }
   db.query({
     name: 'get-products',
     text: 'SELECT * FROM public.product WHERE business_id=$1;',
     values: [business_id]
   }).then(products => {
-      return res.status(200).json({ products });
+      return res.status(200).json({ products })
   }).catch(error => {
-    console.error('get products error 500', error);
-    return res.status(500).json({ error: "Error retrieving products" });
-  });
+    console.error('get products error 500', error)
+    return res.status(500).json({ error: "Error retrieving products" })
+  })
 }
 
 exports.getProduct = (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.id
   const user_business_id = req.user.business.id
   if (!id) {
-    return res.status(400).json({ error: 'Must provide product id.' });
+    return res.status(400).json({ error: 'Must provide product id.' })
   } else if(!user_business_id) {
-    return res.status(400).json({ error: 'User business id not found.' });
+    return res.status(400).json({ error: 'User business id not found.' })
   }
 
   let product = null
@@ -53,7 +53,7 @@ exports.getProduct = (req, res, next) => {
       if(product.category === 'flower') updateDetailText = 'SELECT * FROM public.flower WHERE product_id=$1;'
       else if(product.category === 'concentrate') updateDetailText = 'SELECT * FROM public.concentrate WHERE product_id=$1;'
       else if(product.category === 'edible') updateDetailText = 'SELECT * FROM public.edible WHERE product_id=$1;'
-      else return res.status(201).json({ product });
+      else return res.status(201).json({ product })
 
       return t.one({
         name: 'get-product-detail-'+uuid(),
@@ -82,6 +82,7 @@ exports.addProduct = (req, res, next) => {
   const desc = req.body.product.desc
   const image = req.body.product.image
   const business_id = req.body.business_id
+  const subtype = req.body.product.subtype
   let strain_type, thc_level, cbd_level = null
 
   if (!business_id) {
@@ -125,17 +126,17 @@ exports.addProduct = (req, res, next) => {
           case 'concentrate':
             addProductTransactions.push(t.none({
               name: 'create-concentrate',
-              text: `INSERT INTO public.concentrate(business_id, product_id, strain_type, thc_level, cbd_level) 
-              VALUES ($1, $2, $3, $4, $5);`,
-              values: [business_id, product_id, strain_type, thc_level, cbd_level]
+              text: `INSERT INTO public.concentrate(business_id, product_id, strain_type, concentrate_type, thc_level, cbd_level) 
+              VALUES ($1, $2, $3, $4, $5, $6);`,
+              values: [business_id, product_id, strain_type, subtype, thc_level, cbd_level]
             }))
             break
           case 'edible':
             addProductTransactions.push(t.none({
               name: 'create-edible',
-              text: `INSERT INTO public.edible(business_id, product_id) 
-                VALUES ($1, $2);`,
-              values: [business_id, product_id]
+              text: `INSERT INTO public.edible(business_id, product_id, edible_type) 
+                VALUES ($1, $2, $3);`,
+              values: [business_id, product_id, subtype]
             }))
             break
         }
@@ -143,27 +144,27 @@ exports.addProduct = (req, res, next) => {
       }).then(data => {
         let product = data[0]
         let specificProduct = data[1]
-        console.log('created specific product', specificProduct)
-        return res.status(201).json({ product });
+        return res.status(201).json({ product })
       }).catch(errors => {
         console.log(errors)
         console.error(`add product transaction errors adding product to database ${errors}`)
-        return res.status(500).json({ error: "Error adding product" });
-      });
+        return res.status(500).json({ error: "Error adding product" })
+      })
     })
     .catch(error => {
       console.error(`error uploading product image ${error}`)
-      return res.status(500).json({ error: 'Error uploading image.' });      
+      return res.status(500).json({ error: 'Error uploading image.' })      
     })
 }
 
 exports.updateProduct = (req, res, next) => {
-  const id = req.params.id;
-  const category = req.body.category;
-  const name = req.body.name;
-  const description = req.body.description;
-  const image = req.body.image;
-  const business_id = req.body.business_id;
+  const id = req.params.id
+  const category = req.body.category
+  const name = req.body.name
+  const description = req.body.description
+  const image = req.body.image
+  const business_id = req.body.business_id
+  const subtype = req.body.subtype
   let strain_type = req.body.strain_type
   let thc_level = req.body.thc_level
   let cbd_level = req.body.cbd_level
@@ -172,17 +173,17 @@ exports.updateProduct = (req, res, next) => {
   let hasInvalidStrain = !strain_type || strain_type == ""
 
   if (!business_id) {
-    return res.status(400).json({ error: 'Must provide a business id.' });
+    return res.status(400).json({ error: 'Must provide a business id.' })
   } else if(!name) {
-    return res.status(400).json({ error: 'Must provide a name.' });
+    return res.status(400).json({ error: 'Must provide a name.' })
   } else if(!description) {
-    return res.status(400).json({ error: 'Must provide a description.' });
+    return res.status(400).json({ error: 'Must provide a description.' })
   } else if(!category || category == "") {
-    return res.status(400).json({ error: 'Must provide a category.' });
+    return res.status(400).json({ error: 'Must provide a category.' })
   } else if(thc_level && !parseInt(thc_level)) {
-    return res.status(400).json({ error: 'Invalid THC level.' });
+    return res.status(400).json({ error: 'Invalid THC level.' })
   } else if(cbd_level && !parseInt(cbd_level)) {
-    return res.status(400).json({ error: 'Invalid CBD level.' });
+    return res.status(400).json({ error: 'Invalid CBD level.' })
   } else if(CATEGORIES.indexOf(category) < 0) {
     return res.status(400).json({ error: 'Category not supported' })
   } else if(isFlowerOrConcentrate && hasInvalidStrain) {
@@ -222,13 +223,13 @@ exports.updateProduct = (req, res, next) => {
             VALUES ($1, $2, $3, $4, $5);`
           insertDetailValues = [business_id, foundProduct.id, strain_type, thc_level, cbd_level]
         } else if(category === 'concentrate') {
-          insertDetailText = `INSERT into public.concentrate(business_id, product_id, strain_type, thc_level, cbd_level) 
-            VALUES ($1, $2, $3, $4, $5);`
-          insertDetailValues = [business_id, foundProduct.id, strain_type, thc_level, cbd_level]
+          insertDetailText = `INSERT into public.concentrate(business_id, product_id, strain_type, concentrate_type, thc_level, cbd_level) 
+            VALUES ($1, $2, $3, $4, $5, $6);`
+          insertDetailValues = [business_id, foundProduct.id, strain_type, subtype, thc_level, cbd_level]
         } else if(category === 'edible') {
-          insertDetailText = `INSERT into public.edible(business_id, product_id) 
-            VALUES ($1, $2);`
-          insertDetailValues = [business_id, foundProduct.id]
+          insertDetailText = `INSERT into public.edible(business_id, product_id, edible_type) 
+            VALUES ($1, $2, $3);`
+          insertDetailValues = [business_id, foundProduct.id, subtype]
         }
         updateTransactions.push(t.none({
           name: 'insert-new-product-category-'+uniqueTransactionIdentifier,
@@ -242,14 +243,14 @@ exports.updateProduct = (req, res, next) => {
             WHERE product_id=$4 AND business_id=$5;`
           updateDetailValues = [strain_type, thc_level, cbd_level, foundProduct.id, business_id]
         } else if(category === 'concentrate') {
-          updateDetailText =  `UPDATE public.concentrate SET strain_type=$1, thc_level=$2, cbd_level=$3
-            WHERE product_id=$4 AND business_id=$5;`
-          updateDetailValues = [strain_type, thc_level, cbd_level, foundProduct.id, business_id]
+          updateDetailText =  `UPDATE public.concentrate SET strain_type=$1, concentrate_type=$2 thc_level=$3, cbd_level=$4
+            WHERE product_id=$5 AND business_id=$6;`
+          updateDetailValues = [strain_type, subtype, thc_level, cbd_level, foundProduct.id, business_id]
         } else if(category === 'edible') {
           // no op for now until more fields come in
-          updateDetailText = `UPDATE public.edible SET business_id=$1
-            WHERE product_id=$2 AND business_id=$3;`
-          updateDetailValues = [business_id, foundProduct.id, business_id]
+          updateDetailText = `UPDATE public.edible SET business_id=$1, edible_type=$2
+            WHERE product_id=$3 AND business_id=$4;`
+          updateDetailValues = [business_id, subtype, foundProduct.id, business_id]
         }
         updateTransactions.push(t.none({
           name: 'insert-new-product-category-'+uniqueTransactionIdentifier,
@@ -272,13 +273,13 @@ exports.updateProduct = (req, res, next) => {
 }
 
 exports.deleteProduct = (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.id
   const user_business_id = req.user.business.id
 
   if (!id) {
-    return res.status(400).json({ error: 'Must provide an id.' });
+    return res.status(400).json({ error: 'Must provide an id.' })
   } else if(!user_business_id) {
-    return res.status(500).json({ error: 'User business id not found.' });
+    return res.status(500).json({ error: 'User business id not found.' })
   }
 
   db.one({
@@ -288,7 +289,7 @@ exports.deleteProduct = (req, res, next) => {
   }).then(product => {
     if(product.business_id != user_business_id) {
       console.log('deleteProduct business ids dont match')
-      return res.status(401).end();
+      return res.status(401).end()
     }
     db.any({
       name: 'delete-product',
@@ -296,33 +297,33 @@ exports.deleteProduct = (req, res, next) => {
       values: [id, user_business_id]
     }).then((deletedProduct) => {
       if(deletedProduct == []) {
-        return res.status(404).end();
+        return res.status(404).end()
       }
-      return res.status(200).json({ deletedProduct: deletedProduct[0] });
+      return res.status(200).json({ deletedProduct: deletedProduct[0] })
     }).catch(error => {
-      return res.status(500).end();
-    });
+      return res.status(500).end()
+    })
   }).catch(error => {
-    return res.status(404).end();
-  });
+    return res.status(404).end()
+  })
 }
 
 exports.getImageUploadSign = (req, res, next) => {
-  var s3 = new aws.S3();
+  var s3 = new aws.S3()
   var params = {
     Bucket: 'greentap-images',
     Key: req.query.filename,
     Expires: 60,
     ContentType: req.query.filetype,
     ACL: 'public-read'
-  };
+  }
   s3.getSignedUrl('putObject', params, function (error, data) {
     if (error) {
-      return res.status(500).json({ error });      
+      return res.status(500).json({ error })      
     } else {
-      return res.status(200).json({ data });
+      return res.status(200).json({ data })
     }
-  });
+  })
 }
 
 const optimizeAndStoreImageInS3 = function(image) {
