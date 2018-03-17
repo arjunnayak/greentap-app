@@ -51,12 +51,13 @@ exports.register = (req, res, next) => {
       const city = req.body.city
       const state = req.body.state
       const zip = req.body.zip
+      const description = req.body.description
       const businessId = uuid()
       registerTransactions.push(t.one({
         name: 'create-business',
-        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name;`,
-        values: [businessId, userId, businessName, phone, address, city, state, zip]
+        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip, description) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, name;`,
+        values: [businessId, userId, businessName, phone, address, city, state, zip, description]
       }))
     }
     return t.batch(registerTransactions)
