@@ -32,9 +32,9 @@ const ProductCard = (props) => {
           ) : null }
         </Card.Description>
       </Card.Content>
-      <Card.Content extra>
+      {/* <Card.Content extra>
         <Button fluid primary>Add To Cart</Button>
-      </Card.Content>
+      </Card.Content> */}
     </Card>
   )
 }
