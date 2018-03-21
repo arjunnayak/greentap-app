@@ -100,7 +100,7 @@ class MarketplaceHome extends Component {
         content: (
           <Form>
             <Form.Group grouped>
-              {brands.map(brandName => {
+              {brands.sort().map(brandName => {
                 return ( <Form.Checkbox label={brandName} name='brand-name' value={brandName} onClick={this.handleFilterChange}/> )
               })}
             </Form.Group>
@@ -109,6 +109,7 @@ class MarketplaceHome extends Component {
       }
     }
     const products = this.props.filters.length > 0 ? this.filterProducts(this.props.products) : this.props.products
+    const cardsPerRow = 3
     return (
       <Marketplace>
         <div className='mhome'>
@@ -123,7 +124,7 @@ class MarketplaceHome extends Component {
             </Grid>
           </Container>
 
-          { this.props.isRequesting ? ( 
+          { this.props.isRequesting && !hasProducts ? ( 
             <Loader active/> 
           ) : (
             <div>
@@ -136,7 +137,7 @@ class MarketplaceHome extends Component {
                   <Grid.Column width={12}>
                     {hasProducts ? (
                       <div className='card-menu'>
-                        {this.renderProductGrid(3, products)}
+                        {this.renderProductGrid(cardsPerRow, products)}
                       </div>
                     ) : <h2>No products available</h2>}
                   </Grid.Column>
@@ -156,7 +157,7 @@ class MarketplaceHome extends Component {
       for (let i = 0; i < products.length; i += numColumns) {
         productRows.push(products.slice(i, i + numColumns))
       }
-      
+      console.log(`rendering ${productRows.length} products`)
       const groupRowsToRender = productRows.map((row, index) => {
         const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
@@ -170,7 +171,7 @@ class MarketplaceHome extends Component {
         })
 
         return (
-          <Card.Group key={index} itemsPerRow={3}>
+          <Card.Group key={index} itemsPerRow={numColumns}>
             {productRowsToRender}
           </Card.Group>
         )
@@ -221,7 +222,8 @@ function mapStateToProps(state) {
     products: state.marketplace.products,
     category: state.marketplace.category,
     isRequesting: state.marketplace.is_requesting,
-    filters: state.marketplace.filters
+    filters: state.marketplace.filters,
+    numProductsToShow: state.marketplace.numProductsToShow
   }
 }
 

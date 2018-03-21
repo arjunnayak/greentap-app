@@ -102,7 +102,7 @@ class BrandPage extends Component {
 
         // returns array of product groups
         return (
-          <Card.Group key={index} itemsPerRow={3}>
+          <Card.Group key={index} itemsPerRow={numColumns}>
             {productRowsToRender}
           </Card.Group>
         )

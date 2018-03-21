@@ -1,7 +1,7 @@
 import { REQUEST_MARKETPLACE_PRODUCTS, GET_MARKETPLACE_PRODUCTS, CHANGE_CATEGORY, PRESET_PRODUCT_DETAIL, 
-  PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING, ADD_FILTER, CLEAR_FILTERS } from '../actions/types'
+  PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING, ADD_FILTER, CLEAR_FILTERS, UPDATE_NUM_PRODUCTS_TO_SHOW } from '../actions/types'
 
-const INITIAL_STATE = { category: 'flower', products: [], product: {}, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [] };
+const INITIAL_STATE = { category: 'flower', products: [], product: {}, numProductsToShow: 25, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [] };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -13,6 +13,8 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, is_requesting: false, products: action.payload, product: {}, error: '' };
     case PRESET_PRODUCT_DETAIL:
       return { ...state, product: action.payload, error: '' };
+    case UPDATE_NUM_PRODUCTS_TO_SHOW:
+      return { ...state, numProductsToShow: action.numProducts };
     case PRODUCT_DETAIL:
       return { ...state, product: action.payload, error: '' };
     case ADD_FILTER:
