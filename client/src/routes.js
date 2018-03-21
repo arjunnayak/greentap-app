@@ -52,9 +52,12 @@ class GreentapRouter extends Component {
             <Route path="/dashboard/settings" component={RequireAuth(Settings)}/>
             <Route exact path="/dashboard" component={RequireAuth(Overview)}/>
 
-            <Route path="/marketplace/product/:id" component={RequireAuth(ProductPage)}/>
+            {/* <Route path="/marketplace/product/:id" component={RequireAuth(ProductPage)}/>
             <Route path="/marketplace/brand/:id" component={RequireAuth(BrandPage)}/>
-            <Route exact path="/marketplace" component={RequireAuth(MarketplaceHome)}/>
+            <Route exact path="/marketplace" component={RequireAuth(MarketplaceHome)}/> */}
+            <Route path="/marketplace/product/:id" component={ProductPage}/>
+            <Route path="/marketplace/brand/:id" component={BrandPage}/>
+            <Route exact path="/marketplace" component={MarketplaceHome}/>
 
             <Route component={NotFoundPage} />
           </Switch>

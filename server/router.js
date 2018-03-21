@@ -60,12 +60,16 @@ module.exports = (app, passport) => {
   productRoutes.delete('/:id', requireAuth, ProductController.deleteProduct)
 
   // Marketplace routes
-  marketplaceRoutes.get('/products', requireAuth, MarketplaceController.getProducts)
-  marketplaceRoutes.get('/product/:id', requireAuth, MarketplaceController.getProduct)
+  // marketplaceRoutes.get('/products', requireAuth, MarketplaceController.getProducts)
+  // marketplaceRoutes.get('/product/:id', requireAuth, MarketplaceController.getProduct)
+  marketplaceRoutes.get('/products', MarketplaceController.getProducts)
+  marketplaceRoutes.get('/product/:id', MarketplaceController.getProduct)
 
   // Brand routes
-  brandRoutes.get('/', requireAuth, BrandController.getBrands)
-  brandRoutes.get('/:id', requireAuth, BrandController.getBrand)
+  // brandRoutes.get('/', requireAuth, BrandController.getBrands)
+  // brandRoutes.get('/:id', requireAuth, BrandController.getBrand)
+  brandRoutes.get('/', BrandController.getBrands)
+  brandRoutes.get('/:id', BrandController.getBrand)
 
   // Tie them together
   apiRoutes.use('/auth', authRoutes)
