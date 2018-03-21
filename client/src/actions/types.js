@@ -53,7 +53,9 @@ export const GET_BRANDS = 'get_brands',
 //= =====================
 // Marketplace Actions
 //= =====================
-export const CHANGE_CATEGORY = 'change_category';
+export const CHANGE_CATEGORY = 'change_category',
+  SEND_INQUIRY_SUCCESS = 'send_inquiry_success',
+  SEND_INQUIRY_ERROR = 'send_inquiry_error';
 
 //= =====================
 // Messaging Actions

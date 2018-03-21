@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL, errorHandler } from './index';
-import { GET_MARKETPLACE_PRODUCTS, PRODUCT_DETAIL, PRODUCT_ERROR, ADD_FILTER, CLEAR_FILTERS } from './types';
+import { GET_MARKETPLACE_PRODUCTS, PRODUCT_DETAIL, PRODUCT_ERROR, ADD_FILTER, CLEAR_FILTERS, SEND_INQUIRY_SUCCESS, SEND_INQUIRY_ERROR } from './types';
 
 export function getMarketplaceProducts(category) {
   return dispatch => {
@@ -53,5 +53,23 @@ export function addFilter(filterEventData) {
 export function clearFilters() {
   return dispatch => {
     dispatch({ type: CLEAR_FILTERS })
+  }
+}
+
+export function sendInquiry(inquiryData) {
+  console.log(inquiryData)
+  return null
+  return dispatch => {
+    return axios.post(`${API_URL}/marketplace/inquiry`, { withCredentials: false })
+      .then((response) => {
+        dispatch({
+          type: SEND_INQUIRY_SUCCESS,
+          payload: response.data.product
+        })
+        console.log('marketplace product ', response.data.product)
+      })
+      .catch((error) => {
+        errorHandler(dispatch, error.response, SEND_INQUIRY_ERROR);
+      });
   }
 }
