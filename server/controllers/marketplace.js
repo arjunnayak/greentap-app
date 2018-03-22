@@ -66,3 +66,28 @@ exports.getProduct = (req, res, next) => {
     });
   })
 }
+
+exports.createInquiry = (req, res, next) => {
+  const { buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType } = req.body
+
+  if (!buyerUserId) return res.status(400).json({ error: 'Must provide the buyer\'s user id.' })
+  else if(!sellerBusinessId) return res.status(400).json({ error: 'Must provide the seller\'s business id.' })
+  else if(!unitPrice) return res.status(400).json({ error: 'Must provide the unit price.' })
+  else if(!unitCount) return res.status(400).json({ error: 'Must provide the unit count.' })
+  else if(!unitCountType) return res.status(400).json({ error: 'Must provide the unit count type.' })
+
+  const inquiryId = uuid()
+  db.tx(t => {
+    return t.one({
+      name: `create-inquiry`,
+      text: `INSERT INTO public.inquiry(id, buyer_user_id, seller_business_id, unit_price, unit_count, unit_count_type) 
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
+      values: [inquiryId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType]
+    })
+  }).then(createdInquiry => {
+    return res.status(201).json({ inquiry: createdInquiry })
+  }).catch(error => {
+    console.error(`error on create inquiry ${error}`)
+    return res.status(500).json({ error: "Error creating inquiry" })
+  })
+}

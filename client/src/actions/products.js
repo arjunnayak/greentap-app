@@ -36,7 +36,7 @@ export function getProduct(productId) {
 export function addProduct(product, business_id) {
   return dispatch => {
     dispatch({ type: ADD_PRODUCT_SUBMIT})
-    return axios.post(`${API_URL}/products/add`, { business_id, product}, { withCredentials: true })
+    return axios.post(`${API_URL}/products/add`, { business_id, product }, { withCredentials: true })
       .then((response) => {
         console.log('add product action response', response)
         dispatch({

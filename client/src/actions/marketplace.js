@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL, errorHandler } from './index';
-import { GET_MARKETPLACE_PRODUCTS, PRODUCT_DETAIL, PRODUCT_ERROR, ADD_FILTER, CLEAR_FILTERS, SEND_INQUIRY_SUCCESS, SEND_INQUIRY_ERROR } from './types';
+import { GET_MARKETPLACE_PRODUCTS, PRODUCT_DETAIL, PRODUCT_ERROR, ADD_FILTER, CLEAR_FILTERS, SEND_INQUIRY_SUCCESS, SEND_INQUIRY_FAILURE, CLEAR_INQUIRY_ERROR } from './types';
 
 export function getMarketplaceProducts(category) {
   return dispatch => {
@@ -10,7 +10,6 @@ export function getMarketplaceProducts(category) {
           type: GET_MARKETPLACE_PRODUCTS,
           payload: response.data.products
         })
-        console.log('marketplace products ', response.data.products)
       })
       .catch((error) => {
         errorHandler(dispatch, error.response, PRODUCT_ERROR);
@@ -26,7 +25,6 @@ export function getMarketplaceProduct(id) {
           type: PRODUCT_DETAIL,
           payload: response.data.product
         })
-        console.log('marketplace product ', response.data.product)
       })
       .catch((error) => {
         console.error('error', error)
@@ -62,7 +60,7 @@ export function clearFilters() {
 export function sendInquiry(inquiryData) {
   console.log(inquiryData)
   return dispatch => {
-    return axios.post(`${API_URL}/marketplace/inquiry`, { withCredentials: false })
+    return axios.post(`${API_URL}/marketplace/inquiry`, inquiryData, { withCredentials: false })
       .then((response) => {
         dispatch({
           type: SEND_INQUIRY_SUCCESS,
@@ -71,10 +69,22 @@ export function sendInquiry(inquiryData) {
         console.log('marketplace product ', response.data.product)
       })
       .catch((error) => {
-        dispatch({
-          type: SEND_INQUIRY_ERROR,
-          payload: error.data
-        })
+        showInquiryError(error.data)
       });
+  }
+}
+
+export function showInquiryError(errorMessage) {
+  return dispatch => {
+    dispatch({
+      type: SEND_INQUIRY_FAILURE,
+      payload: errorMessage
+    })
+  }
+}
+
+export function clearInquiryError() {
+  return dispatch => {
+    dispatch({ type: CLEAR_INQUIRY_ERROR })
   }
 }

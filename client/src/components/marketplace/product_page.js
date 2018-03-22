@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import { getMarketplaceProduct, sendInquiry } from '../../actions/marketplace'
+import { getMarketplaceProduct, sendInquiry, showInquiryError, clearInquiryError } from '../../actions/marketplace'
 import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';
 import Marketplace from './marketplace'
 
@@ -26,6 +26,7 @@ class ProductPage extends Component {
     this.handlePricingChange = this.handlePricingChange.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleSendInquiry = this.handleSendInquiry.bind(this)
+    this.renderInquiryError = this.renderInquiryError.bind(this)
     this.state = {
       openModal: false
     }
@@ -41,19 +42,24 @@ class ProductPage extends Component {
   }
 
   handleSendInquiry() {
-    if(this.props.product.pricing) {
-      const index = this.props.selectedPricingIndex,
-        unitPrice = this.props.product.pricing[index].unitPrice,
-        unitCountType = this.props.product.pricing.prices[index].unitCountType
-      let inquiryData = {
-        unitPrice,
-        unitCountType,
-        buyerUserId: this.props.user.id,
-        sellerBusinessId: this.props.product.business_id
-      }
-      this.props.sendInquiry(inquiryData)
-      this.setState({ openModal: true })
+    // user is not authenticated
+    if(!this.props.user) {
+      this.props.showInquiryError('You must be logged in to send an inquiry.')
+      return
     }
+    const productPricing = this.props.product.pricing[this.props.selectedPricingIndex]
+    const unitPrice = productPricing.unit_price,
+      unitCount = productPricing.unit_count,
+      unitCountType = productPricing.unit_count_type
+    let inquiryData = {
+      unitPrice,
+      unitCount,
+      unitCountType,
+      buyerUserId: this.props.user.id,
+      sellerBusinessId: this.props.product.business_id
+    }
+    this.props.sendInquiry(inquiryData)
+    this.setState({ openModal: true })
   }
 
   render() {
@@ -121,45 +127,49 @@ class ProductPage extends Component {
 
   renderPricingSegment(prices) {
     let pricingOptions = null,
-      defaultVal = null,
-      unitPrice = '--',
-      unitCountType = '--'
+      unitPrice = '--'
     const index = this.props.selectedPricingIndex
-    if(prices && prices.length > 0) {
+    if(prices && prices !== null && prices.length > 0) {
       pricingOptions = prices.map((price, index) => {
-        return { key: index, text: String(price.unit_count), value: String(price.unit_count) }
+        return { key: index, text: `${price.unit_count} ${price.unit_count_type}`, value: index }
       })
-      unitPrice = prices[index].unitPrice / 100.00
-      unitCountType = prices[index].unitCountType
-      defaultVal = pricingOptions[0].value
+      // convert to dollars and show 2 decimal places
+      unitPrice = Number(prices[index].unit_price / 100.00).toFixed(2);
     }
     return (
       <div>
         <Segment raised>
-          <Header as='h3'>${unitPrice}/{unitCountType}</Header>
+          { this.renderInquiryError() }
+          <Header as='h3'>${unitPrice}</Header>
           <div>
             Qty:{' '}
             <Dropdown onChange={this.handlePricingChange} disabled={!pricingOptions} 
-              options={pricingOptions} defaultValue={defaultVal} selection fluid/>
+              options={pricingOptions} defaultValue={0} selection fluid />
           </div>
-          <Button fluid primary onClick={this.handleSendInquiry} style={{marginTop: '15px'}}>Send Inquiry</Button>
+          <Button fluid primary disabled={!pricingOptions} onClick={this.handleSendInquiry} style={{marginTop: '15px'}}>Send Inquiry</Button>
         </Segment>
         <Modal
           open={this.state.openModal}
           size='tiny'
           content='Congrats! You have successfully sent the inquiry. You will receive an email confirmation shortly.'
           actions={[{ key: 'okay', content: 'Okay!', positive: true }]}
-          onActionClick={this.closeModal}
-        />
+          onActionClick={this.closeModal} />
       </div>
     )
   }
 
   handlePricingChange(event, data) {
-    this.props.dispatch({
-      type: CHANGE_PRODUCT_DETAIL_PRICING,
-      pricingIndex: parseInt(data.value) - 1
-    })
+    const newIndex = data.value
+    this.props.changePrice(newIndex)
+  }
+
+  renderInquiryError() {
+    if(this.props.inquiryError !== null) {
+      return (
+        <div className="form-red-error">{this.props.inquiryError}</div>
+      )
+    }
+    return null
   }
 }
 
@@ -168,12 +178,21 @@ const mapStateToProps = (state) => {
     product: state.marketplace.product,
     selectedPricingIndex: state.marketplace.selectedPricingIndex,
     user: state.auth.user,
+    inquiryError: state.marketplace.inquiryError
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = bindActionCreators({ getMarketplaceProduct, sendInquiry }, dispatch)
-  return { ...actions, dispatch }
+  return { 
+    getMarketplaceProduct: productId => dispatch(getMarketplaceProduct(productId)), 
+    sendInquiry: (inquiryData) => dispatch(sendInquiry(inquiryData)),
+    changePrice: priceIndex => dispatch({
+      type: CHANGE_PRODUCT_DETAIL_PRICING, 
+      pricingIndex: priceIndex
+    }),
+    showInquiryError: (errorMessage) => dispatch(showInquiryError(errorMessage)),
+    clearInquiryError: () => dispatch(clearInquiryError())
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

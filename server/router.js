@@ -64,6 +64,7 @@ module.exports = (app, passport) => {
   // marketplaceRoutes.get('/product/:id', requireAuth, MarketplaceController.getProduct)
   marketplaceRoutes.get('/products', MarketplaceController.getProducts)
   marketplaceRoutes.get('/product/:id', MarketplaceController.getProduct)
+  marketplaceRoutes.post('/inquiry', MarketplaceController.createInquiry)
 
   // Brand routes
   // brandRoutes.get('/', requireAuth, BrandController.getBrands)

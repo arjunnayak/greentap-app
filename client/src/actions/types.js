@@ -24,11 +24,6 @@ export const LOGIN_REQUEST = 'login_request',
 // Product Actions
 //= =====================
 export const GET_PRODUCTS = 'get_products',
-  REQUEST_MARKETPLACE_PRODUCTS = 'request_marketplace_products',
-  GET_MARKETPLACE_PRODUCTS = 'get_marketplace_products',
-  PRESET_PRODUCT_DETAIL = 'set_product_detail',
-  PRODUCT_DETAIL = 'marketplace_product_detail',
-  CHANGE_PRODUCT_DETAIL_PRICING = 'change_product_detail_pricing',
   GET_PRODUCT = 'get_product', 
   ADD_PRODUCT_SUBMIT = 'add_product_submit',
   ADD_PRODUCT_SUCCESS = 'add_product_success',
@@ -49,13 +44,18 @@ export const GET_BRANDS = 'get_brands',
   GET_BRAND = 'get_brand',
   BRAND_ERROR = 'brand_error';
 
-
 //= =====================
 // Marketplace Actions
 //= =====================
-export const CHANGE_CATEGORY = 'change_category',
+export const REQUEST_MARKETPLACE_PRODUCTS = 'request_marketplace_products',
+  GET_MARKETPLACE_PRODUCTS = 'get_marketplace_products',
+  PRESET_PRODUCT_DETAIL = 'set_product_detail',
+  PRODUCT_DETAIL = 'marketplace_product_detail',
+  CHANGE_PRODUCT_DETAIL_PRICING = 'change_product_detail_pricing',  
+  CHANGE_CATEGORY = 'change_category',
   SEND_INQUIRY_SUCCESS = 'send_inquiry_success',
-  SEND_INQUIRY_ERROR = 'send_inquiry_error';
+  SEND_INQUIRY_FAILURE = 'send_inquiry_failure',
+  CLEAR_INQUIRY_ERROR = 'clear_inquiry_error';
 
 //= =====================
 // Messaging Actions
