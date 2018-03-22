@@ -6,11 +6,9 @@ const CATEGORIES = require('../app_config').categories_list
 exports.getProducts = (req, res, next) => {
   const category = req.query.category;
   const uniqueTransactionIdentifier = uuid().substring(0, 10)
-  if(!category) {
-    return res.status(400).json({ erro: 'Product category required.'})
-  } else if(CATEGORIES.indexOf(category) < 0) {
-    return res.status(400).json({ erro: 'Invalid product category.'})
-  }
+  if(!category) return res.status(400).json({ erro: 'Product category required.'})
+  else if(CATEGORIES.indexOf(category) < 0) return res.status(400).json({ erro: 'Invalid product category.'})
+
   console.log('retrieving marketplace products', category)
   db.task(t => {
     return t.any({
@@ -31,9 +29,8 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const id = req.params.id;
 
-  if (!id) {
-    return res.status(400).json({ error: 'Must provide product id.' });
-  }
+  if (!id) return res.status(400).json({ error: 'Must provide product id.' });
+
   let productResult = {}
   const uniqueTransactionIdentifier = uuid().substring(0, 10) 
   db.task(t => {

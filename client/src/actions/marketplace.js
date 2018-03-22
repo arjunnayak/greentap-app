@@ -29,6 +29,7 @@ export function getMarketplaceProduct(id) {
         console.log('marketplace product ', response.data.product)
       })
       .catch((error) => {
+        console.error('error', error)
         errorHandler(dispatch, error.response, PRODUCT_ERROR);
       });
   };
@@ -46,6 +47,8 @@ export function addFilter(filterEventData) {
       case 'a':
         console.log('got a')
         break
+      default:
+        break
     }
   }
 }
@@ -58,7 +61,6 @@ export function clearFilters() {
 
 export function sendInquiry(inquiryData) {
   console.log(inquiryData)
-  return null
   return dispatch => {
     return axios.post(`${API_URL}/marketplace/inquiry`, { withCredentials: false })
       .then((response) => {
@@ -69,7 +71,10 @@ export function sendInquiry(inquiryData) {
         console.log('marketplace product ', response.data.product)
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, SEND_INQUIRY_ERROR);
+        dispatch({
+          type: SEND_INQUIRY_ERROR,
+          payload: error.data
+        })
       });
   }
 }
