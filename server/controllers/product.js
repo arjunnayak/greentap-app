@@ -98,7 +98,8 @@ exports.addProduct = (req, res, next) => {
     thc_level = req.body.product.thc_level
     cbd_level = req.body.product.cbd_level
     if(!strain_type) return res.status(400).json({ error: 'Must provide a strain type.' })
-  } else if(req.user.business.id != business_id) {
+  }
+  if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
 
