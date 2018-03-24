@@ -58,18 +58,18 @@ export function clearFilters() {
 }
 
 export function sendInquiry(inquiryData) {
-  console.log(inquiryData)
   return dispatch => {
     return axios.post(`${API_URL}/marketplace/inquiry`, inquiryData, { withCredentials: false })
       .then((response) => {
+        //if 201 but we have an error sending an email, we need to display that
         dispatch({
           type: SEND_INQUIRY_SUCCESS,
           payload: response.data.product
         })
-        console.log('marketplace product ', response.data.product)
       })
-      .catch((error) => {
-        showInquiryError(error.data)
+      .catch(error => {
+        console.log('sendInquiry post failed', error.response)
+        dispatch(showInquiryError(error.response.data.error))
       });
   }
 }

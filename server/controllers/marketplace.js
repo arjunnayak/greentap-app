@@ -1,5 +1,6 @@
 const uuid = require('uuid/v4')
 const db = require('../config/db')
+const sendEmail = require('../helpers').sendEmail
 const CATEGORIES = require('../app_config').categories_list
 
 
@@ -68,26 +69,49 @@ exports.getProduct = (req, res, next) => {
 }
 
 exports.createInquiry = (req, res, next) => {
-  const { buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType } = req.body
+  const { productId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType } = req.body
 
-  if (!buyerUserId) return res.status(400).json({ error: 'Must provide the buyer\'s user id.' })
+  if(!productId) return res.status(400).json({ error: 'Must provide the product id.' })
+  else if(!buyerUserId) return res.status(400).json({ error: 'Must provide the buyer\'s user id.' })
   else if(!sellerBusinessId) return res.status(400).json({ error: 'Must provide the seller\'s business id.' })
   else if(!unitPrice) return res.status(400).json({ error: 'Must provide the unit price.' })
   else if(!unitCount) return res.status(400).json({ error: 'Must provide the unit count.' })
   else if(!unitCountType) return res.status(400).json({ error: 'Must provide the unit count type.' })
 
   const inquiryId = uuid()
-  db.tx(t => {
+  let inquiryResult = null
+  db.task(t => {
     return t.one({
-      name: `create-inquiry`,
-      text: `INSERT INTO public.inquiry(id, buyer_user_id, seller_business_id, unit_price, unit_count, unit_count_type) 
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
-      values: [inquiryId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType]
+      name: 'create-inquiry',
+      text: `INSERT INTO public.inquiry(id, product_id, buyer_user_id, seller_business_id, unit_price, unit_count, unit_count_type) 
+      VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
+      values: [inquiryId, productId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType]
+    }).then(createdInquiry => {
+      inquiryResult = createdInquiry
+      return t.one({
+        name: 'get-user-email',
+        text: 'SELECT email from public.user where id=$1;',
+        values: [createdInquiry.buyer_user_id]
+      }).then(emailResult => {
+        console.log('found email', emailResult.email)
+        const emailSubject = 'Your Greentap product inquiry'
+        const emailText = `Thanks for letting us know about your interest in a product in our marketplace. We are 
+working on reviewing the order with the seller. We'll notify you if we have any updates.\nThanks,\nArjun & Derek`
+        sendEmail(emailResult.email, emailSubject, emailText).then(() => {
+          console.log('successfully sent verification email')
+          return res.status(201).json({ inquiry: inquiryResult })
+        }).catch(error => {
+          console.log('failed to send verification email', error)
+          return res.status(201).json({ inquiry: inquiryResult, error: 'Error sending email.' })
+        })
+      }).catch(error => {
+        console.error('send inquiry: error finding email for user id', createdInquiry.buyer_user_id, error)
+        // Return 201 since inquiry was still created, but still provide error
+        return res.status(201).json({ inquiry: inquiryResult, error: "Error sending email." })
+      })
+    }).catch(error => {
+      console.error(`error on insert inquiry ${error}`)
+      return res.status(500).json({ error: "Error creating inquiry" })
     })
-  }).then(createdInquiry => {
-    return res.status(201).json({ inquiry: createdInquiry })
-  }).catch(error => {
-    console.error(`error on create inquiry ${error}`)
-    return res.status(500).json({ error: "Error creating inquiry" })
-  })
+  });
 }

@@ -42,28 +42,32 @@ class ProductPage extends Component {
   }
 
   handleSendInquiry() {
-    // user is not authenticated
+    // client side check in case user is not authenticated
     if(!this.props.user) {
       this.props.showInquiryError('You must be logged in to send an inquiry.')
       return
     }
+
     const productPricing = this.props.product.pricing[this.props.selectedPricingIndex]
     const unitPrice = productPricing.unit_price,
       unitCount = productPricing.unit_count,
       unitCountType = productPricing.unit_count_type
     let inquiryData = {
+      productId: this.props.product.id,
       unitPrice,
       unitCount,
       unitCountType,
       buyerUserId: this.props.user.id,
       sellerBusinessId: this.props.product.business_id
     }
-    this.props.sendInquiry(inquiryData)
-    this.setState({ openModal: true })
+    this.props.sendInquiry(inquiryData).then(() => {
+      if(this.props.inquiryError == null) {
+        this.setState({ openModal: true })
+      }
+    })
   }
 
   render() {
-    console.log('product page render', this.props.product)
     const product = this.props.product
     return (
       <Marketplace>
