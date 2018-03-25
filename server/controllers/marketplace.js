@@ -88,22 +88,15 @@ exports.createInquiry = (req, res, next) => {
       values: [inquiryId, productId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType]
     }).then(createdInquiry => {
       inquiryResult = createdInquiry
+      console.log('created inquiry',createdInquiry)
       return t.one({
         name: 'get-user-email',
         text: 'SELECT email from public.user where id=$1;',
         values: [createdInquiry.buyer_user_id]
-      }).then(emailResult => {
-        console.log('found email', emailResult.email)
-        const emailSubject = 'Your Greentap product inquiry'
-        const emailText = `Thanks for letting us know about your interest in a product in our marketplace. We are 
-working on reviewing the order with the seller. We'll notify you if we have any updates.\nThanks,\nArjun & Derek`
-        sendEmail(emailResult.email, emailSubject, emailText).then(() => {
-          console.log('successfully sent verification email')
-          return res.status(201).json({ inquiry: inquiryResult })
-        }).catch(error => {
-          console.log('failed to send verification email', error)
-          return res.status(201).json({ inquiry: inquiryResult, error: 'Error sending email.' })
-        })
+      }).then(({email}) => {
+        console.log('found email', email)
+        sendInquiryEmails(email, inquiryResult)
+        return res.status(201).json({ inquiry: inquiryResult })
       }).catch(error => {
         console.error('send inquiry: error finding email for user id', createdInquiry.buyer_user_id, error)
         // Return 201 since inquiry was still created, but still provide error
@@ -112,6 +105,62 @@ working on reviewing the order with the seller. We'll notify you if we have any 
     }).catch(error => {
       console.error(`error on insert inquiry ${error}`)
       return res.status(500).json({ error: "Error creating inquiry" })
+    })
+  });
+}
+
+function sendInquiryEmails(buyerEmail, inquiryData) {
+  let emailSubject = 'Your Greentap product inquiry'
+  let emailText = `Thanks for your interest in one of the products in our marketplace. We are working on reviewing
+your order, and will notify you when we have any updates.\nThanks,\nArjun & Derek`
+  sendEmail(buyerEmail, emailSubject, emailText).then(() => {
+    console.log(`successfully sent verification email to ${buyerEmail}`)
+  }).catch(error => {
+    console.error('failed to send verification email to ', buyerEmail, error)
+  })
+  let inquiryInfo = { inquiry: inquiryData }
+  db.task(t => {
+    return t.batch([
+      t.one({
+        name: 'get-buyer-for-inquiry',
+        text: 'SELECT id,first_name,last_name,email,business_type,verified from public.user where email=$1;',
+        values: [buyerEmail]
+      }),
+      t.one({
+        name: 'get-product-for-inquiry',
+        text: 'SELECT * from public.product where id=$1;',
+        values: [inquiryData.product_id]
+      }),
+      t.one({
+        name: 'get-seller-for-inquiry',
+        text: 'SELECT * from public.business where id=$1;',
+        values: [inquiryData.seller_business_id]
+      })
+    ])
+    .then(data => {
+      inquiryInfo.buyer  = data[0]
+      inquiryInfo.product = data[1]
+      inquiryInfo.seller = data[2]
+      console.log('got inquiry info', inquiryInfo)
+      const productCategory =  inquiryInfo.product.category
+      return t.one({
+        name: 'get-product-detail-for-inquiry',
+        text: `SELECT * from public.${productCategory} where product_id=$1;`,
+        values: [inquiryInfo.product.id]
+      }).then(productDetail => {
+        inquiryInfo.product_detail = productDetail
+        const teamEmail = 'teamgreentap@gmail.com'
+        infoEmailSubject =`Inquiry ${inquiryInfo.inquiry.id}`
+        infoEmailText = `${JSON.stringify(inquiryInfo, null, 4)}`
+        sendEmail(teamEmail, infoEmailSubject, infoEmailText).then(() => {
+          console.log(`successfully sent verification email to ${teamEmail}`)
+        }).catch(error => {
+          console.error('failed to send verification email to ', teamEmail, error)
+        })
+      })
+    })
+    .catch(errors => {
+      console.error(`error on getting inquiry info ${errors}`)
     })
   });
 }
