@@ -110,14 +110,6 @@ exports.createInquiry = (req, res, next) => {
 }
 
 function sendInquiryEmails(buyerEmail, inquiryData) {
-  let emailSubject = 'Your Greentap product inquiry'
-  let emailText = `Thanks for your interest in one of the products in our marketplace. We are working on reviewing
-your order, and will notify you when we have any updates.\nThanks,\nArjun & Derek`
-  sendEmail(buyerEmail, emailSubject, emailText).then(() => {
-    console.log(`successfully sent verification email to ${buyerEmail}`)
-  }).catch(error => {
-    console.error('failed to send verification email to ', buyerEmail, error)
-  })
   let inquiryInfo = { inquiry: inquiryData }
   db.task(t => {
     return t.batch([
@@ -149,6 +141,19 @@ your order, and will notify you when we have any updates.\nThanks,\nArjun & Dere
         values: [inquiryInfo.product.id]
       }).then(productDetail => {
         inquiryInfo.product_detail = productDetail
+
+        // send email to buyer
+        let emailSubject = 'Your Greentap product inquiry'
+        let emailText = `Thanks for your interest in one of the products in our marketplace. Here's some info `+ 
+`about your order for your records.\n\n${prettifyInquiryData(inquiryInfo)}\n\nWe are working on reviewing your `+
+`order, and will notify you when we have any updates.\nThanks,\nArjun & Derek`
+        sendEmail(buyerEmail, emailSubject, emailText).then(() => {
+          console.log(`successfully sent verification email to ${buyerEmail}`)
+        }).catch(error => {
+          console.error('failed to send verification email to ', buyerEmail, error)
+        })
+
+        // send information email to us
         const teamEmail = 'teamgreentap@gmail.com'
         infoEmailSubject =`Inquiry ${inquiryInfo.inquiry.id}`
         infoEmailText = `${JSON.stringify(inquiryInfo, null, 4)}`
@@ -163,4 +168,12 @@ your order, and will notify you when we have any updates.\nThanks,\nArjun & Dere
       console.error(`error on getting inquiry info ${errors}`)
     })
   });
+}
+
+function prettifyInquiryData(inquiryInfo) {
+  return `Product: ${inquiryInfo.product.name}
+Product Description: ${inquiryInfo.product.description}
+Seller: ${inquiryInfo.seller.name}
+Amount: ${inquiryInfo.inquiry.unit_count} ${inquiryInfo.inquiry.unit_count_type}
+Price: $${Number(inquiryInfo.inquiry.unit_price/100.00).toFixed(2)}`
 }
