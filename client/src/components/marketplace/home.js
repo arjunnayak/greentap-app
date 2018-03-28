@@ -130,7 +130,7 @@ class MarketplaceHome extends Component {
                 <h1>{this.getCategoryHeader(this.props.category)}</h1>
               </Grid.Column>
               <Grid.Column floated='right' width={4}>
-                <Dropdown placeholder='Sort by' selection options={sortByOptions} />
+                <Dropdown fluid placeholder='Sort by' selection options={sortByOptions} />
               </Grid.Column>
             </Grid>
           </Container>

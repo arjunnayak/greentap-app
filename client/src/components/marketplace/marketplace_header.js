@@ -5,6 +5,7 @@ import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Input from 'semantic-ui-react/dist/commonjs/elements/Input'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
+import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { Icon } from 'semantic-ui-react'
 import { CHANGE_CATEGORY } from '../../actions/types';
 
@@ -27,7 +28,7 @@ class MarketplaceHeader extends Component {
     const showCategoriesDropdown = !this.props.noCategoriesDropdown
     return (
       <div className="marketplace-header">
-        <Menu borderless size='massive' id='marketplace-menu' attached='top' inverted fluid>
+        <Menu borderless id='marketplace-menu' attached='top' inverted stackable fluid>
           <Menu.Item header as={Link} to='/marketplace'>Greentap</Menu.Item>
           {
             showCategoriesDropdown ? (
@@ -36,10 +37,10 @@ class MarketplaceHeader extends Component {
               </Menu.Item>
             ) : null 
           }
-          <Menu.Item>
+          <Responsive as={Menu.Item} minWidth={Responsive.onlyMobile.minWidth} >
             <Input className='search' icon='search' id='search' placeholder='Search for strains, oil, producers...' />
-          </Menu.Item>
-          {this.renderRightMenuLinks(this.props.authenticated)}
+          </Responsive>
+          {this.renderRightMenuLinks(this.props.authenticated)} 
         </Menu>
       </div>
     )
@@ -67,7 +68,7 @@ class MarketplaceHeader extends Component {
         <Menu.Menu position='right' className='right-menu'>
           <Menu.Item as={Link} to='/login' name='login'>Login</Menu.Item>
           <Menu.Item as={Link} to='/register' name='register'>Register</Menu.Item>
-          <Menu.Item as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
+          {/* <Menu.Item as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item> */}
         </Menu.Menu>
       )
     }

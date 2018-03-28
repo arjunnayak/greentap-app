@@ -17,20 +17,23 @@
 }
 
 #marketplace-menu {
+    /* 'massive' font size */
+    font-size: 1.28571429rem;
     background-color: #273238;
 }
 
+
 .marketplace-header {
+    width: 100%;
     height: 92px;
 }
 
 .marketplace-header #categories-dropdown {
     background-color: transparent;
     border: 2px solid white;
-    width: 160px !important;
-    height: 45px !important;
+    min-width: 20vw !important;
     color: rgba(255, 255, 255, 0.87);
-    font-size: 16px;
+    font-size: 1.28571429rem;
 }
 
 .marketplace-header #categories-dropdown>.text:not(.default) {
@@ -38,18 +41,43 @@
 }
 
 .marketplace-header #search {
-    width: 50vw;
+    width: 25vw;
     height: 40px;
     font-size: 14px;
-    border-radius: 3rem;
+    border-radius: 2.5rem;
 }
 
-.marketplace-header .right-menu {
-    margin-left: 0px;
+@media only screen and (min-width: 767px) {
+    .marketplace-header #search {
+        width:40vw;
+    }
 }
 
 #marketplace-menu .menu > .item {
     color: white;
+}
+
+@media only screen and (max-width: 767px) {
+    #marketplace-menu {
+        font-size: 1rem;
+    }
+
+    .marketplace-header #categories-dropdown {
+        font-size: 1rem;
+    }
+
+    .marketplace-header {
+        height: 100%;
+    }
+    .marketplace-header #search {
+        width: 20vw;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .marketplace-header #categories-dropdown {
+        min-width: 10vw !important;
+    }
 }
 
 .mhome .main {
@@ -73,9 +101,27 @@
     padding-right: 15px;
 }
 
+@media only screen and (max-width: 767px) {
+    .main.container {
+        margin-left: 0!important;
+        margin-right: 0!important;
+        margin-bottom: 0!important;
+    }
+}
+
 .mhome .container {
     padding-left: 8.5%;
     padding-right: 8.5%;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.filter .header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #484d55; 
 }
 
 @media only screen and (max-width: 767px) {
@@ -89,12 +135,8 @@
     }
 }
 
-.mt-30 {
-    margin-top: 30px;
-}
-
-.filter .header {
-    font-size: 20px;
-    font-weight: bold;
-    color: #484d55; 
+@media only screen and (max-width: 600px) {
+    .mhome .card .header {
+        font-size: 1em !important;
+    }
 }
