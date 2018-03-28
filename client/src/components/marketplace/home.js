@@ -11,7 +11,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
-import List from 'semantic-ui-react/dist/commonjs/elements/List'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
 
@@ -28,7 +28,9 @@ class MarketplaceHome extends Component {
     this.getCategoryHeader = this.getCategoryHeader.bind(this)
     this.handleFilterChange = this.handleFilterChange.bind(this)
     this.filterProducts = this.filterProducts.bind(this)
+    this.loadMoreProducts = this.loadMoreProducts.bind(this)
     this.state = { 
+      numProductsToShow: 30,
       filterOptions: [
         {
           title: 'Strain Type',
@@ -42,17 +44,6 @@ class MarketplaceHome extends Component {
             </Form>
           )
         }
-        // {
-        //   title: 'Strain Level',
-        //   content: (
-        //     <Form>
-        //       <Form.Group grouped>
-        //         <Form.Checkbox label='THC' name='strain_level' value='thc' onClick={this.handleFilterChange} />
-        //         <Form.Checkbox label='CBD' name='strain_level' value='cbd' onClick={this.handleFilterChange} />
-        //       </Form.Group>
-        //     </Form>
-        //   )
-        // }
       ]
     }
   }
@@ -90,10 +81,17 @@ class MarketplaceHome extends Component {
     return productsFiltered
   }
 
+  loadMoreProducts(e) {
+    this.setState({
+      numProductsToShow: this.state.numProductsToShow + 30
+    })
+  }
+
   render() {
-    const hasProducts = (this.props.products && this.props.products != [])
+    const hasProducts = (this.props.products && this.props.products !== [])
     const filterOptions = this.state.filterOptions
     let brands = Array.from(new Set(this.props.products.map(p => { return p.business_name })))
+    // let brands = Array.from(new Set(this.props.products.map(p => { return p.business_name })))
     if(hasProducts) {
       filterOptions[1] = {
         title: 'Brand Name',
@@ -107,8 +105,21 @@ class MarketplaceHome extends Component {
           </Form>
         )
       }
+      // filterOptions[2] = {
+      //   title: 'Available in',
+      //   content: (
+      //     <Form>
+      //       <Form.Group grouped>
+      //         {brands.sort().map(brandName => {
+      //           return ( <Form.Checkbox label={brandName} name='brand-name' value={brandName} onClick={this.handleFilterChange}/> )
+      //         })}
+      //       </Form.Group>
+      //     </Form>
+      //   )
+      // }
     }
-    const products = this.props.filters.length > 0 ? this.filterProducts(this.props.products) : this.props.products
+    let products = this.props.products.slice(0,this.state.numProductsToShow)
+    products = this.props.filters.length > 0 ? this.filterProducts(products) : products
     const cardsPerRow = 3
     return (
       <Marketplace>
@@ -136,8 +147,13 @@ class MarketplaceHome extends Component {
 
                   <Grid.Column width={12}>
                     {hasProducts ? (
-                      <div className='card-menu'>
-                        {this.renderProductGrid(cardsPerRow, products)}
+                      <div>
+                        <div className='card-menu'>
+                          {this.renderProductGrid(cardsPerRow, products)}
+                        </div>
+                        <Grid centered style={{marginTop: '40px'}}>
+                          <Button onClick={this.loadMoreProducts}>Load More</Button>
+                        </Grid>
                       </div>
                     ) : <h2>No products available</h2>}
                   </Grid.Column>
@@ -154,10 +170,10 @@ class MarketplaceHome extends Component {
   renderProductGrid(numColumns=3, products) {
     if(products && products != []) {
       const productRows = []
+      console.log(`rendering ${products.length} products`)
       for (let i = 0; i < products.length; i += numColumns) {
         productRows.push(products.slice(i, i + numColumns))
       }
-      console.log(`rendering ${productRows.length} products`)
       const groupRowsToRender = productRows.map((row, index) => {
         const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
@@ -223,7 +239,6 @@ function mapStateToProps(state) {
     category: state.marketplace.category,
     isRequesting: state.marketplace.is_requesting,
     filters: state.marketplace.filters,
-    numProductsToShow: state.marketplace.numProductsToShow
   }
 }
 
