@@ -1,8 +1,8 @@
 import { REQUEST_MARKETPLACE_PRODUCTS, GET_MARKETPLACE_PRODUCTS, CHANGE_CATEGORY, PRESET_PRODUCT_DETAIL, 
-  PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING, ADD_FILTER, CLEAR_FILTERS, UPDATE_NUM_PRODUCTS_TO_SHOW, 
+  PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING, ADD_FILTER, CLEAR_FILTERS, 
   SEND_INQUIRY_SUCCESS, SEND_INQUIRY_FAILURE, CLEAR_INQUIRY_ERROR } from '../actions/types'
 
-const INITIAL_STATE = { category: 'flower', products: null, product: {}, numProductsToShow: 25, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [], inquiryError: null };
+const INITIAL_STATE = { category: 'flower', products: null, product: {}, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [], inquiryError: null };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -19,8 +19,6 @@ export default function (state = INITIAL_STATE, action) {
     case PRESET_PRODUCT_DETAIL:
       // clear leftover state from previous product detail e.g. selectedPricingIndex and inquiryError 
       return { ...state, product: action.payload, selectedPricingIndex: 0, inquiryError: null,  error: '' };
-    case UPDATE_NUM_PRODUCTS_TO_SHOW:
-      return { ...state, numProductsToShow: action.numProducts };
     case PRODUCT_DETAIL:
       return { ...state, product: action.payload, error: '' };
     case ADD_FILTER:
