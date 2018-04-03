@@ -48,7 +48,7 @@ class ProductPage extends Component {
       return
     }
 
-    const productPricing = this.props.product.pricing[this.props.selectedPricingIndex]
+  const productPricing = this.props.product.pricing[this.props.selectedPricingIndex]
     const unitPrice = productPricing.unit_price,
       unitCount = productPricing.unit_count,
       unitCountType = productPricing.unit_count_type
@@ -150,12 +150,15 @@ class ProductPage extends Component {
             <Dropdown onChange={this.handlePricingChange} disabled={!pricingOptions} 
               options={pricingOptions} defaultValue={0} selection fluid />
           </div>
-          <Button fluid primary disabled={!pricingOptions} onClick={this.handleSendInquiry} style={{marginTop: '15px'}}>Send Inquiry</Button>
+          <Button fluid primary disabled={!pricingOptions} onClick={this.handleSendInquiry} style={{marginTop: '15px'}}>
+            Send Inquiry
+          </Button>
         </Segment>
         <Modal
           open={this.state.openModal}
           size='tiny'
-          content='Congrats! You have successfully sent the inquiry. You will receive an email confirmation shortly.'
+          content={`Congrats! You have successfully sent an inquiry, please wait 3-5 days for a 
+response as your personal purchasing manager is engaging with the brands on your behalf`}
           actions={[{ key: 'okay', content: 'Okay!', positive: true }]}
           onActionClick={this.closeModal} />
       </div>
