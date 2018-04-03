@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL, errorHandler } from './index';
-import { GET_PRODUCTS, GET_MARKETPLACE_PRODUCTS, GET_PRODUCT, ADD_PRODUCT_SUBMIT, ADD_PRODUCT_SUCCESS, EDIT_PRODUCT, DELETE_PRODUCT, PRODUCT_ERROR } from './types';
+import { GET_PRODUCTS, GET_PRODUCT, ADD_PRODUCT_SUBMIT, ADD_PRODUCT_SUCCESS, EDIT_PRODUCT, DELETE_PRODUCT, PRODUCT_ERROR } from './types';
 
 export function getProducts(business_id) {
   return dispatch => {

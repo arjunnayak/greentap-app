@@ -2,7 +2,7 @@ import { REQUEST_MARKETPLACE_PRODUCTS, GET_MARKETPLACE_PRODUCTS, CHANGE_CATEGORY
   PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING, ADD_FILTER, CLEAR_FILTERS, UPDATE_NUM_PRODUCTS_TO_SHOW, 
   SEND_INQUIRY_SUCCESS, SEND_INQUIRY_FAILURE, CLEAR_INQUIRY_ERROR } from '../actions/types'
 
-const INITIAL_STATE = { category: 'flower', products: [], product: {}, numProductsToShow: 25, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [], inquiryError: null };
+const INITIAL_STATE = { category: 'flower', products: null, product: {}, numProductsToShow: 25, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [], inquiryError: null };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -11,7 +11,11 @@ export default function (state = INITIAL_STATE, action) {
     case REQUEST_MARKETPLACE_PRODUCTS:
       return { ...state, is_requesting: true };
     case GET_MARKETPLACE_PRODUCTS:
-      return { ...state, is_requesting: false, products: action.payload, product: {}, error: '' };
+      // get new object reference for products
+      let newProducts = Object.assign({}, state.products)
+      // add products to category
+      newProducts[action.payload.category] = action.payload.products
+      return { ...state, is_requesting: false, products: newProducts, product: {}, error: '' };
     case PRESET_PRODUCT_DETAIL:
       // clear leftover state from previous product detail e.g. selectedPricingIndex and inquiryError 
       return { ...state, product: action.payload, selectedPricingIndex: 0, inquiryError: null,  error: '' };

@@ -8,7 +8,10 @@ export function getMarketplaceProducts(category) {
       .then((response) => {
         dispatch({
           type: GET_MARKETPLACE_PRODUCTS,
-          payload: response.data.products
+          payload: {
+            category,
+            products: response.data.products
+          }
         })
       })
       .catch((error) => {

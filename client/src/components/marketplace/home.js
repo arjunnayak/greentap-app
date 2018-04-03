@@ -49,8 +49,11 @@ class MarketplaceHome extends Component {
   }
 
   componentDidMount() {
-    this.props.dispatch({ type: REQUEST_MARKETPLACE_PRODUCTS })
-    this.props.getMarketplaceProducts(this.props.category)
+    if(!this.props.products || this.props.products == null) {
+      console.log('fetching products for category', this.props.category)
+      this.props.dispatch({ type: REQUEST_MARKETPLACE_PRODUCTS })
+      this.props.getMarketplaceProducts(this.props.category)
+    }
   }
 
   componentWillUnmount() {
@@ -58,9 +61,14 @@ class MarketplaceHome extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.category != this.props.category) {
-      this.props.getMarketplaceProducts(nextProps.category)
-      this.props.clearFilters()
+    if(nextProps.category !== this.props.category) {
+      //TODO: check if products are in productStore[category] first before fetching
+      if(!this.props.products[nextProps.category]) {
+        console.log('fetching products for category', nextProps.category)
+        this.props.getMarketplaceProducts(nextProps.category)
+        this.props.clearFilters()
+      }
+      this.setState({ numProductsToShow: 30 })
     }
   }
 
@@ -88,18 +96,26 @@ class MarketplaceHome extends Component {
   }
 
   render() {
-    const hasProducts = (this.props.products && this.props.products !== [])
+    const { category } = this.props
+    const hasProducts = (
+      this.props.products && this.props.products !== null && 
+      this.props.products[category] && this.props.products[category] !== null && 
+      this.props.products[category].length > 0
+    )
+    // TODO: check if products has the category for hasProducts
     const filterOptions = this.state.filterOptions
-    let brands = Array.from(new Set(this.props.products.map(p => { return p.business_name })))
-    // let brands = Array.from(new Set(this.props.products.map(p => { return p.business_name })))
+    let products = undefined
     if(hasProducts) {
+      products = this.props.products[category].slice(0, this.state.numProductsToShow)
+      let brands = Array.from(new Set(products.map(p => { return p.business_name })))
+
       filterOptions[1] = {
         title: 'Brand Name',
         content: (
           <Form>
             <Form.Group grouped>
               {brands.sort().map(brandName => {
-                return ( <Form.Checkbox label={brandName} name='brand-name' value={brandName} onClick={this.handleFilterChange}/> )
+                return ( <Form.Checkbox key={brandName} label={brandName} name='brand-name' value={brandName} onClick={this.handleFilterChange}/> )
               })}
             </Form.Group>
           </Form>
@@ -117,9 +133,8 @@ class MarketplaceHome extends Component {
       //     </Form>
       //   )
       // }
+      products = this.props.filters.length > 0 ? this.filterProducts(products) : products
     }
-    let products = this.props.products.slice(0,this.state.numProductsToShow)
-    products = this.props.filters.length > 0 ? this.filterProducts(products) : products
     const cardsPerRow = 3
     return (
       <Marketplace>
@@ -146,14 +161,18 @@ class MarketplaceHome extends Component {
                   </Grid.Column>
 
                   <Grid.Column width={12}>
-                    {hasProducts ? (
+                    {hasProducts && products ? (
                       <div>
                         <div className='card-menu'>
                           {this.renderProductGrid(cardsPerRow, products)}
                         </div>
-                        <Grid centered style={{marginTop: '40px'}}>
-                          <Button onClick={this.loadMoreProducts}>Load More</Button>
-                        </Grid>
+                        {/* If there are filters, don't show load more */}
+                        { this.props.filters && this.props.filters.length > 0 ? 
+                          null : 
+                          <Grid centered style={{marginTop: '40px'}}>
+                            <Button onClick={this.loadMoreProducts}>Load More</Button>
+                          </Grid> 
+                        }
                       </div>
                     ) : <h2>No products available</h2>}
                   </Grid.Column>
