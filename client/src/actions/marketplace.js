@@ -14,7 +14,8 @@ export function getMarketplaceProducts(category) {
           }
         })
       })
-      .catch((error) => {
+      .catch(error => {
+        console.error('getMarketplaceProducts error', error)
         errorHandler(dispatch, error.response, PRODUCT_ERROR);
       });
   };
@@ -29,8 +30,8 @@ export function getMarketplaceProduct(id) {
           payload: response.data.product
         })
       })
-      .catch((error) => {
-        console.error('error', error)
+      .catch(error => {
+        console.error('getMarketplaceProduct error', error)
         errorHandler(dispatch, error.response, PRODUCT_ERROR);
       });
   };
