@@ -8,23 +8,6 @@ import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { Icon } from 'semantic-ui-react'
 import { CHANGE_CATEGORY, CHANGE_LOCATION } from '../../actions/types';
 
-const categoryOptions = [
-  { key: 1, text: 'Flowers', value: 'flower' },
-  { key: 2, text: 'Concentrates', value: 'concentrate' },
-  { key: 3, text: 'Edibles', value: 'edible' },
-  { key: 4, text: 'Medical', value: 'medical' },
-]
-
-const locationOptions = [
-  { text: 'AK', value: 'AK' },
-  { text: 'CA', value: 'CA' },
-  { text: 'ME', value: 'ME' },
-  { text: 'MA', value: 'MA' },
-  { text: 'NV', value: 'NV' },
-  { text: 'OR', value: 'OR' },
-  { text: 'WA', value: 'WA' }
-]
-
 class MarketplaceHeader extends Component {
 
   constructor(props) {
@@ -99,6 +82,24 @@ class MarketplaceHeader extends Component {
     }
   }
 }
+
+const categoryOptions = [
+  { key: 1, text: 'Flowers', value: 'flower' },
+  { key: 2, text: 'Concentrates', value: 'concentrate' },
+  { key: 3, text: 'Edibles', value: 'edible' },
+  { key: 4, text: 'Medical', value: 'medical' },
+]
+
+const locationOptions = [
+  { text: 'AK', value: 'AK' },
+  { text: 'CA', value: 'CA' },
+  { text: 'ME', value: 'ME' },
+  { text: 'MA', value: 'MA' },
+  { text: 'NV', value: 'NV' },
+  { text: 'OR', value: 'OR' },
+  { text: 'WA', value: 'WA' }
+]
+
 
 const mapStateToProps = (state) => {
   return {
