@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Marketplace from './marketplace'
-import { getMarketplaceProducts, addFilter, clearFilters } from "../../actions/marketplace"
+import { getMarketplaceProducts, addFilter, clearFilters } from '../../actions/marketplace'
+import { getUserInfo } from '../../actions/auth'
 import { bindActionCreators } from 'redux'
 import ProductCard from './product_card'
 import { ADD_FILTER, PRESET_PRODUCT_DETAIL, REQUEST_MARKETPLACE_PRODUCTS } from '../../actions/types'
@@ -53,6 +54,9 @@ class MarketplaceHome extends Component {
       console.log('fetching products for category', this.props.category)
       this.props.dispatch({ type: REQUEST_MARKETPLACE_PRODUCTS })
       this.props.getMarketplaceProducts(this.props.category)
+    }
+    if(!this.props.authenticated) {
+      this.props.getUserInfo()
     }
   }
 
@@ -246,11 +250,12 @@ function mapStateToProps(state) {
     location: state.marketplace.location,
     isRequesting: state.marketplace.is_requesting,
     filters: state.marketplace.filters,
+    authenticated: state.auth.authenticated,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = bindActionCreators({ getMarketplaceProducts, addFilter, clearFilters }, dispatch)
+  let actions = bindActionCreators({ getMarketplaceProducts, addFilter, clearFilters, getUserInfo }, dispatch)
   return { ...actions, dispatch }
 }
 
