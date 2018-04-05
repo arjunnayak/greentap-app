@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import ProductCard from './product_card'
 import { ADD_FILTER, PRESET_PRODUCT_DETAIL, REQUEST_MARKETPLACE_PRODUCTS } from '../../actions/types'
 import Filter from './filter'
+// import Footer from './footer'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
@@ -25,7 +26,6 @@ class MarketplaceHome extends Component {
   constructor(props) {
     super(props)
     this.renderProductGrid = this.renderProductGrid.bind(this)
-    this.getCategoryHeader = this.getCategoryHeader.bind(this)
     this.handleFilterChange = this.handleFilterChange.bind(this)
     this.filterProducts = this.filterProducts.bind(this)
     this.loadMoreProducts = this.loadMoreProducts.bind(this)
@@ -96,7 +96,7 @@ class MarketplaceHome extends Component {
   }
 
   render() {
-    const { category } = this.props
+    const { category, location } = this.props
     const hasProducts = (
       this.props.products && this.props.products !== null && 
       this.props.products[category] && this.props.products[category] !== null && 
@@ -106,7 +106,12 @@ class MarketplaceHome extends Component {
     const filterOptions = this.state.filterOptions
     let products = undefined
     if(hasProducts) {
-      products = this.props.products[category].slice(0, this.state.numProductsToShow)
+      // Filter our products not in current state
+      products = this.props.products[category].filter(p => {
+        return (p.available_in !== null &&
+          p.available_in.split(',').indexOf(location) >= 0)
+      })
+      products = products.slice(0, this.state.numProductsToShow)
       let brands = Array.from(new Set(products.map(p => { return p.business_name })))
 
       filterOptions[1] = {
@@ -138,11 +143,14 @@ class MarketplaceHome extends Component {
     const cardsPerRow = 3
     return (
       <Marketplace>
-        <div className='mhome'>
+        <div className='mhome' style={{width:'100%'}}>
           <Container fluid style={{ marginTop: '5vh' }}>
             <Grid stackable columns={2}>
               <Grid.Column width={12}>
-                <h1>{this.getCategoryHeader(this.props.category)}</h1>
+                <h1>
+                  {this.getCategoryHeader(category)}{' '}
+                  <span style={{color:'rgba(0,0,0,.4)'}}>in {location}</span>
+                </h1>
               </Grid.Column>
               <Grid.Column floated='right' width={4}>
                 <Dropdown fluid placeholder='Sort by' selection options={sortByOptions} />
@@ -153,34 +161,32 @@ class MarketplaceHome extends Component {
           { this.props.isRequesting && !hasProducts ? ( 
             <Loader active/> 
           ) : (
-            <div>
-              <Container fluid className='main light-bg'>
-                <Grid stackable columns={2}>
-                  <Grid.Column width={4}>
-                    {<Filter options={filterOptions} />}
-                  </Grid.Column>
+            <Container fluid className='main light-bg'>
+              <Grid stackable columns={2}>
+                <Grid.Column width={4}>
+                  {<Filter options={filterOptions} />}
+                </Grid.Column>
 
-                  <Grid.Column width={12}>
-                    {hasProducts && products ? (
-                      <div>
-                        <div className='card-menu'>
-                          {this.renderProductGrid(cardsPerRow, products)}
-                        </div>
-                        {/* If there are filters, don't show load more */}
-                        { this.props.filters && this.props.filters.length > 0 ? 
-                          null : 
-                          <Grid centered style={{marginTop: '40px'}}>
-                            <Button onClick={this.loadMoreProducts}>Load More</Button>
-                          </Grid> 
-                        }
+                <Grid.Column width={12}>
+                  {hasProducts && products  && products.length > 0 ? (
+                    <div>
+                      <div className='card-menu'>
+                        {this.renderProductGrid(cardsPerRow, products)}
                       </div>
-                    ) : <h2>No products available</h2>}
-                  </Grid.Column>
-                </Grid>
-              </Container>
-              {Footer}
-            </div>
+                      {/* If there are filters, don't show load more */}
+                      { this.props.filters && this.props.filters.length > 0 ? 
+                        null : 
+                        <Grid centered style={{marginTop: '40px'}}>
+                          <Button onClick={this.loadMoreProducts}>Load More</Button>
+                        </Grid> 
+                      }
+                    </div>
+                  ) : <h2>No products available</h2>}
+                </Grid.Column>
+              </Grid>
+            </Container>
           )}
+          {/* <Footer /> */}
         </div>
       </Marketplace>
     )
@@ -233,29 +239,11 @@ class MarketplaceHome extends Component {
   
 }
 
-const Footer = () => {
-  return (
-    <div className="ui container-fluid ftr" >
-      <div className="ftr header">
-        <h1>What brands do you want to see here?</h1>
-      </div>
-      <div className="ui container">
-        <div className="ui search">
-          <div className="ui icon input src">
-            <input type="text" placeholder="" />
-            <button className="ui button ftr">Submit</button>
-          </div>
-          <div className="results"></div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 function mapStateToProps(state) {
   return {
     products: state.marketplace.products,
     category: state.marketplace.category,
+    location: state.marketplace.location,
     isRequesting: state.marketplace.is_requesting,
     filters: state.marketplace.filters,
   }

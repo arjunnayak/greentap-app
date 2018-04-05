@@ -17,6 +17,7 @@ exports.register = (req, res, next) => {
   const password = req.body.password
   const confirmPassword = req.body.confirmPassword
   const businessType = req.body.businessType
+  const statesAvailableIn = req.body.statesAvailableIn
 
   if(!email) return res.status(400).json({ error: 'You must enter an email address.' })
   else if(!firstName) return res.status(400).json({ error: 'You must enter your first name.' })
@@ -24,7 +25,9 @@ exports.register = (req, res, next) => {
   else if(!password) return res.status(400).json({ error: 'You must enter a password.' })
   else if(!confirmPassword) return res.status(400).json({ error: 'You must confirm your password.' })    
   else if(password !== confirmPassword) return res.status(400).json({ error: 'Passwords do not match.' })    
-  else if(!businessType) return res.status(400).json({ error: 'You must enter a business type.' })    
+  else if(!businessType) return res.status(400).json({ error: 'You must enter a business type.' })
+  else if(!statesAvailableIn) return res.status(400).json({ error: 'You must enter states available your products are available in.' })
+  else if(!/^[A-Z,]+$/.test(statesAvailableIn)) return res.status(400).json({ error: 'Incorrect format for states available in.' })
   
   db.tx(t => {
     const userId = uuid()
@@ -55,9 +58,9 @@ exports.register = (req, res, next) => {
       const businessId = uuid()
       registerTransactions.push(t.one({
         name: 'create-business',
-        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip, description) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, name;`,
-        values: [businessId, userId, businessName, phone, address, city, state, zip, description]
+        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip, description, available_in) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, name;`,
+        values: [businessId, userId, businessName, phone, address, city, state, zip, description, statesAvailableIn]
       }))
     }
     return t.batch(registerTransactions)

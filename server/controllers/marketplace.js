@@ -14,8 +14,8 @@ exports.getProducts = (req, res, next) => {
   db.task(t => {
     return t.any({
       name: `get-marketplace-products-and-pricings-${uniqueTransactionIdentifier}`,
-      text: `select distinct product.*, ${category}.*, business.name as business_name
-      from product right join ${category} on product.id = ${category}.product_id
+      text: `select distinct product.*, ${category}.*, business.name as business_name, business.available_in as available_in
+      from product right join ${category} on product.id=${category}.product_id
       left join business on ${category}.business_id=business.id;`,
       values: []
     }).then(products => {

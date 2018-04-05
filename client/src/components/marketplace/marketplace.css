@@ -28,7 +28,7 @@
     height: 92px;
 }
 
-.marketplace-header #categories-dropdown {
+.marketplace-header #categories-dropdown, .marketplace-header #location-dropdown {
     background-color: transparent;
     border: 2px solid white;
     min-width: 20vw !important;
@@ -36,7 +36,11 @@
     font-size: 1.28571429rem;
 }
 
-.marketplace-header #categories-dropdown>.text:not(.default) {
+.marketplace-header #location-dropdown {
+    min-width: 20px !important;
+}
+
+.marketplace-header #categories-dropdown>.text:not(.default), .marketplace-header #location-dropdown>.text:not(.default) {
     color: rgba(255, 255, 255, 0.87);
 }
 
@@ -62,7 +66,7 @@
         font-size: 1rem;
     }
 
-    .marketplace-header #categories-dropdown {
+    .marketplace-header #categories-dropdown, .marketplace-header #location-dropdown {
         font-size: 1rem;
     }
 
@@ -85,7 +89,6 @@
     padding-top: 25px;
     margin-top: 15px;
     padding-left: 1rem;
-    padding-bottom: 100px;
 }
 
 .mhome .light-bg {
@@ -95,10 +98,6 @@
 .mhome .sidebar {
     max-width: 276px !important;
     margin-left: 50px;
-}
-
-.mhome .card-menu {
-    padding-right: 15px;
 }
 
 @media only screen and (max-width: 767px) {
@@ -139,4 +138,15 @@
     .mhome .card .header {
         font-size: 1em !important;
     }
+}
+
+@media only screen and (max-width: 992px) {
+    .mhome .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+.np-r {
+    padding-right: 0px !important;
 }

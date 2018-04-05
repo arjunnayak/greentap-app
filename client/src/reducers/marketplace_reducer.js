@@ -1,8 +1,9 @@
 import { REQUEST_MARKETPLACE_PRODUCTS, GET_MARKETPLACE_PRODUCTS, CHANGE_CATEGORY, PRESET_PRODUCT_DETAIL, 
   PRODUCT_DETAIL, CHANGE_PRODUCT_DETAIL_PRICING, ADD_FILTER, CLEAR_FILTERS, 
-  SEND_INQUIRY_SUCCESS, SEND_INQUIRY_FAILURE, CLEAR_INQUIRY_ERROR } from '../actions/types'
+  SEND_INQUIRY_SUCCESS, SEND_INQUIRY_FAILURE, CLEAR_INQUIRY_ERROR, CHANGE_LOCATION } from '../actions/types'
 
-const INITIAL_STATE = { category: 'flower', products: null, product: {}, selectedPricingIndex: 0, error: '', is_requesting: false, filters: [], inquiryError: null };
+const INITIAL_STATE = { category: 'flower', products: null, product: {}, selectedPricingIndex: 0, error: '', 
+  is_requesting: false, filters: [], inquiryError: null, location: 'CA' };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -32,6 +33,8 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, filters: [] }
     case CHANGE_PRODUCT_DETAIL_PRICING:
       return { ...state, selectedPricingIndex: action.pricingIndex, error: '' };
+    case CHANGE_LOCATION:
+      return { ...state, location: action.location };
     case SEND_INQUIRY_SUCCESS:
       return { ...state, inquiryError: null };
     case SEND_INQUIRY_FAILURE:

@@ -52,6 +52,7 @@ export const REQUEST_MARKETPLACE_PRODUCTS = 'request_marketplace_products',
   PRODUCT_DETAIL = 'marketplace_product_detail',
   CHANGE_PRODUCT_DETAIL_PRICING = 'change_product_detail_pricing',  
   CHANGE_CATEGORY = 'change_category',
+  CHANGE_LOCATION = 'change_location',
   SEND_INQUIRY_SUCCESS = 'send_inquiry_success',
   SEND_INQUIRY_FAILURE = 'send_inquiry_failure',
   CLEAR_INQUIRY_ERROR = 'clear_inquiry_error';
