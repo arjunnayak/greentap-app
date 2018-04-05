@@ -5,6 +5,7 @@ server/node_modules
 server/npm-debug.log*
 server/.env*
 server/ecosystem.config.js
+server/autoimport.py
 
 *.env
 *.dev
