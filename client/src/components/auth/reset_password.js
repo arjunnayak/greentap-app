@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { resetPassword } from '../../actions/auth'
-import PropTypes from 'prop-types'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
@@ -49,11 +48,11 @@ class ResetPassword extends Component {
 
   renderResult() {
     //checking explicitly for null or undefined to properly handle false rather than !this.props.forgotRequestSuccess
-    if(this.props.resetRequestSuccess != null || this.props.resetRequestSuccess != undefined) {
+    if(this.props.resetRequestSuccess !== null || this.props.resetRequestSuccess !== undefined) {
       if(this.props.resetRequestSuccess === true) {
         return ( <Message positive>Your password reset successfully.</Message> )
       } else {
-        if(!this.props.errorMessage != null) {
+        if(!this.props.errorMessage !== null) {
           return <Message negative>{this.props.errorMessage}</Message>
         }
         return ( <Message negative>There was an error with resetting your password.</Message> )

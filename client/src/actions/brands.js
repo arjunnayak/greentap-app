@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { API_URL, errorHandler } from './index'
-import { GET_BRANDS, GET_BRAND, GET_BRAND_PRODUCT, BRAND_ERROR } from './types'
+import { GET_BRANDS, GET_BRAND, BRAND_ERROR } from './types'
 
 export function getBrands() {
   return dispatch => {

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { browserHistory } from 'react-router-dom'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_SUCCESS, 
   FORGOT_PASSWORD_FAILURE, LOGOUT_SUCCESS, RESET_PASSWORD_REQUEST, RESET_PASSWORD_SUCCESS, 

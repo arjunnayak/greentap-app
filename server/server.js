@@ -12,8 +12,9 @@ const passportService = require('./config/passport')
 const config = require('./app_config')
 
 let app = express()
+const nodeEnv = process.env.NODE_ENV
 
-if(process.env.NODE_ENV != "production") {
+if(nodeEnv !== "production") {
   const db = require('./config/db')
   console.log('testing db connection...')
   //test db
@@ -25,7 +26,7 @@ if(process.env.NODE_ENV != "production") {
 }
 
 // app.use(express.static(__dirname + '/public')) // set the static files location /public/img will be /img for users
-process.env.NODE_ENV === "production" ? app.use(logger('combined')) : app.use(logger('dev'))
+nodeEnv === "production" ? app.use(logger('combined')) : app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 //allow 50mb body size for sending uploaded images in base64 to server
 app.use(bodyParser.json({ limit: '50mb'}))

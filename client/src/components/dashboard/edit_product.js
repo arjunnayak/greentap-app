@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
 import { getProduct, editProduct } from "../../actions/products"
 import Dashboard from './dashboard'

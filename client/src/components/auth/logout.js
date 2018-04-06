@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { connect } from 'react-redux'
 import { logoutUser } from '../../actions/auth'
-import { Redirect } from 'react-router-dom'
 
 class Logout extends Component {
   componentWillMount() {

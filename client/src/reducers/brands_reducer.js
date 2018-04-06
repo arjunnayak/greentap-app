@@ -12,6 +12,7 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, is_requesting: false, brand: action.payload, error: '' }
     case BRAND_ERROR:
       return { ...state, is_requesting: false, error: action.payload }
+    default: 
+      return state;
   }
-  return state;
 }

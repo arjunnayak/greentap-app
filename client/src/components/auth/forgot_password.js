@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { getForgotPasswordToken } from '../../actions/auth'
-import PropTypes from 'prop-types'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
@@ -46,11 +45,11 @@ class ForgotPassword extends Component {
 
   renderResult() {
     //checking explicitly for null or undefined to properly handle false rather than !this.props.forgotRequestSuccess
-    if(this.props.forgotRequestSuccess != null || this.props.forgotRequestSuccess != undefined) {
+    if(this.props.forgotRequestSuccess != null || this.props.forgotRequestSuccess !== undefined) {
       if(this.props.forgotRequestSuccess === true) {
         return ( <Message positive>Reset password request sent to {this.props.email}</Message> )
       } else {
-        if(this.props.errorMessage != null) {
+        if(this.props.errorMessage !== null) {
           return ( <Message negative>{this.props.errorMessage}</Message> )
         }
         return ( <Message negative>We couldn't find the email: {this.props.email}</Message> )

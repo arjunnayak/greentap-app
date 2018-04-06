@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { FormGroup } from 'react-bootstrap'
 import { addProduct } from "../../actions/products"
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
@@ -77,8 +76,6 @@ class AddProduct extends Component {
         break
       default:
         break
-      
-      return formResult
     }
     return (
       <div>

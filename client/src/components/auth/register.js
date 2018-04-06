@@ -5,7 +5,6 @@ import { registerUser } from '../../actions/auth'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
-import Message from 'semantic-ui-react/dist/commonjs/collections/Message'
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
 

@@ -1,9 +1,7 @@
 import React from 'react'
-import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
-import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import DefaultImage from '../template/sample_flower.png'
 
 const ProductCard = (props) => {
@@ -32,9 +30,6 @@ const ProductCard = (props) => {
           ) : null }
         </Card.Description>
       </Card.Content>
-      {/* <Card.Content extra>
-        <Button fluid primary>Add To Cart</Button>
-      </Card.Content> */}
     </Card>
   )
 }

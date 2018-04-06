@@ -22,6 +22,7 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, is_requesting: false, error: action.payload };
     case CLEAR_PRODUCT:
       return INITIAL_STATE;
+    default:
+      return state;
   }
-  return state;
 }

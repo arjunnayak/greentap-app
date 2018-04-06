@@ -5,7 +5,7 @@ import { getMarketplaceProducts, addFilter, clearFilters } from '../../actions/m
 import { getUserInfo } from '../../actions/auth'
 import { bindActionCreators } from 'redux'
 import ProductCard from './product_card'
-import { ADD_FILTER, PRESET_PRODUCT_DETAIL, REQUEST_MARKETPLACE_PRODUCTS } from '../../actions/types'
+import { PRESET_PRODUCT_DETAIL, REQUEST_MARKETPLACE_PRODUCTS } from '../../actions/types'
 import Filter from './filter'
 // import Footer from './footer'
 
@@ -79,7 +79,7 @@ class MarketplaceHome extends Component {
   filterProducts(products) {
     const filters = this.props.filters
     let productsFiltered = new Set()
-    filters.map(filter => {
+    filters.forEach(filter => {
       const filterSplit = filter.split(':')
       let name = filterSplit[0]
       const value = filterSplit[1]
@@ -197,7 +197,7 @@ class MarketplaceHome extends Component {
   }
 
   renderProductGrid(numColumns=3, products) {
-    if(products && products != []) {
+    if(products && products !== []) {
       const productRows = []
       console.log(`rendering ${products.length} products`)
       for (let i = 0; i < products.length; i += numColumns) {

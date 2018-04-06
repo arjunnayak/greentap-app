@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Header from '../template/header'
 import { getBrand } from "../../actions/brands"
 import Marketplace from './marketplace'
 import { REQUEST_BRAND, PRESET_PRODUCT_DETAIL } from '../../actions/types'
 
 import ProductCard from './product_card'
-import Filter from './filter'
+// import Filter from './filter'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
-import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
-import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
-import List from 'semantic-ui-react/dist/commonjs/elements/List'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
 
@@ -33,7 +29,7 @@ class BrandPage extends Component {
     const brand = this.props.brand
     console.log('brand page: render received brand', brand)
     const idParam = this.props.match.params.id
-    const hasProducts = (brand.categories && brand.categories != []) 
+    const hasProducts = (brand.categories && brand.categories !== []) 
     return (
       <Marketplace noCategoriesDropdown>
         { this.props.isRequesting && idParam !== brand.id? ( 

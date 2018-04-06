@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { getMarketplaceProduct, sendInquiry, showInquiryError, clearInquiryError } from '../../actions/marketplace'
 import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';

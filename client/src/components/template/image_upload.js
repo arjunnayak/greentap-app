@@ -5,7 +5,7 @@ import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import './image_upload.css'
 
-class ImageUpload extends React.Component {
+class ImageUpload extends Component {
   constructor(props) {
     super(props)
     this.state = { 
