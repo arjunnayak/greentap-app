@@ -36,7 +36,7 @@ app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
-  if(req.headers.origin === config.client_base_url) {
+  if(nodeEnv === 'development' || req.headers.origin === config.client_base_url) {
     res.header('Access-Control-Allow-Origin', req.headers.origin)
   }
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
