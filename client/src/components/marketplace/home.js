@@ -66,7 +66,6 @@ class MarketplaceHome extends Component {
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.category !== this.props.category) {
-      //TODO: check if products are in productStore[category] first before fetching
       if(!this.props.products[nextProps.category]) {
         console.log('fetching products for category', nextProps.category)
         this.props.getMarketplaceProducts(nextProps.category)

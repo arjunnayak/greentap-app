@@ -58,28 +58,22 @@ class MarketplaceHeader extends Component {
   }
 
   renderRightMenuLinks() {
+    let rightButtons = null
     if(this.props.authenticated) {
-      return (
-        <Menu.Menu position='right' className='right-menu'>
-          <Menu.Item>
-            <Dropdown placeholder='Set Location' defaultValue={locationOptions[1].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
-          </Menu.Item>
-          <Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>
-          <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
-        </Menu.Menu>
-      )
+      rightButtons = [<Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>,
+        <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>]
     } else {
-      return (
-        <Menu.Menu position='right' className='right-menu'>
-          <Menu.Item>
-            <Dropdown placeholder='Set Location' defaultValue={locationOptions[1].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
-          </Menu.Item>
-          <Menu.Item as={Link} to='/login' name='login'>Login</Menu.Item>
-          <Menu.Item as={Link} to='/register' name='register'>Register</Menu.Item>
-          {/* <Menu.Item as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item> */}
-        </Menu.Menu>
-      )
+      rightButtons = [<Menu.Item key='Login' as={Link} to='/login' name='login'>Login</Menu.Item>,
+        <Menu.Item key='Register' as={Link} to='/register' name='register'>Register</Menu.Item>]
     }
+    return (
+      <Menu.Menu position='right' className='right-menu'>
+        <Menu.Item>
+          <Dropdown placeholder='Set Location' defaultValue={locationOptions[1].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
+        </Menu.Item>
+        {rightButtons} 
+      </Menu.Menu>
+    )
   }
 }
 

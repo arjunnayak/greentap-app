@@ -33,7 +33,7 @@ export default function (state = INITIAL_STATE, action) {
     case RESET_PASSWORD_FAILURE:
       return { ...state, is_requesting: false, reset_request_success: false, error: action.payload };
     case USER_INFO_REQUEST:
-      return { ...state, is_requesting: true, authenticated: false, error: null, user: null };
+      return { ...state, is_requesting: true, authenticated: false, error: null, user: undefined };
     case USER_INFO_SUCCESS:
       return { ...state, is_requesting: false, authenticated: true, user: action.payload };
     case USER_INFO_FAILURE:
