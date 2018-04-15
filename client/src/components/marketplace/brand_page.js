@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { getBrand } from "../../actions/brands"
 import Marketplace from './marketplace'
-import { REQUEST_BRAND, PRESET_PRODUCT_DETAIL } from '../../actions/types'
+import { getBrand } from '../../actions/brandActions'
+import { presetProductDetail } from '../../actions/marketplaceActions'
 
 import ProductCard from './product_card'
 // import Filter from './filter'
-
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
@@ -20,7 +18,6 @@ class BrandPage extends Component {
     this.getCategoryHeader = this.getCategoryHeader.bind(this)
   }
   componentDidMount() {
-    this.props.dispatch({ type: REQUEST_BRAND })
     const brandId = this.props.match.params.id
     this.props.getBrand(brandId)
   }
@@ -88,10 +85,7 @@ class BrandPage extends Component {
         const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
             onCardClick={() => {
-              this.props.dispatch({
-                type: PRESET_PRODUCT_DETAIL,
-                payload: product
-              })
+              this.props.presetProductDetail(product)
               this.props.history.push(`/marketplace/product/${product.id}`)
             } }/>)
         })
@@ -136,9 +130,4 @@ function mapStateToProps(state) {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  let actions = bindActionCreators({ getBrand }, dispatch)
-  return { ...actions, dispatch }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BrandPage)
+export default connect(mapStateToProps, { getBrand, presetProductDetail })(BrandPage)

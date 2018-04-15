@@ -1,16 +1,16 @@
-import { GET_BRANDS, REQUEST_BRAND, GET_BRAND, BRAND_ERROR } from '../actions/types'
+import { actions } from '../actions/brandActions'
 
 const INITIAL_STATE = { is_requesting: false, brands: [], brand: {}, error: '' }
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
-    case GET_BRANDS:
+    case actions.GET_BRANDS:
       return { ...state, is_requesting: false, brands: action.payload, error: '' }
-    case REQUEST_BRAND:
+    case actions.REQUEST_BRAND:
       return { ...state, is_requesting: true, error: '' }
-    case GET_BRAND:
+    case actions.GET_BRAND:
       return { ...state, is_requesting: false, brand: action.payload, error: '' }
-    case BRAND_ERROR:
+    case actions.BRAND_ERROR:
       return { ...state, is_requesting: false, error: action.payload }
     default: 
       return state;

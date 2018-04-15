@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getMarketplaceProduct, sendInquiry, showInquiryError, clearInquiryError } from '../../actions/marketplace'
-import { CHANGE_PRODUCT_DETAIL_PRICING } from '../../actions/types';
+import { getMarketplaceProduct, sendInquiry, showInquiryError, clearInquiryError } from '../../actions/marketplaceActions'
+import { changeProductDetailPricing } from '../../actions/marketplaceActions';
 import Marketplace from './marketplace'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
@@ -192,10 +192,7 @@ const mapDispatchToProps = (dispatch) => {
   return { 
     getMarketplaceProduct: productId => dispatch(getMarketplaceProduct(productId)), 
     sendInquiry: (inquiryData) => dispatch(sendInquiry(inquiryData)),
-    changePrice: priceIndex => dispatch({
-      type: CHANGE_PRODUCT_DETAIL_PRICING, 
-      pricingIndex: priceIndex
-    }),
+    changePrice: pricingIndex => dispatch(changeProductDetailPricing(pricingIndex)),
     showInquiryError: (errorMessage) => dispatch(showInquiryError(errorMessage)),
     clearInquiryError: () => dispatch(clearInquiryError())
   }

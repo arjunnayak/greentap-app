@@ -1,18 +1,29 @@
 import axios from 'axios';
 import { API_URL, errorHandler } from './index';
-import { GET_PRODUCTS, GET_PRODUCT, ADD_PRODUCT_SUBMIT, ADD_PRODUCT_SUCCESS, EDIT_PRODUCT, DELETE_PRODUCT, PRODUCT_ERROR } from './types';
+
+export const actions = {
+  GET_PRODUCTS: 'get_products',
+  GET_PRODUCT: 'get_product',
+  ADD_PRODUCT_SUBMIT: 'add_product_submit',
+  ADD_PRODUCT_SUCCESS: 'add_product_success',
+  EDIT_PRODUCT: 'edit_product',
+  DELETE_PRODUCT: 'delete_product',
+  PRODUCT_ERROR: 'product_error',
+  CLEAR_PRODUCT: 'clear_product',
+  LOAD_EDIT_PRODUCT: 'load_edit_product',
+}
 
 export function getProducts(business_id) {
   return dispatch => {
     return axios.get(`${API_URL}/products?business_id=${business_id}`, { withCredentials: true })
       .then((response) => {
         dispatch({
-          type: GET_PRODUCTS,
+          type: actions.GET_PRODUCTS,
           payload: response.data.products
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+        errorHandler(dispatch, error.response, actions.PRODUCT_ERROR);
       });
   };
 }
@@ -23,29 +34,29 @@ export function getProduct(productId) {
       .then((response) => {
         console.log(response)
         dispatch({
-          type: GET_PRODUCT,
+          type: actions.GET_PRODUCT,
           payload: response.data.product
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+        errorHandler(dispatch, error.response, actions.PRODUCT_ERROR);
       });
   };
 }
 
 export function addProduct(product, business_id) {
   return dispatch => {
-    dispatch({ type: ADD_PRODUCT_SUBMIT})
+    dispatch({ type: actions.ADD_PRODUCT_SUBMIT})
     return axios.post(`${API_URL}/products/add`, { business_id, product }, { withCredentials: true })
       .then((response) => {
         console.log('add product action response', response)
         dispatch({
-          type: ADD_PRODUCT_SUCCESS,
+          type: actions.ADD_PRODUCT_SUCCESS,
           payload: response.data.product
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+        errorHandler(dispatch, error.response, actions.PRODUCT_ERROR);
       });
   };
 }
@@ -56,12 +67,12 @@ export function editProduct(product) {
       .then((response) => {
         console.log('edit product action response',response)
         dispatch({
-          type: EDIT_PRODUCT,
+          type: actions.EDIT_PRODUCT,
           payload: response.data.product
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+        errorHandler(dispatch, error.response, actions.PRODUCT_ERROR);
       });
   };
 }
@@ -72,11 +83,22 @@ export function deleteProduct(product) {
       .then((response) => {
         console.log('delete product action response', response)
         dispatch({
-          type: DELETE_PRODUCT
+          type: actions.DELETE_PRODUCT
         })
       })
       .catch((error) => {
-        errorHandler(dispatch, error.response, PRODUCT_ERROR);
+        errorHandler(dispatch, error.response, actions.PRODUCT_ERROR);
       });
   };
+}
+
+export const clearProduct = () => dispatch => {
+  dispatch({ type: actions.CLEAR_PRODUCT })
+}
+
+export const loadEditProduct = (product) => dispatch => {
+  dispatch({
+    type: actions.LOAD_EDIT_PRODUCT, 
+    payload: product
+  })
 }

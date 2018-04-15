@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getProducts, deleteProduct } from "../../actions/products"
+import { getProducts, deleteProduct } from '../../actions/productActions'
 import Dashboard from './dashboard'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'

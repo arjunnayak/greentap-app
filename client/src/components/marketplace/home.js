@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Marketplace from './marketplace'
-import { getMarketplaceProducts, addFilter, clearFilters } from '../../actions/marketplace'
-import { getUserInfo } from '../../actions/auth'
-import { bindActionCreators } from 'redux'
+import { getMarketplaceProducts, addFilter, clearFilters, presetProductDetail } from '../../actions/marketplaceActions'
+import { getUserInfo } from '../../actions/authActions'
 import ProductCard from './product_card'
-import { PRESET_PRODUCT_DETAIL, REQUEST_MARKETPLACE_PRODUCTS } from '../../actions/types'
 import Filter from './filter'
 // import Footer from './footer'
 
@@ -52,7 +50,6 @@ class MarketplaceHome extends Component {
   componentDidMount() {
     if(!this.props.products || this.props.products == null) {
       console.log('fetching products for category', this.props.category)
-      this.props.dispatch({ type: REQUEST_MARKETPLACE_PRODUCTS })
       this.props.getMarketplaceProducts(this.props.category)
     }
     if(!this.props.authenticated) {
@@ -206,10 +203,7 @@ class MarketplaceHome extends Component {
         const productRowsToRender = row.map(product => {
           return (<ProductCard key={product.id} product={product}
             onCardClick={() => {
-              this.props.dispatch({
-                type: PRESET_PRODUCT_DETAIL,
-                payload: product
-              })
+              this.props.presetProductDetail(product)
               this.props.history.push(`/marketplace/product/${product.id}`)
             }}/>)
         })
@@ -254,8 +248,13 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  let actions = bindActionCreators({ getMarketplaceProducts, addFilter, clearFilters, getUserInfo }, dispatch)
-  return { ...actions, dispatch }
+  return { 
+    getMarketplaceProducts: category => dispatch(getMarketplaceProducts(category)), 
+    addFilter: filter => dispatch(addFilter(filter)),
+    clearFilters: () => dispatch(clearFilters()),
+    getUserInfo: () => dispatch(getUserInfo()),
+    presetProductDetail: product => dispatch(presetProductDetail(product)),
+  }
 }
-
+// { getMarketplaceProducts, addFilter, clearFilters, getUserInfo, presetProductDetail }
 export default connect(mapStateToProps, mapDispatchToProps)(MarketplaceHome)

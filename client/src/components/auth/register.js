@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { registerUser } from '../../actions/auth'
+import { registerUser } from '../../actions/authActions'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'

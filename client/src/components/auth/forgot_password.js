@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
-import { getForgotPasswordToken } from '../../actions/auth'
+import { getForgotPasswordToken } from '../../actions/authActions'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'

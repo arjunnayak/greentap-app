@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { addProduct } from "../../actions/products"
+import { addProduct } from '../../actions/productActions'
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'

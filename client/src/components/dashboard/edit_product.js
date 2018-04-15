@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { getProduct, editProduct } from "../../actions/products"
+import { getProduct, editProduct } from '../../actions/productActions'
 import Dashboard from './dashboard'
 import ImageUpload from '../template/image_upload'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
-import { CLEAR_PRODUCT, LOAD_EDIT_PRODUCT } from '../../actions/types';
+import { clearProduct, loadEditProduct } from '../../actions/productActions'
 
 class EditProduct extends Component {
 
@@ -15,15 +15,13 @@ class EditProduct extends Component {
     super(props)
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
-    //flow is funky when you use this rather than binding in onSubmit
-    // this.handleEditProduct = this.handleEditProduct.bind(this)
   }
 
   
   componentDidMount() {
     const productId = this.props.match.params.id
     this.props.getProduct(productId).then(() => {
-      this.props.dispatch({type: LOAD_EDIT_PRODUCT, payload: this.props.product})
+      this.props.loadEditProduct(this.props.product)
     })
   }
   
@@ -97,7 +95,7 @@ class EditProduct extends Component {
   }
 
   handleCancel(event) {
-    this.props.dispatch({ type: CLEAR_PRODUCT })
+    this.props.clearProduct()
     this.props.history.push('/dashboard/products')
   }
 
@@ -197,4 +195,13 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, { getProduct, editProduct })(form(EditProduct))
+function mapDispatchToProps(dispatch) {
+  return { 
+    getProduct: productId => dispatch(getProduct(productId)), 
+    editProduct: product => dispatch(editProduct(product)),
+    clearProduct: () => dispatch(clearProduct()),
+    loadEditProduct: product => dispatch(loadEditProduct(product)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(form(EditProduct))

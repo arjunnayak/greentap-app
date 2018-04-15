@@ -6,7 +6,7 @@ import Input from 'semantic-ui-react/dist/commonjs/elements/Input'
 import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown'
 import Responsive from 'semantic-ui-react/dist/commonjs/addons/Responsive'
 import { Icon } from 'semantic-ui-react'
-import { CHANGE_CATEGORY, CHANGE_LOCATION } from '../../actions/types';
+import { changeCategory, changeLocation } from '../../actions/marketplaceActions';
 
 class MarketplaceHeader extends Component {
 
@@ -41,19 +41,13 @@ class MarketplaceHeader extends Component {
 
   handleCategoryChange(event, data) {
     if(data.value !== this.props.category) {
-      this.props.dispatch({
-        type: CHANGE_CATEGORY,
-        category: data.value
-      })
+      this.props.changeCategory(data.value)
     }
   }
 
   handleLocationChange(event, data) {
     if(data.value !== this.props.location) {
-      this.props.dispatch({
-        type: CHANGE_LOCATION,
-        location: data.value
-      })
+      this.props.changeLocation(data.value)
     }
   }
 
@@ -103,4 +97,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(MarketplaceHeader)
+export default connect(mapStateToProps, { changeCategory, changeLocation })(MarketplaceHeader)
