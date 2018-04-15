@@ -63,7 +63,7 @@ class MarketplaceHeader extends Component {
     return (
       <Menu.Menu position='right' className='right-menu'>
         <Menu.Item>
-          <Dropdown placeholder='Set Location' defaultValue={locationOptions[1].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
+          <Dropdown placeholder='Set Location' defaultValue={locationOptions[0].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
         </Menu.Item>
         {rightButtons} 
       </Menu.Menu>
@@ -79,10 +79,10 @@ const categoryOptions = [
 ]
 
 const locationOptions = [
-  { text: 'AK', value: 'AK' },
+  // { text: 'AK', value: 'AK' },
   { text: 'CA', value: 'CA' },
-  { text: 'ME', value: 'ME' },
-  { text: 'MA', value: 'MA' },
+  // { text: 'ME', value: 'ME' },
+  // { text: 'MA', value: 'MA' },
   { text: 'NV', value: 'NV' },
   { text: 'OR', value: 'OR' },
   { text: 'WA', value: 'WA' }
