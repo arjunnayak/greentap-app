@@ -1,7 +1,7 @@
-const AuthenticationController = require('./controllers/authentication')
-const ProductController = require('./controllers/product')
-const MarketplaceController = require('./controllers/marketplace')
-const BrandController = require('./controllers/brand')
+const AuthenticationController = require('./controllers/authenticationCtrl')
+const ProductController = require('./controllers/productCtrl')
+const MarketplaceController = require('./controllers/marketplaceCtrl')
+const BrandController = require('./controllers/brandCtrl')
 const express = require('express')
 const config = require('./app_config')
 
