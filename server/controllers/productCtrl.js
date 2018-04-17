@@ -1,9 +1,9 @@
 const db = require('../config/db')
 const aws = require('aws-sdk')
-const sharp = require('sharp')
 const uuid = require('uuid/v4')
 const QueryResultError = require('pg-promise').errors.QueryResultError
 const pgp = require('pg-promise')()
+const optimizeAndStoreImageInS3 = require('../helpers').optimizeAndStoreImageInS3
 
 const CATEGORIES = require('../app_config').categories_list
 
@@ -103,7 +103,8 @@ exports.addProduct = (req, res, next) => {
     return res.status(401).end()
   }
 
-  optimizeAndStoreImageInS3(image)
+  let width = 600 
+  optimizeAndStoreImageInS3(image, width, null)
     .then(imageLink => {
       const product_id = uuid()
       db.tx(t => {
@@ -324,48 +325,5 @@ exports.getImageUploadSign = (req, res, next) => {
     } else {
       return res.status(200).json({ data })
     }
-  })
-}
-
-const optimizeAndStoreImageInS3 = function(image) {
-  return new Promise((resolve, reject) => {
-    //if no image was supplied, return an empty link
-    if(image.data == '' || !image.data) {
-      resolve('')
-      return
-    }
-    //strip base64 metadata from FileReader.readDataAsUrl result
-    var imageData = image.data.split(',')[1]
-    //convert base64 string to buffer to input to sharp constructor
-    imageData = Buffer.from(imageData, 'base64')
-    sharp(imageData)
-      .resize(600, null)
-      .withoutEnlargement()
-      .min()
-      .toBuffer()
-      .then(outputBuffer => {
-        const s3 = new aws.S3({
-          apiVersion: '2006-03-01',
-          params: { Bucket: 'greentap-images' }
-        })
-        const uploadObject = {
-          Key: image.filename,
-          Body: outputBuffer,
-          ACL: 'public-read'
-        }
-        s3.upload(uploadObject, (error, data) => {
-          if (error) {
-            console.error(`There was an error uploading ${image.filename}: ${error.message}`)
-            reject(error.message)
-            return
-          }
-          console.log(`Successfully uploaded ${image.filename}.`)
-          resolve(`https://s3-us-west-1.amazonaws.com/greentap-images/${image.filename}`)
-        })
-      })
-      .catch(error => {
-        console.error(`sharp optimize image error: ${error}`)
-        reject(error)
-      })
   })
 }

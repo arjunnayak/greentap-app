@@ -2,6 +2,7 @@ const db = require('../config/db')
 const uuid = require('uuid/v4')
 const CATEGORIES = require('../app_config').categories_list
 const pgp = require('pg-promise')()
+const optimizeAndStoreImageInS3 = require('../helpers').optimizeAndStoreImageInS3
 const QueryResultError = pgp.errors.QueryResultError;
 
 exports.getBrands = (req, res, next) => {
@@ -78,4 +79,29 @@ exports.getBrand = (req, res, next) => {
       return res.status(500).json({ error: "Error retrieving products" });
     })
   })
+}
+
+exports.setBusinessImage = (req, res, next) => {
+  const brandName = req.body.name
+  const image = req.body.image
+  console.log('setBusinessImage image:', image)
+  if(!image || image === null) {
+    return res.status(400).json({ error: 'Image invalid' })
+  } else if(!brandName || brandName === null) {
+    return res.status(400).json({ error: 'Business id invalid' })
+  }
+  optimizeAndStoreImageInS3(image, 800, null)
+    .then(imageLink => {
+      console.log('created image', imageLink);
+      db.one({
+        name: 'update-business-image',
+        text: 'UPDATE public.business SET image=$1 WHERE name=$2 RETURNING *;',
+        values: [imageLink, brandName]
+      }).then(business => {
+        console.log('updated business', business);
+        return res.status(200).json(business)
+      }).catch(error => {
+        return res.status(404).json({ error: 'Business id not found'})
+      })
+    })
 }

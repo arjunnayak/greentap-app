@@ -71,6 +71,7 @@ module.exports = (app, passport) => {
   // brandRoutes.get('/:id', requireAuth, BrandController.getBrand)
   brandRoutes.get('/', BrandController.getBrands)
   brandRoutes.get('/:id', BrandController.getBrand)
+  brandRoutes.post('/_setImage', BrandController.setBusinessImage)
 
   // Tie them together
   apiRoutes.use('/auth', authRoutes)
