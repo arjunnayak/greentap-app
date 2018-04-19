@@ -90,7 +90,7 @@ exports.setBusinessImage = (req, res, next) => {
   } else if(!brandName || brandName === null) {
     return res.status(400).json({ error: 'Business id invalid' })
   }
-  optimizeAndStoreImageInS3(image, 800, null)
+  optimizeAndStoreImageInS3(image, 1000, null)
     .then(imageLink => {
       console.log('created image', imageLink);
       db.one({
