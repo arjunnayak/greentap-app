@@ -150,3 +150,32 @@
 .np-r {
     padding-right: 0px !important;
 }
+
+
+/* brand page css */
+
+.brand-bg-image {
+    height: 50%;
+    background-size: cover;
+}
+
+.brand-image-and-name {
+    width: 600px;
+    height: 100%;
+    padding: 20px;
+    margin:auto;
+
+    /* text-align: center; */
+    /* vertical-align: middle; */
+}
+
+.brand-image-and-name h1 {
+    color: white;
+    margin-top: 10px;
+    font-weight:normal;
+}
+
+
+.brand-image-and-name .brand-logo {
+    width: 250px;
+}

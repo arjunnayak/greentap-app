@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Marketplace from './marketplace'
 import { getBrand } from '../../actions/brandActions'
 import { presetProductDetail } from '../../actions/marketplaceActions'
+import backgroundLogo from'./brand-bg-2.jpg';
 
 import ProductCard from './product_card'
 // import Filter from './filter'
@@ -10,6 +11,7 @@ import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 
 class BrandPage extends Component {
 
@@ -28,17 +30,22 @@ class BrandPage extends Component {
     const idParam = this.props.match.params.id
     const hasProducts = (brand.categories && brand.categories !== []) 
     return (
-      <Marketplace noCategoriesDropdown>
+      <Marketplace >
         { this.props.isRequesting && idParam !== brand.id? ( 
           <Loader active/> 
         ) : (
           <div className='mhome'>
             <Container fluid style={{ marginTop: '5vh' }}>
-              <Grid stackable>
-                <Grid.Column width={16}>
-                  <h1>{brand.name}</h1>
-                </Grid.Column>
-              </Grid>
+              <div className='brand-bg-image' style={{backgroundImage: "url(" + backgroundLogo + ")"}}>
+                <Grid stackable>
+                  <Grid.Column textAlign='center' verticalAlign='middle' width={16}>
+                      <div className='brand-image-and-name'>
+                        <Image verticalAlign='middle' circular src={brand.image} className='brand-logo' />
+                        <h1>{brand.name}</h1>
+                      </div>
+                  </Grid.Column>
+                </Grid>
+              </div>
             </Container>
 
             <Container fluid className='main light-bg'>
