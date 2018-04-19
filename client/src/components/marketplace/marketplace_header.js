@@ -18,24 +18,22 @@ class MarketplaceHeader extends Component {
   }
 
   render() {
-    const showCategoriesDropdown = !this.props.noCategoriesDropdown
+    const showCategoryDropdown = this.props.showCategoryDropdown
     return (
-      <div className="marketplace-header">
-        <Menu borderless id='marketplace-menu' attached='top' inverted stackable fluid>
-          <Menu.Item header as={Link} to='/marketplace'>Greentap</Menu.Item>
-          {
-            showCategoriesDropdown ? (
-              <Menu.Item>
-                <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
-              </Menu.Item>
-            ) : null 
-          }
-          <Responsive as={Menu.Item} minWidth={Responsive.onlyMobile.minWidth} >
-            <Input className='search' icon='search' id='search' placeholder='Search for strains, oil, producers...' />
-          </Responsive>
-          {this.renderRightMenuLinks(this.props.authenticated)}
-        </Menu>
-      </div>
+      <Menu className='marketplace-header' borderless id='marketplace-menu' attached='top' inverted stackable fluid>
+        <Menu.Item header as={Link} to='/marketplace'>Greentap</Menu.Item>
+        {
+          showCategoryDropdown ? (
+            <Menu.Item>
+              <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
+            </Menu.Item>
+          ) : null 
+        }
+        <Responsive as={Menu.Item} minWidth={Responsive.onlyMobile.minWidth} >
+          <Input className='search' icon='search' id='search' placeholder='Search for strains, oil, producers...' />
+        </Responsive>
+        {this.renderRightMenuLinks(this.props.authenticated)}
+      </Menu>
     )
   }
 
@@ -53,6 +51,7 @@ class MarketplaceHeader extends Component {
 
   renderRightMenuLinks() {
     let rightButtons = null
+    const showLocation = this.props.showLocation
     if(this.props.authenticated) {
       rightButtons = [<Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>,
         <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>]
@@ -62,9 +61,11 @@ class MarketplaceHeader extends Component {
     }
     return (
       <Menu.Menu position='right' className='right-menu'>
-        <Menu.Item>
+        { showLocation ? (
+          <Menu.Item>
           <Dropdown placeholder='Set Location' defaultValue={locationOptions[0].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
         </Menu.Item>
+        ) : null }
         {rightButtons} 
       </Menu.Menu>
     )

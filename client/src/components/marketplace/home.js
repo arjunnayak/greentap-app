@@ -142,7 +142,7 @@ class MarketplaceHome extends Component {
     }
     const cardsPerRow = 3
     return (
-      <Marketplace>
+      <Marketplace showLocation showCategoryDropdown>
         <div className='mhome' style={{width:'100%'}}>
           <Container fluid style={{ marginTop: '5vh' }}>
             <Grid stackable columns={2}>

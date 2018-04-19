@@ -7,7 +7,7 @@ const Marketplace = (props) => {
   return (
     <Grid padded>
       <Grid.Row style={{paddingTop:'0px', paddingBottom:'0px'}}>
-        <MarketplaceHeader noCategoriesDropdown={props.noCategoriesDropdown}/>
+        <MarketplaceHeader showLocation={props.showLocation} showCategoryDropdown={props.showCategoryDropdown}/>
       </Grid.Row>
       <Grid.Row style={{paddingBottom:'0px'}}>
         {props.children}
