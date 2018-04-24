@@ -8,7 +8,9 @@ import backgroundLogo from'./brand-bg-2.jpg';
 import ProductCard from './product_card'
 // import Filter from './filter'
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
+import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
+import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
@@ -17,8 +19,13 @@ class BrandPage extends Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      currentTabIndex: 1
+    }
     this.getCategoryHeader = this.getCategoryHeader.bind(this)
+    this.handleTabChange = this.handleTabChange.bind(this)
   }
+
   componentDidMount() {
     const brandId = this.props.match.params.id
     this.props.getBrand(brandId)
@@ -26,15 +33,31 @@ class BrandPage extends Component {
 
   render() {
     const brand = this.props.brand
+    const { currentTabIndex } = this.state
     console.log('brand page: render received brand', brand)
     const idParam = this.props.match.params.id
-    const hasProducts = (brand.categories && brand.categories !== []) 
+    const hasProducts = (brand.categories && brand.categories !== [])
+    let content = null
+    if(currentTabIndex === 0) {
+      content = (
+        <Segment raised style={{padding:'2em', marginBottom: '30%'}}>
+          <h3>About Us</h3>
+          <div>{brand.description}</div>
+        </Segment>
+      )
+    } else {
+      content = hasProducts ? (
+        <div className='card-menu'>
+          {this.renderProductGrid(3)}
+        </div>
+      ) : ( <h2>No products available</h2> )
+    }
     return (
       <Marketplace >
         { this.props.isRequesting && idParam !== brand.id? ( 
-          <Loader active/> 
+          <Loader active/>
         ) : (
-          <div className='mhome'>
+          <div className='mhome' style={{backgroundColor:'#f4f7f9'}}>
             <Container fluid style={{ marginTop: '5vh' }}>
               <div className='brand-bg-image' style={{backgroundImage: "url(" + backgroundLogo + ")"}}>
                 <Grid stackable>
@@ -46,16 +69,16 @@ class BrandPage extends Component {
                   </Grid.Column>
                 </Grid>
               </div>
+              <Menu id='brand-tabs' widths={2} size='small' defaultActiveIndex={1} >
+                <Menu.Item active={currentTabIndex === 1} key='products' name='products' onClick={this.handleTabChange}>PRODUCTS</Menu.Item>
+                <Menu.Item active={currentTabIndex === 0} key='about' name='about' onClick={this.handleTabChange}>ABOUT</Menu.Item>
+              </Menu>
             </Container>
 
-            <Container fluid className='main light-bg'>
+            <Container fluid className='main'>
               <Grid stackable>
                 <Grid.Column>
-                  {hasProducts ? (
-                    <div className='card-menu'>
-                      {this.renderProductGrid(3)}
-                    </div>
-                  ) : <h2>No products available</h2>}
+                  { content }
                 </Grid.Column>
               </Grid>
             </Container>
@@ -127,6 +150,12 @@ class BrandPage extends Component {
       case 'medical': return 'Medical'
       default: return 'Flowers'
     }
+  }
+
+  handleTabChange(e, { name }) {
+    let index = (name === 'about') ? 0 : 1
+    this.setState({ currentTabIndex: index })
+    e.preventDefault();
   }
 }
 

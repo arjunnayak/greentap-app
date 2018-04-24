@@ -57,9 +57,14 @@
     }
 }
 
-#marketplace-menu .menu > .item {
+#marketplace-menu .item {
     color: white;
 }
+
+#marketplace-menu .item:hover {
+    background-color: transparent !important;
+}
+
 
 @media only screen and (max-width: 767px) {
     #marketplace-menu {
@@ -89,10 +94,9 @@
 }
 
 .mhome .main {
-    height: 100%;
     padding-top: 25px;
     margin-top: 15px;
-    padding-left: 1rem;
+    padding-bottom: 50px;
 }
 
 .mhome .light-bg {
@@ -102,6 +106,33 @@
 .mhome .sidebar {
     max-width: 276px !important;
     margin-left: 50px;
+}
+
+#brand-tabs {
+    background-color: #f4f7f9;
+    box-shadow: none;
+    border: 0;
+    width: 30%;
+    margin: 2em auto !important;
+}
+
+#brand-tabs .item {
+    background-color: white;
+    border: solid 1.25px #273238;
+}
+
+#brand-tabs a:last-child {
+    border-radius: 0 36px 36px 0;
+}
+
+#brand-tabs .item.active {
+    background-color: #273238;
+    color: white;
+}
+
+
+#brand-tabs .item:first-child {
+    border-radius: 36px 0 0 36px;
 }
 
 @media only screen and (max-width: 767px) {
