@@ -84,6 +84,10 @@
     }
 }
 
+.mhome {
+    width: 100%;
+}
+
 .mhome .main {
     height: 100%;
     padding-top: 25px;
