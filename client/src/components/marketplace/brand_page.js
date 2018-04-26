@@ -2,33 +2,56 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Marketplace from './marketplace'
 import { getBrand } from '../../actions/brandActions'
-import { presetProductDetail } from '../../actions/marketplaceActions'
+import { presetProductDetail, addFilter, clearFilters } from '../../actions/marketplaceActions'
 import backgroundLogo from'./brand-bg-2.jpg';
-
 import ProductCard from './product_card'
-// import Filter from './filter'
+import Filter from './filter'
+
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
 import Container from 'semantic-ui-react/dist/commonjs/elements/Container'
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
+import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 import Loader from 'semantic-ui-react/dist/commonjs/elements/Loader'
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
+
+const FILTER_NAME = 'brand_page'
 
 class BrandPage extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-      currentTabIndex: 1
-    }
     this.getCategoryHeader = this.getCategoryHeader.bind(this)
     this.handleTabChange = this.handleTabChange.bind(this)
+    this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.filterProducts = this.filterProducts.bind(this)
+    this.state = {
+      currentTabIndex: 1,
+      filterOptions: [
+        {
+          title: 'Strain Type',
+          content: (
+            <Form>
+              <Form.Group grouped>
+                <Form.Checkbox label='Sativa' name='strain_type' value='sativa' onChange={this.handleFilterChange}/>
+                <Form.Checkbox label='Indica' name='strain_type' value='indica' onChange={this.handleFilterChange}/>
+                <Form.Checkbox label='Hybrid' name='strain_type' value='hybrid' onChange={this.handleFilterChange}/>
+              </Form.Group>
+            </Form>
+          )
+        }
+      ]
+    }
   }
 
   componentDidMount() {
     const brandId = this.props.match.params.id
     this.props.getBrand(brandId)
+  }
+
+  componentWillUnmount() {
+    this.props.clearFilters(FILTER_NAME)
   }
 
   render() {
@@ -76,8 +99,12 @@ class BrandPage extends Component {
             </Container>
 
             <Container fluid className='main'>
-              <Grid stackable>
-                <Grid.Column>
+              <Grid stackable columns={2}>
+                <Grid.Column width={4}>
+                  <Filter options={this.state.filterOptions} name={FILTER_NAME}/>
+                </Grid.Column>
+
+                <Grid.Column width={12}>
                   { content }
                 </Grid.Column>
               </Grid>
@@ -88,10 +115,16 @@ class BrandPage extends Component {
     )
   }
 
-  renderProductGrid(numColumns=3) {
-    const brand = this.props.brand
-    const { categories, products } = brand
+  handleFilterChange(event, data) {
+    this.props.addFilter(FILTER_NAME, data)
+  }
 
+  renderProductGrid(numColumns=3) {
+    let { categories, products } = this.props.brand
+    products = this.props.filters.length > 0 ? this.filterProducts(products) : products
+    if(products == null || !products.length > 0){
+      return null            
+    } 
     let productsMappedToCategories = {}
     products.forEach(p => {
       if(!productsMappedToCategories[p.category]) {
@@ -103,7 +136,7 @@ class BrandPage extends Component {
 
     const categoriesToRender = categories.map(category => {
       
-      let productsInCategory = productsMappedToCategories[category]
+      let productsInCategory = productsMappedToCategories[category] || []
       const productRows = []
       for (let i = 0; i < productsInCategory.length; i += numColumns) {
         productRows.push(productsInCategory.slice(i, i + numColumns))
@@ -142,6 +175,22 @@ class BrandPage extends Component {
     return categoriesToRender
   }
 
+  filterProducts(products) {
+    const filters = this.props.filters
+    let productsFiltered = new Set()
+    filters.forEach(filter => {
+      const filterSplit = filter.split(':')
+      let name = filterSplit[0]
+      const value = filterSplit[1]
+      products.forEach(p => { 
+        const meetsFilterCriteria = p.detail[name] === value
+        if(meetsFilterCriteria && !productsFiltered.has(p)) productsFiltered.add(p)
+      })
+    })
+    productsFiltered = Array.from(productsFiltered)
+    return productsFiltered
+  }
+
   getCategoryHeader(category) {
     switch(category) {
       case 'flower': return 'Flowers'
@@ -155,15 +204,15 @@ class BrandPage extends Component {
   handleTabChange(e, { name }) {
     let index = (name === 'about') ? 0 : 1
     this.setState({ currentTabIndex: index })
-    e.preventDefault();
   }
 }
 
 function mapStateToProps(state) {
   return {
     brand: state.brands.brand,
-    isRequesting: state.brands.is_requesting
+    isRequesting: state.brands.is_requesting,
+    filters: state.marketplace.filters[FILTER_NAME] || [],
   }
 }
 
-export default connect(mapStateToProps, { getBrand, presetProductDetail })(BrandPage)
+export default connect(mapStateToProps, { getBrand, presetProductDetail, addFilter, clearFilters })(BrandPage)

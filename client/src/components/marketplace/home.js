@@ -20,6 +20,8 @@ const sortByOptions = [
   { key: 2, text: 'Price: High to Low', value: 'price-hl' }
 ]
 
+const FILTER_NAME = 'home'
+
 class MarketplaceHome extends Component {
 
   constructor(props) {
@@ -58,7 +60,7 @@ class MarketplaceHome extends Component {
   }
 
   componentWillUnmount() {
-    this.props.clearFilters()
+    this.props.clearFilters(FILTER_NAME)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,7 +68,7 @@ class MarketplaceHome extends Component {
       if(!this.props.products[nextProps.category]) {
         console.log('fetching products for category', nextProps.category)
         this.props.getMarketplaceProducts(nextProps.category)
-        this.props.clearFilters()
+        this.props.clearFilters(FILTER_NAME)
       }
       this.setState({ numProductsToShow: 30 })
     }
@@ -164,7 +166,7 @@ class MarketplaceHome extends Component {
             <Container fluid className='main light-bg'>
               <Grid stackable columns={2}>
                 <Grid.Column width={4}>
-                  {<Filter options={filterOptions} />}
+                  <Filter options={filterOptions} name={FILTER_NAME}/>
                 </Grid.Column>
 
                 <Grid.Column width={12}>
@@ -221,7 +223,7 @@ class MarketplaceHome extends Component {
   }
 
   handleFilterChange(event, data) {
-    this.props.addFilter(data)
+    this.props.addFilter(FILTER_NAME, data)
   }
 
   getCategoryHeader(category) {
@@ -242,7 +244,7 @@ function mapStateToProps(state) {
     category: state.marketplace.category,
     location: state.marketplace.location,
     isRequesting: state.marketplace.is_requesting,
-    filters: state.marketplace.filters,
+    filters: state.marketplace.filters[FILTER_NAME] || [],
     authenticated: state.auth.authenticated,
   }
 }
@@ -250,8 +252,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return { 
     getMarketplaceProducts: category => dispatch(getMarketplaceProducts(category)), 
-    addFilter: filter => dispatch(addFilter(filter)),
-    clearFilters: () => dispatch(clearFilters()),
+    addFilter: (filterName, filterData) => dispatch(addFilter(filterName, filterData)),
+    clearFilters: (filterName) => dispatch(clearFilters(filterName)),
     getUserInfo: () => dispatch(getUserInfo()),
     presetProductDetail: product => dispatch(presetProductDetail(product)),
   }
