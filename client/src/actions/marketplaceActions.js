@@ -54,13 +54,14 @@ export function getMarketplaceProduct(id) {
   };
 }
 
-export function addFilter(filterEventData) {
+export function addFilter(filterName, filterEventData) {
   return dispatch => {
     switch(filterEventData['type']) {
       case "checkbox":
         dispatch({
           type: actions.ADD_FILTER,
-          payload: `${filterEventData.name}:${filterEventData.value}`
+          filterName,
+          filterData: `${filterEventData.name}:${filterEventData.value}`
         })
         break
       case 'a':
@@ -72,9 +73,9 @@ export function addFilter(filterEventData) {
   }
 }
 
-export function clearFilters() {
+export function clearFilters(filterName) {
   return dispatch => {
-    dispatch({ type: actions.CLEAR_FILTERS })
+    dispatch({ type: actions.CLEAR_FILTERS, filterName })
   }
 }
 

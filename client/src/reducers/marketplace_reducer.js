@@ -1,7 +1,7 @@
 import { actions } from '../actions/marketplaceActions'
 
 const INITIAL_STATE = { category: 'flower', products: null, product: {}, selectedPricingIndex: 0, error: '', 
-  is_requesting: false, filters: [], inquiryError: null, location: 'CA' };
+  is_requesting: false, filters: {}, inquiryError: null, location: 'CA' };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -21,14 +21,22 @@ export default function (state = INITIAL_STATE, action) {
     case actions.PRODUCT_DETAIL:
       return { ...state, product: action.payload, error: '' };
     case actions.ADD_FILTER:
-      const filter = action.payload
-      if(state.filters.indexOf(filter) < 0) {
-        return { ...state, filters: [ ...state.filters, filter ] }
+      const name = action.filterName,
+        filter = action.filterData,
+        newFilters = Object.assign({}, state.filters),
+        currentPageFilters = state.filters[name] ? state.filters[name] : []
+      
+      if(currentPageFilters.indexOf(filter) < 0) {
+        newFilters[name] = [ ...currentPageFilters, filter ]
+        return { ...state, filters: newFilters}
       } else {
-        return { ...state, filters: state.filters.filter(f => { return f !== filter}) }
+        newFilters[name] = currentPageFilters.filter(f => { return f !== filter})
+        return { ...state, filters: newFilters }
       }
     case actions.CLEAR_FILTERS:
-      return { ...state, filters: [] }
+      const clearedFilters = Object.assign({}, state.filters)
+      delete clearedFilters[action.filterName]
+      return { ...state, filters: clearedFilters }
     case actions.CHANGE_PRODUCT_DETAIL_PRICING:
       return { ...state, selectedPricingIndex: action.pricingIndex, error: '' };
     case actions.CHANGE_LOCATION:
