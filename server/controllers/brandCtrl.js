@@ -48,6 +48,7 @@ exports.getBrand = (req, res, next) => {
       categoriesToSearch = Array.from(new Set(products.map(p => { return p.category })))
       let productsMappedToCategories = {}
       products.forEach(p => {
+        // get list of product ids per category
         if(!productsMappedToCategories[p.category]) {
           productsMappedToCategories[p.category] = [p.id]
         } else {
@@ -55,6 +56,7 @@ exports.getBrand = (req, res, next) => {
         }
       })
       let productDetailTransactions = []
+      // construct batch array of product detail queries
       categoriesToSearch.forEach(category => {
         productDetailTransactions.push(t.any(`SELECT * FROM ${category} WHERE product_id IN ($1:csv)`, [productsMappedToCategories[category]]))
       })
@@ -64,7 +66,9 @@ exports.getBrand = (req, res, next) => {
     }).then(productDetails => {
       businessResult.products.forEach(product => {
         let catIndex = businessResult.categories.indexOf(product.category)
-        product.detail = productDetails[catIndex].find(pCandidate => { return pCandidate.product_id === product.id })
+        const productDetail = productDetails[catIndex].find(pCandidate => { return pCandidate.product_id === product.id })
+        // flatten product detail with product
+        product = Object.assign(product, productDetail)
       })
       return res.status(200).json({business: businessResult})
     }).catch(error => {
