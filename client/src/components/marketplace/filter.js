@@ -13,6 +13,9 @@ class Filter extends Component {
   render() {
     const options = this.props.options
     const filterItems = options.map((item, index) => {
+      if(item === null) {
+        return null
+      }
       return (
         <Menu.Item key={index}>
           <Accordion.Title content={item.title} index={index} />
