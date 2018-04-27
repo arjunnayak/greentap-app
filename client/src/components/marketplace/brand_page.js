@@ -6,6 +6,7 @@ import { presetProductDetail, addFilter, clearFilters } from '../../actions/mark
 import backgroundLogo from'./brand-bg-2.jpg';
 import ProductCard from './product_card'
 import Filter from './filter'
+import { capitalize } from '../../util'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
@@ -27,8 +28,10 @@ class BrandPage extends Component {
     this.handleFilterChange = this.handleFilterChange.bind(this)
     this.filterProducts = this.filterProducts.bind(this)
     this.state = {
-      currentTabIndex: 1,
+      currentTabIndex: 0,
       filterOptions: [
+        // product type filter is initially null until populated in 
+        null,
         {
           title: 'Strain Type',
           content: (
@@ -56,24 +59,40 @@ class BrandPage extends Component {
 
   render() {
     const brand = this.props.brand
-    const { currentTabIndex } = this.state
-    console.log('brand page: render received brand', brand)
+    const { currentTabIndex, filterOptions } = this.state
     const idParam = this.props.match.params.id
     const hasProducts = (brand.categories && brand.categories !== [])
     let content = null
     if(currentTabIndex === 0) {
+      if(hasProducts) {
+        content = (
+          <div className='card-menu'>
+            {this.renderProductGrid(3)}
+          </div>
+        )
+        filterOptions[0] = {
+          title: 'Product Type',
+          content: (
+            <Form>
+              <Form.Group grouped>
+                {brand.categories.sort().map(category => {
+                  return ( <Form.Checkbox key={category} label={capitalize(category)} name='category' value={category} onClick={this.handleFilterChange}/> )
+                })}
+              </Form.Group>
+            </Form>
+          )
+        }
+      } else {
+        content = ( <h2>No products available</h2> )
+      }
+
+    } else {
       content = (
         <Segment raised style={{padding:'2em', marginBottom: '30%'}}>
           <h3>About Us</h3>
           <div>{brand.description}</div>
         </Segment>
       )
-    } else {
-      content = hasProducts ? (
-        <div className='card-menu'>
-          {this.renderProductGrid(3)}
-        </div>
-      ) : ( <h2>No products available</h2> )
     }
     return (
       <Marketplace >
@@ -93,8 +112,8 @@ class BrandPage extends Component {
                 </Grid>
               </div>
               <Menu id='brand-tabs' widths={2} size='small' defaultActiveIndex={1} >
-                <Menu.Item active={currentTabIndex === 1} key='products' name='products' onClick={this.handleTabChange}>PRODUCTS</Menu.Item>
-                <Menu.Item active={currentTabIndex === 0} key='about' name='about' onClick={this.handleTabChange}>ABOUT</Menu.Item>
+                <Menu.Item active={currentTabIndex === 0} key='products' name='products' onClick={this.handleTabChange}>PRODUCTS</Menu.Item>
+                <Menu.Item active={currentTabIndex === 1} key='about' name='about' onClick={this.handleTabChange}>ABOUT</Menu.Item>
               </Menu>
             </Container>
 
@@ -163,12 +182,14 @@ class BrandPage extends Component {
 
       // returns array of categories
       return (
-        <Grid stackable>
-          <Grid.Column>
-            <h2>{this.getCategoryHeader(category)}</h2>
-            {groupRowsToRender}
-          </Grid.Column>
-        </Grid>
+        groupRowsToRender.length > 0 ? (
+          <Grid stackable>
+            <Grid.Column>
+              <h2>{this.getCategoryHeader(category)}</h2>
+              {groupRowsToRender}
+            </Grid.Column>
+          </Grid>
+        ) : null
       )
     })
 
@@ -183,7 +204,7 @@ class BrandPage extends Component {
       let name = filterSplit[0]
       const value = filterSplit[1]
       products.forEach(p => { 
-        const meetsFilterCriteria = p.detail[name] === value
+        const meetsFilterCriteria = p[name] === value
         if(meetsFilterCriteria && !productsFiltered.has(p)) productsFiltered.add(p)
       })
     })
@@ -202,7 +223,7 @@ class BrandPage extends Component {
   }
 
   handleTabChange(e, { name }) {
-    let index = (name === 'about') ? 0 : 1
+    let index = (name === 'products') ? 0 : 1
     this.setState({ currentTabIndex: index })
   }
 }
@@ -211,7 +232,7 @@ function mapStateToProps(state) {
   return {
     brand: state.brands.brand,
     isRequesting: state.brands.is_requesting,
-    filters: state.marketplace.filters[FILTER_NAME] || [],
+    filters: (state.marketplace.filters !== null && state.marketplace.filters[FILTER_NAME]) || [],
   }
 }
 
