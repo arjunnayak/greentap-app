@@ -65,11 +65,6 @@ class BrandPage extends Component {
     let content = null
     if(currentTabIndex === 0) {
       if(hasProducts) {
-        content = (
-          <div className='card-menu'>
-            {this.renderProductGrid(3)}
-          </div>
-        )
         filterOptions[0] = {
           title: 'Product Type',
           content: (
@@ -82,10 +77,14 @@ class BrandPage extends Component {
             </Form>
           )
         }
+        content = (
+          <div className='card-menu'>
+            {this.renderProductGrid(3)}
+          </div>
+        )
       } else {
         content = ( <h2>No products available</h2> )
       }
-
     } else {
       content = (
         <Segment raised style={{padding:'2em', marginBottom: '30%'}}>
@@ -118,12 +117,13 @@ class BrandPage extends Component {
             </Container>
 
             <Container fluid className='main'>
-              <Grid stackable columns={2}>
-                <Grid.Column width={4}>
-                  <Filter options={this.state.filterOptions} name={FILTER_NAME}/>
-                </Grid.Column>
-
-                <Grid.Column width={12}>
+              <Grid stackable>
+                { currentTabIndex === 0 ? (
+                  <Grid.Column width={4}>
+                    <Filter options={this.state.filterOptions} name={FILTER_NAME}/>
+                  </Grid.Column>
+                ) : null }
+                <Grid.Column width={currentTabIndex === 0 ? 12 : 16}>
                   { content }
                 </Grid.Column>
               </Grid>
