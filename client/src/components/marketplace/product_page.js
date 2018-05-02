@@ -46,11 +46,16 @@ class ProductPage extends Component {
       this.props.showInquiryError('You must be logged in to send an inquiry.')
       return
     }
-
-  const productPricing = this.props.product.pricing[this.props.selectedPricingIndex]
-    const unitPrice = productPricing.unit_price,
-      unitCount = productPricing.unit_count,
+    let productPricing = null,
+      unitPrice = null, 
+      unitCount = null,
+      unitCountType = null
+    if(this.props.product.pricing) {
+      productPricing = this.props.product.pricing[this.props.selectedPricingIndex]
+      unitPrice = productPricing.unit_price
+      unitCount = productPricing.unit_count
       unitCountType = productPricing.unit_count_type
+    }
     let inquiryData = {
       productId: this.props.product.id,
       unitPrice,
@@ -149,7 +154,7 @@ class ProductPage extends Component {
             <Dropdown onChange={this.handlePricingChange} disabled={!pricingOptions} 
               options={pricingOptions} defaultValue={0} selection fluid />
           </div>
-          <Button fluid primary disabled={!pricingOptions} onClick={this.handleSendInquiry} style={{marginTop: '15px'}}>
+          <Button fluid primary onClick={this.handleSendInquiry} style={{marginTop: '15px'}}>
             Send Inquiry
           </Button>
         </Segment>

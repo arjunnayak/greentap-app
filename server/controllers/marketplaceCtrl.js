@@ -70,13 +70,11 @@ exports.getProduct = (req, res, next) => {
 
 exports.createInquiry = (req, res, next) => {
   const { productId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType } = req.body
+  console.log('unit price', unitPrice);
 
   if(!productId) return res.status(400).json({ error: 'Must provide the product id.' })
   else if(!buyerUserId) return res.status(400).json({ error: 'Must provide the buyer\'s user id.' })
   else if(!sellerBusinessId) return res.status(400).json({ error: 'Must provide the seller\'s business id.' })
-  else if(!unitPrice) return res.status(400).json({ error: 'Must provide the unit price.' })
-  else if(!unitCount) return res.status(400).json({ error: 'Must provide the unit count.' })
-  else if(!unitCountType) return res.status(400).json({ error: 'Must provide the unit count type.' })
 
   const inquiryId = uuid()
   let inquiryResult = null
@@ -148,9 +146,9 @@ function sendInquiryEmails(buyerEmail, inquiryData) {
 `about your order for your records.\n\n${prettifyInquiryData(inquiryInfo)}\n\nWe are working on reviewing your `+
 `order, and will notify you when we have any updates.\nThanks,\nArjun & Derek`
         sendEmail(buyerEmail, emailSubject, emailText).then(() => {
-          console.log(`successfully sent verification email to ${buyerEmail}`)
+          console.log(`successfully sent inquiry email to ${buyerEmail}`)
         }).catch(error => {
-          console.error('failed to send verification email to ', buyerEmail, error)
+          console.error('failed to send inquiry email to ', buyerEmail, error)
         })
 
         // send information email to us
@@ -158,9 +156,9 @@ function sendInquiryEmails(buyerEmail, inquiryData) {
         infoEmailSubject =`Inquiry ${inquiryInfo.inquiry.id}`
         infoEmailText = `${JSON.stringify(inquiryInfo, null, 4)}`
         sendEmail(teamEmail, infoEmailSubject, infoEmailText).then(() => {
-          console.log(`successfully sent verification email to ${teamEmail}`)
+          console.log(`successfully sent inquiry to team email: ${teamEmail}`)
         }).catch(error => {
-          console.error('failed to send verification email to ', teamEmail, error)
+          console.error('failed to send inquiry to team email: ', teamEmail, error)
         })
       })
     })
@@ -171,9 +169,17 @@ function sendInquiryEmails(buyerEmail, inquiryData) {
 }
 
 function prettifyInquiryData(inquiryInfo) {
+  // default values in case there was no pricing data available for the product at the time of inquiry
+  let amount = 'N/A',
+  price = 'N/A'
+
+  if(inquiryInfo.inquiry.unit_count !== null) {
+    amount = `${inquiryInfo.inquiry.unit_count} ${inquiryInfo.inquiry.unit_count_type}`
+    price = `$${Number(inquiryInfo.inquiry.unit_price/100.00).toFixed(2)}`
+  }
   return `Product: ${inquiryInfo.product.name}
 Product Description: ${inquiryInfo.product.description}
 Seller: ${inquiryInfo.seller.name}
-Amount: ${inquiryInfo.inquiry.unit_count} ${inquiryInfo.inquiry.unit_count_type}
-Price: $${Number(inquiryInfo.inquiry.unit_price/100.00).toFixed(2)}`
+Amount: ${amount}
+Price: ${price}`
 }
