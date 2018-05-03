@@ -58,7 +58,7 @@ exports.register = (req, res, next) => {
         name: 'create-business',
         text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip, description, available_in, license_state, license_num, license_type) 
           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id, name;`,
-        values: [businessId, userId, businessName, phone, address, city, state, zip, description, null, licenseState, licenseNumber, licenseType]
+        values: [businessId, userId, businessName, phone, address, city, state, zip, description, state, licenseState, licenseNumber, licenseType]
       }))
     }
     return t.batch(registerTransactions)
