@@ -34,13 +34,29 @@ class Register extends Component {
     super(props)
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.state = {
-      currentStep: 0
+      currentStep: 0,
+      numAdditonalLicenses: 1
     }
   }
 
   handleFormSubmit(formProps) {
-    console.log(formProps)
-    this.props.registerUser(formProps)
+    // const additionalLicenses = []
+    // const additionalLicenseRegex = /(additionalLicense[a-zA-Z]+)-(\d+)/
+    // Object.entries(formProps).forEach(([key, value]) => {
+    //   let regexResult = key.match(additionalLicenseRegex)
+    //   if(regexResult !== null) {
+    //     if(additionalLicenses[regexResult[2]]) {
+    //       additionalLicenses[regexResult[2]][regexResult[1]] = value
+    //     } else {
+    //       additionalLicenses[regexResult[2]] = {}
+    //       additionalLicenses[regexResult[2]][regexResult[1]] = value
+    //     }
+    //   }
+    // });
+    // const registerData = { ...formProps, additionalLicenses }
+    const registerData = { ...formProps }
+  
+    this.props.registerUser(registerData)
       .then(() => {
         if (this.props.authenticated) {
           if (this.props.user.business_type === 'brand') {
@@ -99,7 +115,7 @@ class Register extends Component {
           <Form.Group widths='equal'>
             <Field name='city' label='City' key='city' component={RegisterField} type='text' />
             <Field name='state' label='State' key='state' component={RegisterField} type='select' options={stateOptions}
-              onSelectChange={this.handleSelectChange} />
+              onSelectChange={this.handleSelectChange} defaultValue={stateOptions[0].value} />
           </Form.Group>
           <Form.Group widths='2'>
             <Field name='zip' label='Zip Code' key='zip' component={RegisterField} type='text' />
@@ -111,29 +127,34 @@ class Register extends Component {
         <Button key='next' primary onClick={() => { this.setState({currentStep: 2}) }}>Next</Button>
       ]
     } else if(currentStep === 2)  {
-      // formHeader = 'Primary License Information'
+      // const additionalLicenseForms = []
+      // for(var i = 0; i < this.state.numAdditonalLicenses; i++) {
+      //   additionalLicenseForms[i] = (
+      //     <Form.Group key={i}>
+      //       <Field name={`additionalLicenseState-${i}`} label='State' key={`additionalLicenseState-${i}`} component={RegisterField} type='select' options={licenseStateOptions}
+      //         onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
+      //       <Field name={`additionalLicenseNumber-${i}`} label='License Number' key={`additionalLicenseNumber-${i}`} component={RegisterField} type='text' width={7} />
+      //       <Field name={`additionalLicenseType-${i}`} label='License Type' key={`additionalLicenseType-${i}`} component={RegisterField} type='select' options={licenseTypeOptions['CA']}
+      //         onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
+      //     </Form.Group>
+      //   )
+      // }
       currentForm = (
         <div>
           <h4>Primary License Information</h4>
           <div>The primary license information will allow you to sell under the state your main store is located in 
             (Ex. CA). All subsequent licenses due to expansion should be provided below.</div>
           <Form.Group>
-            <Field name='primaryLicenseState' label='State' key='primaryLicenseState' component={RegisterField} type='select' options={licenseStateOptions}
-              onSelectChange={this.handleSelectChange} width={2}/>
-            <Field name='primaryLicenseNumber' label='License Number' key='primaryLicenseNumber' component={RegisterField} type='text' width={7}/>
-            <Field name='primaryLicenseType' label='License Type' key='primaryLicenseType' component={RegisterField} type='select' options={licenseTypeOptions}
-              onSelectChange={this.handleSelectChange} width={7}/>
+            <Field name='licenseState' label='State' key='licenseState' component={RegisterField} type='select' options={licenseStateOptions}
+              onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
+            <Field name='licenseNumber' label='License Number' key='licenseNumber' component={RegisterField} type='text' width={7} />
+            <Field name='licenseType' label='License Type' key='licenseType' component={RegisterField} type='select' options={licenseTypeOptions['CA']}
+              onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
           </Form.Group>
-
-          <h4>Additional Licenses</h4>
+          {/* <h4>Additional Licenses</h4>
           <div>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</div>
-          <Form.Group>
-            <Field name='additionalLicenseState' label='State' key='additionalLicenseState' component={RegisterField} type='select' options={licenseStateOptions}
-              onSelectChange={this.handleSelectChange} width={2}/>
-            <Field name='additionalLicenseNumber' label='License Number' key='additionalLicenseNumber' component={RegisterField} type='text' width={7}/>
-            <Field name='additionalLicenseType' label='License Type' key='additionalLicenseType' component={RegisterField} type='select' options={licenseTypeOptions}
-              onSelectChange={this.handleSelectChange} width={7}/>
-          </Form.Group>
+          { additionalLicenseForms }
+          <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add Another License</Button> */}
         </div>
       )
       buttons = [
@@ -170,28 +191,34 @@ class Register extends Component {
 }
 
 const stateOptions = [
-  { text: 'Alaska', value: 'Alaska' },
-  { text: 'California', value: 'California' },
-  { text: 'Maine', value: 'Maine' },
-  { text: 'Massachusetts', value: 'Massachusetts' },
-  { text: 'Nevada', value: 'Nevada' },
-  { text: 'Oregon', value: 'Oregon' },
-  { text: 'Washington', value: 'Washington' }
+  { text: 'California', value: 'CA' },
+  { text: 'Nevada', value: 'NV' },
+  { text: 'Oregon', value: 'OR' },
+  { text: 'Washington', value: 'WA' }
 ]
 
+// Only allow CA licenses for now
 const licenseStateOptions = [
   { text: 'CA', value: 'CA' },
-  { text: 'NV', value: 'NV' },
-  { text: 'OR', value: 'OR' },
-  { text: 'WA', value: 'WA' }
+  // { text: 'NV', value: 'NV' },
+  // { text: 'OR', value: 'OR' },
+  // { text: 'WA', value: 'WA' }
 ]
 
-const licenseTypeOptions = [
-  { text: 'CA', value: 'CA' },
-  { text: 'NV', value: 'NV' },
-  { text: 'OR', value: 'OR' },
-  { text: 'WA', value: 'WA' }
-]
+const licenseTypeOptions = {
+  'CA': [
+    { text: 'Medical Distributor', value: 'medical-distributor' },
+    { text: 'Medical Retailer', value: 'medical-retailer' },
+    { text: 'Medical Microbusiness', value: 'medical-microbusiness' },
+    { text: 'Medical Retailer Non-storefront', value: 'medical-retailer-non-storefront' },
+    { text: 'Recreational Distributor', value: 'recreational-distributor' },
+    { text: 'Recreational Microbusiness', value: 'recreational-microbusiness' },
+    { text: 'Recreational Retailer Non-storefront', value: 'recreational-retailer-non-storefront' }
+  ],
+  'NV': [],
+  'OR': [],
+  'WA': []
+}
 
 const businessTypeOptions = [
   { text: 'Retailer', value: 'retailer' },
