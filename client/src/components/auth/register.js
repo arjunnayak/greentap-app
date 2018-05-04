@@ -59,7 +59,7 @@ class Register extends Component {
     this.props.registerUser(registerData)
       .then(() => {
         if (this.props.authenticated) {
-          if (this.props.user.business_type === 'brand') {
+          if (this.props.user.business_type === 'seller') {
             this.props.history.push('/dashboard')
           } else {
             this.props.history.push('/marketplace')
@@ -221,11 +221,8 @@ const licenseTypeOptions = {
 }
 
 const businessTypeOptions = [
-  { text: 'Retailer', value: 'retailer' },
-  { text: 'Brand', value: 'brand' },
-  { text: 'Delivery Service', value: 'delivery service' },
-  { text: 'Distributor', value: 'distributor' },
-  { text: 'Other', value: 'other' }
+  { text: 'Buyer', value: 'buyer' },
+  { text: 'Seller', value: 'seller' },
 ]
 
 const formName = 'register'

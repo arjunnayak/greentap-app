@@ -12,8 +12,9 @@ const cookieName = require('../app_config').cookie_name
 
 exports.register = (req, res, next) => {
   const body = req.body
-  const { email, firstName, lastName, password, confirmPassword, businessType, state,
-    licenseState, licenseNumber, licenseType } = body
+  const { email, firstName, lastName, password, confirmPassword, businessType, state, licenseState, 
+    licenseNumber, licenseType, businessName, phone, address, city, zip, description } = body
+  const businessId = uuid()
 
   if(!email) return res.status(400).json({ error: 'You must enter an email address.' })
   else if(!firstName) return res.status(400).json({ error: 'You must enter your first name.' })
@@ -22,7 +23,13 @@ exports.register = (req, res, next) => {
   else if(!confirmPassword) return res.status(400).json({ error: 'You must confirm your password.' })    
   else if(password !== confirmPassword) return res.status(400).json({ error: 'Passwords do not match.' })    
   else if(!businessType) return res.status(400).json({ error: 'You must enter a business type.' })
-  else if(!state) return res.status(400).json({ error: 'You must enter a state.' })
+  else if(businessType !== 'buyer' && businessType !== 'seller') return res.status(400).json({ error: 'Incorrect business type.' })
+  else if(!businessName) return res.status(400).json({ error: 'You must enter a business name.' })
+  else if(!phone) return res.status(400).json({ error: 'You must enter a phone number.' })
+  else if(!address) return res.status(400).json({ error: 'You must enter an address.' })
+  else if(!city) return res.status(400).json({ error: 'You must enter a city.' })
+  else if(!zip) return res.status(400).json({ error: 'You must enter a zip code.' })
+  // else if(!description) return res.status(400).json({ error: 'You must enter a description.' })
   // else if(!statesAvailableIn) return res.status(400).json({ error: 'You must enter states available your products are available in.' })
   // else if(!/^[A-Z,]+$/.test(statesAvailableIn)) return res.status(400).json({ error: 'Incorrect format for states available in.' })
   else if(!licenseState || !licenseNumber || !licenseType) return res.status(400).json({ error: 'You must provide all primary license information.' })
@@ -43,32 +50,21 @@ exports.register = (req, res, next) => {
         text: `INSERT INTO public.user_verification(token, email) 
           VALUES($1, $2) RETURNING token, email;`,
         values: [genRandomToken(32), email]
-      })
-    ]
-    if(businessType === "brand") {
-      const businessName = req.body.businessName
-      const phone = req.body.phone
-      const address = req.body.address
-      const city = req.body.city
-      const state = req.body.state
-      const zip = req.body.zip
-      const description = req.body.description
-      const businessId = uuid()
-      registerTransactions.push(t.one({
+      }),
+      t.one({
         name: 'create-business',
-        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip, description, available_in, license_state, license_num, license_type) 
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id, name;`,
-        values: [businessId, userId, businessName, phone, address, city, state, zip, description, state, licenseState, licenseNumber, licenseType]
-      }))
-    }
+        text: `INSERT INTO public.business(id, user_id, name, phone, address, city, state, zip, description, 
+          available_in, license_state, license_num, license_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 
+          $9, $10, $11, $12, $13) RETURNING id, name;`,
+        values: [businessId, userId, businessName, phone, address, city, state, zip, description, licenseState, licenseState, licenseNumber, licenseType]
+      })
+    ]  
     return t.batch(registerTransactions)
   }).then(data => {
       console.log('create user result data', data[0])
       console.log('create user verification record data', data[1])
       let user = data[0]
-      if(user.business_type === "brand" && data[2]) {
-        user.business = data[2]
-      }
+      user.business = data[2]
       const verificationRecord = data[1]
       const emailText = `Hello ${user.first_name},
 
