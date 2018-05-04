@@ -184,9 +184,6 @@ class Register extends Component {
   handleSelectChange(e, res) {
     const { name, value } = res
     this.props.change(name, value)
-    if(value === 'brand') {
-      window.scrollTo(0, document.body.scrollHeight);
-    }
   }
 }
 
