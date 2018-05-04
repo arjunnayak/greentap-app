@@ -64,7 +64,7 @@ class Login extends Component {
   render() {
     const { handleSubmit } = this.props
     return (
-      <AuthForm>
+      <AuthForm restrictWidth>
         <Header inverted size='huge'>Login</Header>
         {this.renderAlert()}
         <Form size='large' onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>

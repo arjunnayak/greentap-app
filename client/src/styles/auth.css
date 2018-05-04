@@ -16,10 +16,6 @@
   color: white;
 }
 
-#auth .auth-form .column {
-  max-width: 550px;
-}
-
 #auth .auth-form label {
   font-size: 14px;
   text-align: left;

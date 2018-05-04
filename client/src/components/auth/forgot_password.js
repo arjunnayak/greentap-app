@@ -30,7 +30,7 @@ class ForgotPassword extends Component {
     const { handleSubmit } = this.props
 
     return (
-      <AuthForm>
+      <AuthForm restrictWidth>
         <Header inverted size='huge'>Forgot Password</Header>
         <Form size='large' onSubmit={handleSubmit(this.handleFormSubmit.bind(this))}>
           <Segment>

@@ -28,7 +28,7 @@ class VerifyUser extends Component {
 
   render() {
     return (
-      <AuthForm>
+      <AuthForm restrictWidth>
         {this.renderResult()}
       </AuthForm>
     )

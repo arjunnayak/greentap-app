@@ -22,7 +22,7 @@ const AuthForm = (props) => {
         <Container text>
           <div className='auth-form'>
             <Grid textAlign='center' verticalAlign='middle'>
-              <Grid.Column>
+              <Grid.Column style={props.restrictWidth === true ? {maxWidth: '550px'} : null }>
                 { props.children }
               </Grid.Column>
             </Grid>

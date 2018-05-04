@@ -163,7 +163,7 @@ class Register extends Component {
       ]
     }
     return (
-      <AuthForm>
+      <AuthForm restrictWidth={currentStep === 0 ? true : false}>
         <Header inverted size='huge'>Sign Up</Header>
         {this.renderAlert()}
         <Form size='large'>
