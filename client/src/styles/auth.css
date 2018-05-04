@@ -11,6 +11,14 @@
   color: red;
 }
 
+#auth .auth-form label {
+  font-weight: normal;
+}
+
+#auth .auth-form .register h3,p {
+  text-align: left;
+}
+
 #auth .greentap {
   font-size: 30px;
   color: white;

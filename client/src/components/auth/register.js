@@ -96,7 +96,7 @@ class Register extends Component {
       // formHeader = 'Account Owner Information'
       currentForm = (
         <div>
-          <h4>Account Owner Information</h4>
+          <h3>Account Owner Information</h3>
           <Form.Group widths='equal'>
             <Field name='firstName' label='First Name' key='firstName' component={RegisterField} type='text' />
             <Field name='lastName' label='Last Name' key='lastName' component={RegisterField} type='text' />
@@ -104,8 +104,8 @@ class Register extends Component {
           <Form.Group widths='2'>
             <Field name='phone' label='Phone' key='phone' component={RegisterField} type='text' />
           </Form.Group>
-
-          <h4>Business Information</h4>
+          <br />
+          <h3>Business Information</h3>
           <Form.Group widths='equal'>
             <Field name='businessName' label='Business Name (Doing Business As)' key='businessName' component={RegisterField} type='text' />
             <Field name='businessType' label='What type of business are you?' key='businessType' component={RegisterField}
@@ -141,17 +141,17 @@ class Register extends Component {
       // }
       currentForm = (
         <div>
-          <h4>Primary License Information</h4>
-          <div>The primary license information will allow you to sell under the state your main store is located in 
-            (Ex. CA). All subsequent licenses due to expansion should be provided below.</div>
-          <Form.Group>
+          <h3>Primary License Information</h3>
+          <p style={{color: '#575757'}}>The primary license information will allow you to sell under the state your main store is located in 
+            (Ex. CA). All subsequent licenses due to expansion should be provided below.</p>
+          <Form.Group widths='equal'>
             <Field name='licenseState' label='State' key='licenseState' component={RegisterField} type='select' options={licenseStateOptions}
               onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
             <Field name='licenseNumber' label='License Number' key='licenseNumber' component={RegisterField} type='text' width={7} />
             <Field name='licenseType' label='License Type' key='licenseType' component={RegisterField} type='select' options={licenseTypeOptions['CA']}
               onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
           </Form.Group>
-          {/* <h4>Additional Licenses</h4>
+          {/* <h3>Additional Licenses</h3>
           <div>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</div>
           { additionalLicenseForms }
           <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add Another License</Button> */}
@@ -166,8 +166,8 @@ class Register extends Component {
       <AuthForm restrictWidth={currentStep === 0 ? true : false}>
         <Header inverted size='huge'>Sign Up</Header>
         {this.renderAlert()}
-        <Form size='large'>
-          <Segment>
+        <Form size='large' style={ currentStep === 1 ? { marginBottom:'100px' } : null}>
+          <Segment className='register'>
             { currentForm }
             <br />
             {
