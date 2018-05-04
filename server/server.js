@@ -26,7 +26,7 @@ if(nodeEnv !== "production") {
 }
 
 // app.use(express.static(__dirname + '/public')) // set the static files location /public/img will be /img for users
-nodeEnv === "production" ? app.use(logger('combined')) : app.use(logger('dev'))
+app.use(logger('dev'))
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 //allow 50mb body size for sending uploaded images in base64 to server
 app.use(bodyParser.json({ limit: '50mb'}))
