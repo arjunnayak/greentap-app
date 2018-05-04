@@ -7,6 +7,7 @@ import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form'
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
+import Step from 'semantic-ui-react/dist/commonjs/elements/Step'
 
 const RegisterField = field => {
   if(field.type === 'text' || field.type === 'password') {
@@ -32,11 +33,12 @@ class Register extends Component {
 
   constructor(props) {
     super(props)
-    this.handleSelectChange = this.handleSelectChange.bind(this)
     this.state = {
       currentStep: 0,
       numAdditonalLicenses: 1
     }
+    this.handleSelectChange = this.handleSelectChange.bind(this)
+    this.renderSteps = this.renderSteps.bind(this)
   }
 
   handleFormSubmit(formProps) {
@@ -165,6 +167,7 @@ class Register extends Component {
     return (
       <AuthForm restrictWidth={currentStep === 0 ? true : false}>
         <Header inverted size='huge'>Sign Up</Header>
+        {this.renderSteps()}
         {this.renderAlert()}
         <Form size='large' style={ currentStep === 1 ? { marginBottom:'100px' } : null}>
           <Segment className='register'>
@@ -184,6 +187,30 @@ class Register extends Component {
   handleSelectChange(e, res) {
     const { name, value } = res
     this.props.change(name, value)
+  }
+
+  renderSteps() {
+    return (
+      <Step.Group size='tiny' ordered>
+        <Step active={ this.state.currentStep === 0 } completed={ this.state.currentStep > 0 } 
+          onClick={() => { this.setState({currentStep: 0})} }>
+          <Step.Content>
+            <Step.Title>Account</Step.Title>
+          </Step.Content>
+        </Step>
+        <Step active={ this.state.currentStep === 1 } completed={ this.state.currentStep > 1 } 
+          onClick={() => { this.setState({currentStep: 1})} }>
+          <Step.Content>
+            <Step.Title>Business Profile</Step.Title>
+          </Step.Content>
+        </Step>
+        <Step active={ this.state.currentStep === 2 } onClick={() => { this.setState({currentStep: 2})} }>
+          <Step.Content>
+            <Step.Title>License</Step.Title>
+          </Step.Content>
+        </Step>
+      </Step.Group>
+    )
   }
 }
 
