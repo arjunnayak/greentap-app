@@ -11,3 +11,13 @@ export function parseQuery(queryString) {
 export function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function getCategoryHeader(category) {
+  switch(category) {
+    case 'flower': return 'Flowers'
+    case 'concentrate': return 'Concentrates'
+    case 'edible': return 'Edibles'
+    case 'medical': return 'Medical'
+    default: return 'Flowers'
+  }
+}

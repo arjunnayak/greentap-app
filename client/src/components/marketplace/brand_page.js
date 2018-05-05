@@ -6,7 +6,7 @@ import { presetProductDetail, addFilter, clearFilters } from '../../actions/mark
 import backgroundLogo from'./brand-bg-2.jpg';
 import ProductCard from './product_card'
 import Filter from './filter'
-import { capitalize } from '../../util'
+import { capitalize, getCategoryHeader } from '../../util'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu'
@@ -23,7 +23,6 @@ class BrandPage extends Component {
 
   constructor(props) {
     super(props)
-    this.getCategoryHeader = this.getCategoryHeader.bind(this)
     this.handleTabChange = this.handleTabChange.bind(this)
     this.handleFilterChange = this.handleFilterChange.bind(this)
     this.filterProducts = this.filterProducts.bind(this)
@@ -185,7 +184,7 @@ class BrandPage extends Component {
         groupRowsToRender.length > 0 ? (
           <Grid stackable>
             <Grid.Column>
-              <h2>{this.getCategoryHeader(category)}</h2>
+              <h2>{getCategoryHeader(category)}</h2>
               {groupRowsToRender}
             </Grid.Column>
           </Grid>

@@ -5,6 +5,7 @@ import { getMarketplaceProducts, addFilter, clearFilters, presetProductDetail } 
 import { getUserInfo } from '../../actions/authActions'
 import ProductCard from './product_card'
 import Filter from './filter'
+import { getCategoryHeader } from '../../util'
 // import Footer from './footer'
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid'
@@ -150,7 +151,7 @@ class MarketplaceHome extends Component {
             <Grid stackable columns={2}>
               <Grid.Column width={12}>
                 <h1>
-                  {this.getCategoryHeader(category)}{' '}
+                  {getCategoryHeader(category)}{' '}
                   <span style={{color:'rgba(0,0,0,.4)'}}>in {location}</span>
                 </h1>
               </Grid.Column>
@@ -224,16 +225,6 @@ class MarketplaceHome extends Component {
 
   handleFilterChange(event, data) {
     this.props.addFilter(FILTER_NAME, data)
-  }
-
-  getCategoryHeader(category) {
-    switch(category) {
-      case 'flower': return 'Flowers'
-      case 'concentrate': return 'Concentrates'
-      case 'edible': return 'Edibles'
-      case 'medical': return 'Medical'
-      default: return 'Flowers'
-    }
   }
   
 }
