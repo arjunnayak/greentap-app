@@ -76,7 +76,7 @@ const categoryOptions = [
   { key: 1, text: 'Flowers', value: 'flower' },
   { key: 2, text: 'Concentrates', value: 'concentrate' },
   { key: 3, text: 'Edibles', value: 'edible' },
-  { key: 4, text: 'Medical', value: 'medical' },
+  { key: 4, text: 'Topical', value: 'topical' },
 ]
 
 const locationOptions = [

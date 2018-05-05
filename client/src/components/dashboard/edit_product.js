@@ -169,7 +169,7 @@ const categoryOptions = [
   { text: 'Flower', value: 'flower' },
   { text: 'Concentrate', value: 'concentrate' },
   { text: 'Edible', value: 'edible' },
-  { text: 'Medical', value: 'medical' },
+  { text: 'Topical', value: 'topical' },
 ]
 
 const strainTypeOptions = [

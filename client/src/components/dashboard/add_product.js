@@ -146,7 +146,8 @@ const renderField = field => {
 const categoryOptions = [
   { text: 'Flower', value: 'flower' },
   { text: 'Concentrate', value: 'concentrate' },
-  { text: 'Edible', value: 'edible' }
+  { text: 'Edible', value: 'edible' },
+  { text: 'Topical', value: 'topical' },
 ]
 
 const strainTypeOptions = [

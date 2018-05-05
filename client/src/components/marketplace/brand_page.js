@@ -216,7 +216,7 @@ class BrandPage extends Component {
       case 'flower': return 'Flowers'
       case 'concentrate': return 'Concentrates'
       case 'edible': return 'Edibles'
-      case 'medical': return 'Medical'
+      case 'topical': return 'Topical'
       default: return 'Flowers'
     }
   }

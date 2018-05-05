@@ -19,9 +19,9 @@ const config = {
     flower: 'flower',
     concentrate: 'concentrate',
     edible: 'edible',
-    medical: 'medical'
+    topical: 'topical'
   },
-  categories_list: ['flower', 'concentrate', 'edible', 'medical']
+  categories_list: ['flower', 'concentrate', 'edible', 'topical']
 }
 
 module.exports = config;
