@@ -2,6 +2,7 @@ import axios from 'axios'
 import { API_URL, CLIENT_ROOT_URL, errorHandler } from './index'
 import { actions as productActions } from './productActions'
 import { actions as marketplaceActions } from './marketplaceActions'
+axios.defaults.timeout = 3000
 
 export const actions = {
   LOGIN_REQUEST: 'login_request',

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL, errorHandler } from './index';
+axios.defaults.timeout = 3000
 
 export const actions = {
   GET_PRODUCTS: 'get_products',

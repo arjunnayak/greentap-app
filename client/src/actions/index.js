@@ -2,6 +2,7 @@ import axios from 'axios';
 import { logoutUser } from './authActions';
 export const API_URL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URL : 'http://localhost:3001/api';
 export const CLIENT_ROOT_URL = 'http://localhost:3000';
+axios.defaults.timeout = 3000
 
 //= ===============================
 // Utility actions
