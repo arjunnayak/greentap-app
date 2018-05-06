@@ -22,6 +22,7 @@ if(nodeEnv !== "production") {
     console.log('db connection successful')
   }).catch(error => {
     console.log('db connection failed')
+    process.exit(1)
   });
 }
 
@@ -36,8 +37,9 @@ app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
+  console.log('client base url', config.client_base_url)
   if(nodeEnv === 'development' || req.headers.origin === config.client_base_url 
-    || req.headers.origin === 'http://greentap-client.s3-website.us-west-1.amazonaws.com') {
+    || req.headers.origin === 'http://greentap-client.s3-website.us-west-1.amazonaws.com' || req.headers.origin === 'http://greentap.io') {
     res.header('Access-Control-Allow-Origin', req.headers.origin)
   }
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
