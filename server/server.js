@@ -39,7 +39,8 @@ app.use(compression())
 app.use((req, res, next) => {
   console.log('client base url', config.client_base_url)
   if(nodeEnv === 'development' || req.headers.origin === config.client_base_url 
-    || req.headers.origin === 'http://greentap-client.s3-website.us-west-1.amazonaws.com' || req.headers.origin === 'http://greentap.io') {
+    || req.headers.origin === 'http://greentap-client.s3-website.us-west-1.amazonaws.com' 
+    || req.headers.origin === 'http://d2erjhz90r74y6.cloudfront.net') {
     res.header('Access-Control-Allow-Origin', req.headers.origin)
   }
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
