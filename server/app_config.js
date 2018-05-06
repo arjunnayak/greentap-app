@@ -13,6 +13,7 @@ const config = {
     db_name: process.env.DB_NAME
   },
   client_base_url: process.env.CLIENT_BASE_URL,
+  images_bucket_name: process.env.IMAGES_BUCKET_NAME,
   port: process.env.PORT || 3001,
   cookie_name: '__greentap_cookie',
   categories: {

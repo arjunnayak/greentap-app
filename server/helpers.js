@@ -42,6 +42,8 @@ exports.genRandomToken = (size) => {
   return randomBytes(size).toString('hex')
 }
 
+const BUCKET_NAME = config.images_bucket_name
+
 exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
   if(width === null && height === null) {
     let err = 'ERROR optimizeAndStoreImageInS3: both width and height parameters are null'
@@ -66,7 +68,7 @@ exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
       .then(outputBuffer => {
         const s3 = new aws.S3({
           apiVersion: '2006-03-01',
-          params: { Bucket: 'greentap-images' }
+          params: { Bucket: BUCKET_NAME }
         })
         const uploadObject = {
           Key: image.filename,
@@ -80,7 +82,7 @@ exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
             return
           }
           console.log(`Successfully uploaded ${image.filename}.`)
-          resolve(`https://s3-us-west-1.amazonaws.com/greentap-images/${image.filename}`)
+          resolve(`https://s3-us-west-1.amazonaws.com/${BUCKET_NAME}/${image.filename}`)
         })
       })
       .catch(error => {
