@@ -113,7 +113,7 @@ exports.addProduct = (req, res, next) => {
           t.one({
             name: 'add-product',
             text: `INSERT INTO public.product(id, category, name, description, image, business_id, sub_category) 
-              VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
+              VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
             values: [product_id, category, name, desc, imageLink, business_id, subCategory]
           })
         ]
@@ -130,7 +130,7 @@ exports.addProduct = (req, res, next) => {
             addProductTransactions.push(t.none({
               name: 'create-concentrate',
               text: `INSERT INTO public.concentrate(business_id, product_id, strain_type, thc_level, cbd_level) 
-              VALUES ($1, $2, $3, $4, $5, $6);`,
+              VALUES ($1, $2, $3, $4, $5);`,
               values: [business_id, product_id, strain_type, thc_level, cbd_level]
             }))
             break
@@ -138,7 +138,7 @@ exports.addProduct = (req, res, next) => {
             addProductTransactions.push(t.none({
               name: 'create-edible',
               text: `INSERT INTO public.edible(business_id, product_id) 
-                VALUES ($1, $2, $3);`,
+                VALUES ($1, $2);`,
               values: [business_id, product_id]
             }))
             break
