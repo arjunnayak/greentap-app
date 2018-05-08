@@ -24,15 +24,11 @@ module.exports = (passport) => {
           // remove password from response
           delete selectedUser.password
           user = selectedUser
-          if(user.business_type === "brand") {
-            return t.one({
-              name: 'get-business',
-              text: 'SELECT * FROM public.business WHERE user_id = $1;',
-              values: [user.id]
-            })
-          } else {
-            return null
-          }
+          return t.one({
+            name: 'get-business',
+            text: 'SELECT * FROM public.business WHERE user_id = $1;',
+            values: [user.id]
+          })
         })
         .catch(error => {
           //failed to get user...have business handler return done(null, false) since it can't be done here
