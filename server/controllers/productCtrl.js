@@ -82,7 +82,7 @@ exports.addProduct = (req, res, next) => {
   const desc = req.body.product.desc
   const image = req.body.product.image
   const business_id = req.body.business_id
-  const subtype = req.body.product.subtype
+  const subCategory = req.body.product.subCategory
   let strain_type, thc_level, cbd_level = null
 
   if (!business_id) {
@@ -98,8 +98,9 @@ exports.addProduct = (req, res, next) => {
     thc_level = req.body.product.thc_level
     cbd_level = req.body.product.cbd_level
     if(!strain_type) return res.status(400).json({ error: 'Must provide a strain type.' })
-  }
-  if(req.user.business.id != business_id) {
+  } else if(!subCategory){
+    return res.status(400).json({ error: 'Must provide a sub category.' })
+  }  if(req.user.business.id != business_id) {
     return res.status(401).end()
   }
 
@@ -111,9 +112,9 @@ exports.addProduct = (req, res, next) => {
         let addProductTransactions = [
           t.one({
             name: 'add-product',
-            text: `INSERT INTO public.product(id, category, name, description, image, business_id) 
+            text: `INSERT INTO public.product(id, category, name, description, image, business_id, sub_category) 
               VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`,
-            values: [product_id, category, name, desc, imageLink, business_id]
+            values: [product_id, category, name, desc, imageLink, business_id, subCategory]
           })
         ]
         switch(category) {
@@ -128,17 +129,17 @@ exports.addProduct = (req, res, next) => {
           case 'concentrate':
             addProductTransactions.push(t.none({
               name: 'create-concentrate',
-              text: `INSERT INTO public.concentrate(business_id, product_id, strain_type, concentrate_type, thc_level, cbd_level) 
+              text: `INSERT INTO public.concentrate(business_id, product_id, strain_type, thc_level, cbd_level) 
               VALUES ($1, $2, $3, $4, $5, $6);`,
-              values: [business_id, product_id, strain_type, subtype, thc_level, cbd_level]
+              values: [business_id, product_id, strain_type, thc_level, cbd_level]
             }))
             break
           case 'edible':
             addProductTransactions.push(t.none({
               name: 'create-edible',
-              text: `INSERT INTO public.edible(business_id, product_id, edible_type) 
+              text: `INSERT INTO public.edible(business_id, product_id) 
                 VALUES ($1, $2, $3);`,
-              values: [business_id, product_id, subtype]
+              values: [business_id, product_id]
             }))
             break
         }
