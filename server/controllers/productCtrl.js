@@ -142,6 +142,14 @@ exports.addProduct = (req, res, next) => {
               values: [business_id, product_id]
             }))
             break
+          case 'topical':
+            addProductTransactions.push(t.none({
+              name: 'create-topical',
+              text: `INSERT INTO public.topical(business_id, product_id) 
+                VALUES ($1, $2);`,
+              values: [business_id, product_id]
+            }))
+            break
         }
         return t.batch(addProductTransactions)
       }).then(data => {
@@ -187,7 +195,7 @@ exports.updateProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Invalid THC level.' })
   } else if(cbd_level && !parseInt(cbd_level)) {
     return res.status(400).json({ error: 'Invalid CBD level.' })
-  } else if(CATEGORIES.indexOf(category) < 0) {
+  } else if(!CATEGORIES.includes(category)) {
     return res.status(400).json({ error: 'Category not supported' })
   } else if(isFlowerOrConcentrate && hasInvalidStrain) {
     return res.status(400).json({ error: 'Must provide a strain type.' })
