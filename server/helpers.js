@@ -77,12 +77,13 @@ exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
         }
         s3.upload(uploadObject, (error, data) => {
           if (error) {
-            console.error(`There was an error uploading ${image.filename}: ${error.message}`)
+            console.error(`There was an error uploading ${data.Key}: ${error.message}`)
             reject(error.message)
             return
           }
-          console.log(`Successfully uploaded ${image.filename}.`)
-          resolve(`https://s3-us-west-1.amazonaws.com/${BUCKET_NAME}/${image.filename}`)
+
+          console.log(`Successfully uploaded ${data.Key} to location ${data.Location}.`)
+          resolve(data.Location)
         })
       })
       .catch(error => {
