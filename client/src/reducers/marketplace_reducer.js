@@ -6,7 +6,7 @@ const INITIAL_STATE = { category: 'flower', products: null, product: {}, selecte
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
     case actions.CHANGE_CATEGORY:
-      return { ...state, is_requesting: true, category: action.category };
+      return { ...state, category: action.category };
     case actions.REQUEST_MARKETPLACE_PRODUCTS:
       return { ...state, is_requesting: true };
     case actions.GET_MARKETPLACE_PRODUCTS:
