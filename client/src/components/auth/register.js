@@ -9,19 +9,20 @@ import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
 import Step from 'semantic-ui-react/dist/commonjs/elements/Step'
 
-const RegisterField = field => {
-  if(field.type === 'text' || field.type === 'password') {
+const RegisterField = ({type, input, label, options, onSelectChange, 
+  meta: { touched, error, warning }}) => {
+  if(type === 'text' || type === 'password') {
     return ( 
       <Form.Field>
-        <label>{field.label}</label>
-        <Form.Input type={field.type} {...field.input} /> 
+        <label>{label}</label>
+        <Form.Input type={type} {...input} />
       </Form.Field>
     )
-  } else if(field.type === 'select') {
+  } else if(type === 'select') {
     return ( 
       <Form.Field>
-        <label>{field.label}</label>
-        <Form.Select value={field.input.value} options={field.options} {...field.input} onChange={field.onSelectChange}/>
+        <label>{label}</label>
+        <Form.Select value={input.value} options={options} {...input} onChange={onSelectChange}/>
       </Form.Field>
     )
   } else {
@@ -42,21 +43,23 @@ class Register extends Component {
   }
 
   handleFormSubmit(formProps) {
-    // const additionalLicenses = []
-    // const additionalLicenseRegex = /(additionalLicense[a-zA-Z]+)-(\d+)/
-    // Object.entries(formProps).forEach(([key, value]) => {
-    //   let regexResult = key.match(additionalLicenseRegex)
-    //   if(regexResult !== null) {
-    //     if(additionalLicenses[regexResult[2]]) {
-    //       additionalLicenses[regexResult[2]][regexResult[1]] = value
-    //     } else {
-    //       additionalLicenses[regexResult[2]] = {}
-    //       additionalLicenses[regexResult[2]][regexResult[1]] = value
-    //     }
-    //   }
-    // });
-    // const registerData = { ...formProps, additionalLicenses }
-    const registerData = { ...formProps }
+    const additionalLicenses = []
+    const additionalLicenseRegex = /additionalLicense([a-zA-Z]+)-(\d+)/
+    Object.entries(formProps).forEach(([key, value]) => {
+      let regexResult = key.match(additionalLicenseRegex)
+      if(regexResult !== null) {
+        const licenseProperty = regexResult[1].toLowerCase(),
+          licenseCount = regexResult[2]
+        if(additionalLicenses[licenseCount]) {
+          additionalLicenses[licenseCount][licenseProperty] = value
+        } else {
+          additionalLicenses[licenseCount] = {}
+          additionalLicenses[licenseCount][licenseProperty] = value
+        }
+      }
+    });
+    const registerData = { ...formProps, additionalLicenses }
+    console.log(registerData);
   
     this.props.registerUser(registerData)
       .then(() => {
@@ -129,18 +132,18 @@ class Register extends Component {
         <Button key='next' primary onClick={() => { this.setState({currentStep: 2}) }}>Next</Button>
       ]
     } else if(currentStep === 2)  {
-      // const additionalLicenseForms = []
-      // for(var i = 0; i < this.state.numAdditonalLicenses; i++) {
-      //   additionalLicenseForms[i] = (
-      //     <Form.Group key={i}>
-      //       <Field name={`additionalLicenseState-${i}`} label='State' key={`additionalLicenseState-${i}`} component={RegisterField} type='select' options={licenseStateOptions}
-      //         onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
-      //       <Field name={`additionalLicenseNumber-${i}`} label='License Number' key={`additionalLicenseNumber-${i}`} component={RegisterField} type='text' width={7} />
-      //       <Field name={`additionalLicenseType-${i}`} label='License Type' key={`additionalLicenseType-${i}`} component={RegisterField} type='select' options={licenseTypeOptions['CA']}
-      //         onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
-      //     </Form.Group>
-      //   )
-      // }
+      const additionalLicenseForms = []
+      for(var i = 0; i < this.state.numAdditonalLicenses; i++) {
+        additionalLicenseForms[i] = (
+          <Form.Group key={i}>
+            <Field name={`additionalLicenseState-${i}`} label='State' key={`additionalLicenseState-${i}`} component={RegisterField} type='select' options={licenseStateOptions}
+              onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
+            <Field name={`additionalLicenseNumber-${i}`} label='License Number' key={`additionalLicenseNumber-${i}`} component={RegisterField} type='text' width={7} />
+            <Field name={`additionalLicenseType-${i}`} label='License Type' key={`additionalLicenseType-${i}`} component={RegisterField} type='select' options={licenseTypeOptions['CA']}
+              onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
+          </Form.Group>
+        )
+      }
       currentForm = (
         <div>
           <h3>Primary License Information</h3>
@@ -153,10 +156,10 @@ class Register extends Component {
             <Field name='licenseType' label='License Type' key='licenseType' component={RegisterField} type='select' options={licenseTypeOptions['CA']}
               onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
           </Form.Group>
-          {/* <h3>Additional Licenses</h3>
+          <h3>Additional Licenses</h3>
           <div>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</div>
           { additionalLicenseForms }
-          <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add Another License</Button> */}
+          <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add Another License</Button>
         </div>
       )
       buttons = [
@@ -256,7 +259,7 @@ const form = reduxForm({
   initialValues: {
     state: stateOptions[0].value,
     businessType: businessTypeOptions[0].value
-  }
+  },
 })
 
 const selector = formValueSelector(formName)
