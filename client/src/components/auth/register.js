@@ -165,7 +165,11 @@ class Register extends Component {
       )
       buttons = [
         <Button key='back' onClick={() => { this.setState({currentStep: 1}) }}>Back</Button>,
-        <Button key='submit' onClick={handleSubmit(this.handleFormSubmit.bind(this))} primary>Create Account</Button>
+        <Button key='submit' 
+          loading={this.props.isRequesting}
+          onClick={handleSubmit(this.handleFormSubmit.bind(this))} 
+          primary
+          style={{marginTop:'20px'}}>Create Account</Button>
       ]
     }
     return (
@@ -173,15 +177,11 @@ class Register extends Component {
         <Header inverted size='huge'>Sign Up</Header>
         {this.renderSteps()}
         {this.renderAlert()}
-        <Form size='large' style={ currentStep === 1 ? { marginBottom:'100px' } : null}>
+        <Form size='large' style={ currentStep === 1 || currentStep === 2 ? { marginBottom:'150px' } : null}>
           <Segment className='register'>
             { currentForm }
             <br />
-            {
-              this.props.isRequesting ? (
-                <Button loading primary>Create Account</Button>
-              ) : ( buttons )
-            }
+            { buttons }
           </Segment>
         </Form>
       </AuthForm>
