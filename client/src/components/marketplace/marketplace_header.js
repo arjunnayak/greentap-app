@@ -53,8 +53,8 @@ class MarketplaceHeader extends Component {
     let rightButtons = null
     const showLocation = this.props.showLocation
     if(this.props.authenticated) {
-      rightButtons = [<Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>,
-        <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>]
+      rightButtons = [ <Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item> ]
+      // <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
     } else {
       rightButtons = [<Menu.Item key='Login' as={Link} to='/login' name='login'>Login</Menu.Item>,
         <Menu.Item key='Register' as={Link} to='/register' name='register'>Register</Menu.Item>]
