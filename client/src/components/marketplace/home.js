@@ -71,6 +71,7 @@ class MarketplaceHome extends Component {
         this.props.getMarketplaceProducts(nextProps.category)
         this.props.clearFilters(FILTER_NAME)
       }
+      // Reset number of products to 30 on category change 
       this.setState({ numProductsToShow: 30 })
     }
   }
@@ -107,6 +108,7 @@ class MarketplaceHome extends Component {
     )
     // TODO: check if products has the category for hasProducts
     const filterOptions = this.state.filterOptions
+    const filters = this.props.filters
     let products = undefined
     if(hasProducts) {
       // Filter our products not in current state
@@ -141,7 +143,7 @@ class MarketplaceHome extends Component {
       //     </Form>
       //   )
       // }
-      products = this.props.filters.length > 0 ? this.filterProducts(products) : products
+      products = filters && filters.length > 0 ? this.filterProducts(products) : products
     }
     const cardsPerRow = 3
     return (
@@ -177,7 +179,8 @@ class MarketplaceHome extends Component {
                         {this.renderProductGrid(cardsPerRow, products)}
                       </div>
                       {/* If there are filters, don't show load more */}
-                      { this.props.filters && this.props.filters.length > 0 ? 
+                      { (filters && filters.length > 0) || 
+                        products.length < this.state.numProductsToShow ? 
                         null : 
                         <Grid centered style={{marginTop: '40px'}}>
                           <Button onClick={this.loadMoreProducts}>Load More</Button>
