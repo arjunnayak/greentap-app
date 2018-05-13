@@ -147,8 +147,8 @@ class Register extends Component {
       currentForm = (
         <div>
           <h3>Primary License Information</h3>
-          <p style={{color: '#575757'}}>The primary license information will allow you to sell under the state your main store is located in 
-            (Ex. CA). All subsequent licenses due to expansion should be provided below.</p>
+          <p style={{color: '#575757'}}>The primary license information will allow you to sell under the state your main store is located in. 
+            All subsequent licenses due to expansion should be provided below.</p>
           <Form.Group widths='equal'>
             <Field name='licenseState' label='State' key='licenseState' component={RegisterField} type='select' options={licenseStateOptions}
               onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
@@ -157,7 +157,7 @@ class Register extends Component {
               onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
           </Form.Group>
           <h3>Additional Licenses</h3>
-          <p>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</p>
+          <p>Add additional licenses for the states you are operating under. You can remove any licenses you don't want to submit.</p>
           { additionalLicenseForms }
           <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add a license</Button>
           <Button size='small' compact onClick={() => { if(this.state.numAdditonalLicenses > 0) this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses - 1 }) }}>Remove license</Button>
