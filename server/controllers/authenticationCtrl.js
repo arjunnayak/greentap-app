@@ -68,7 +68,7 @@ exports.register = (req, res, next) => {
           $9, $10, $11, $12, $13) RETURNING id, name;`,
         values: [businessId, userId, businessName, phone, address, city, state, zip, description, licenseState, licenseState, licenseNumber, licenseType]
       })
-    ]  
+    ]
     if(additionalLicenses && additionalLicenses.length > 0) {
       additionalLicenses.forEach((licenseInfo, index) => {
         const { state, number, type } = licenseInfo
@@ -110,6 +110,35 @@ exports.register = (req, res, next) => {
       console.error('register transaction .catch() errors', errors)
       return res.status(500).json({ error: 'There was an error creating your account.' })
     })
+}
+
+const insertAdditionalLicenses = (businessId = null, additionalLicenses = null) => {
+  return new Promise((resolve, reject) => {
+    if(businessId === null || additionalLicenses === null || additionalLicenses.length === 0) {
+      reject()
+    }
+    db.tx(t => {
+      const licenseTransactions = additionalLicenses.map((licenseInfo, index) => {
+        const { state, number, type } = licenseInfo
+        if(!state) reject({ status: 400, errorMsg: `Additional license ${index+1} needs a state` })
+        if(!number) reject({ status: 400, errorMsg: `Additional license ${index+1} needs a license number` })
+        if(!type) reject({ status: 400, errorMsg: `Additional license ${index+1} needs a license type` })
+
+        return t.one({
+          name: `create-additional-license-${index}`,
+          text: `INSERT INTO public.additional_license(business_id, license_state, license_num, license_type) 
+            VALUES($1, $2, $3, $4);`,
+          values: [businessId, state, number, type]
+        })
+      })
+      return t.batch(licenseTransactions)
+    }).then(data => {
+      resolve()
+    }).catch(errors => {
+      console.error('insertAdditionalLicenses failed', errors)
+      reject({ status: 500, errorMsg: 'There was an error creating your additional licenses.' })
+    }) 
+  })
 }
 
 exports.logout = (req, res, next) => {
