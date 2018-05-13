@@ -25,7 +25,8 @@
 
 .marketplace-header {
     width: 100%;
-    height: 92px;
+    /* height: 92px; */
+    height: 5em;
 }
 
 .marketplace-header #categories-dropdown, .marketplace-header #location-dropdown {
@@ -97,6 +98,7 @@
     padding-top: 25px;
     margin-top: 15px;
     padding-bottom: 50px;
+    min-height: 80vh;
 }
 
 .mhome .light-bg {
