@@ -160,6 +160,7 @@ class Register extends Component {
           <p>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</p>
           { additionalLicenseForms }
           <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add a license</Button>
+          <Button size='small' compact onClick={() => { if(this.state.numAdditonalLicenses > 0) this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses - 1 }) }}>Remove license</Button>
         </div>
       )
       buttons = [
