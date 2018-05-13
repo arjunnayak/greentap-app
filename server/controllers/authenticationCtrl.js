@@ -13,7 +13,7 @@ const cookieName = require('../app_config').cookie_name
 exports.register = (req, res, next) => {
   const body = req.body
   const { email, firstName, lastName, password, confirmPassword, businessType, state, licenseState, 
-    licenseNumber, licenseType, businessName, phone, address, city, zip, description } = body
+    licenseNumber, licenseType, businessName, phone, address, city, zip, description, additionalLicenses } = body
   const businessId = uuid()
 
   if(!email) return res.status(400).json({ error: 'You must enter an email address.' })
@@ -33,6 +33,16 @@ exports.register = (req, res, next) => {
   // else if(!statesAvailableIn) return res.status(400).json({ error: 'You must enter states available your products are available in.' })
   // else if(!/^[A-Z,]+$/.test(statesAvailableIn)) return res.status(400).json({ error: 'Incorrect format for states available in.' })
   else if(!licenseState || !licenseNumber || !licenseType) return res.status(400).json({ error: 'You must provide all primary license information.' })
+  else if(additionalLicenses && additionalLicenses.length > 0) {
+    additionalLicenses.forEach((licenseInfo, index) => {
+      const { state, number, type } = licenseInfo
+      if(!state) return res.status(400).json({error: `Additional license ${index+1} needs a state` })
+      else if(state && !number) return res.status(400).json({error: `Additional license ${index+1} needs a license number` })
+      else if(number && !state) return res.status(400).json({error: `Additional license ${index+1} needs a state` })
+      else if(!number) return res.status(400).json({error: `Additional license ${index+1} needs a license number` })
+      else if(!type) return res.status(400).json({error: `Additional license ${index+1} needs a license type` })
+    })
+  }
   
   db.tx(t => {
     const userId = uuid()
@@ -59,6 +69,17 @@ exports.register = (req, res, next) => {
         values: [businessId, userId, businessName, phone, address, city, state, zip, description, licenseState, licenseState, licenseNumber, licenseType]
       })
     ]  
+    if(additionalLicenses && additionalLicenses.length > 0) {
+      additionalLicenses.forEach((licenseInfo, index) => {
+        const { state, number, type } = licenseInfo
+        registerTransactions.push(t.none({
+          name: `create-additional-license-${index}`,
+          text: `INSERT INTO public.additional_license(business_id, license_state, license_num, license_type) 
+            VALUES($1, $2, $3, $4);`,
+          values: [businessId, state, number, type]
+        }))
+      })
+    }
     return t.batch(registerTransactions)
   }).then(data => {
       console.log('create user result data', data[0])
