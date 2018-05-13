@@ -99,7 +99,6 @@ exports.register = (req, res, next) => {
         console.log('successfully sent verification email')
       }).catch(error => {
         console.log('failed to send verification email')
-        return res.status(500).json({ user })
       })
       return res.status(201).json({ user })
     })
