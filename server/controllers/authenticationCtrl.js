@@ -72,11 +72,12 @@ exports.register = (req, res, next) => {
     if(additionalLicenses && additionalLicenses.length > 0) {
       additionalLicenses.forEach((licenseInfo, index) => {
         const { state, number, type } = licenseInfo
+        const id = uuid()
         registerTransactions.push(t.none({
           name: `create-additional-license-${index}`,
-          text: `INSERT INTO public.additional_license(business_id, license_state, license_num, license_type) 
-            VALUES($1, $2, $3, $4);`,
-          values: [businessId, state, number, type]
+          text: `INSERT INTO public.additional_license(id, business_id, license_state, license_num, license_type) 
+            VALUES($1, $2, $3, $4, $5);`,
+          values: [id, businessId, state, number, type]
         }))
       })
     }
@@ -123,12 +124,13 @@ const insertAdditionalLicenses = (businessId = null, additionalLicenses = null) 
         if(!state) reject({ status: 400, errorMsg: `Additional license ${index+1} needs a state` })
         if(!number) reject({ status: 400, errorMsg: `Additional license ${index+1} needs a license number` })
         if(!type) reject({ status: 400, errorMsg: `Additional license ${index+1} needs a license type` })
+        const id = uuid()
 
         return t.one({
           name: `create-additional-license-${index}`,
-          text: `INSERT INTO public.additional_license(business_id, license_state, license_num, license_type) 
-            VALUES($1, $2, $3, $4);`,
-          values: [businessId, state, number, type]
+          text: `INSERT INTO public.additional_license(id, business_id, license_state, license_num, license_type) 
+            VALUES($1, $2, $3, $4, $5);`,
+          values: [id, businessId, state, number, type]
         })
       })
       return t.batch(licenseTransactions)
