@@ -135,7 +135,7 @@ class Register extends Component {
       const additionalLicenseForms = []
       for(var i = 0; i < this.state.numAdditonalLicenses; i++) {
         additionalLicenseForms[i] = (
-          <Form.Group key={i}>
+          <Form.Group widths='equal' key={i}>
             <Field name={`additionalLicenseState-${i}`} label='State' key={`additionalLicenseState-${i}`} component={RegisterField} type='select' options={licenseStateOptions}
               onSelectChange={this.handleSelectChange} width={2} defaultValue={licenseStateOptions[0].value} />
             <Field name={`additionalLicenseNumber-${i}`} label='License Number' key={`additionalLicenseNumber-${i}`} component={RegisterField} type='text' width={7} />
@@ -157,9 +157,9 @@ class Register extends Component {
               onSelectChange={this.handleSelectChange} width={7} defaultValue={licenseTypeOptions['CA'][0].value} />
           </Form.Group>
           <h3>Additional Licenses</h3>
-          <div>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</div>
+          <p>Add additional licenses for the states you are selling under. Leave blank if this does not apply to you.</p>
           { additionalLicenseForms }
-          <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add Another License</Button>
+          <Button size='small' compact onClick={() => { this.setState({ numAdditonalLicenses: this.state.numAdditonalLicenses + 1}) }}>Add a license</Button>
         </div>
       )
       buttons = [
