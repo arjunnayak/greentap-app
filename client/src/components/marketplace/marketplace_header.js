@@ -84,9 +84,9 @@ const locationOptions = [
   { text: 'CA', value: 'CA' },
   // { text: 'ME', value: 'ME' },
   // { text: 'MA', value: 'MA' },
-  { text: 'NV', value: 'NV' },
-  { text: 'OR', value: 'OR' },
-  { text: 'WA', value: 'WA' }
+  // { text: 'NV', value: 'NV' },
+  // { text: 'OR', value: 'OR' },
+  // { text: 'WA', value: 'WA' }
 ]
 
 

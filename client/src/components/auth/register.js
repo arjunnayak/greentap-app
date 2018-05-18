@@ -220,9 +220,9 @@ class Register extends Component {
 
 const stateOptions = [
   { text: 'California', value: 'CA' },
-  { text: 'Nevada', value: 'NV' },
-  { text: 'Oregon', value: 'OR' },
-  { text: 'Washington', value: 'WA' }
+  // { text: 'Nevada', value: 'NV' },
+  // { text: 'Oregon', value: 'OR' },
+  // { text: 'Washington', value: 'WA' }
 ]
 
 // Only allow CA licenses for now
@@ -243,9 +243,9 @@ const licenseTypeOptions = {
     { text: 'Recreational Microbusiness', value: 'recreational-microbusiness' },
     { text: 'Recreational Retailer Non-storefront', value: 'recreational-retailer-non-storefront' }
   ],
-  'NV': [],
-  'OR': [],
-  'WA': []
+  // 'NV': [],
+  // 'OR': [],
+  // 'WA': []
 }
 
 const businessTypeOptions = [
