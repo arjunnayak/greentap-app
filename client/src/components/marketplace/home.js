@@ -145,7 +145,7 @@ class MarketplaceHome extends Component {
       // }
       products = filters && filters.length > 0 ? this.filterProducts(products) : products
     }
-    const cardsPerRow = 3
+    const cardsPerRow = 4
     return (
       <Marketplace showLocation showCategoryDropdown>
         <div className='mhome' style={{width:'100%'}}>

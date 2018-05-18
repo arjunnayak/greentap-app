@@ -62,6 +62,7 @@ class BrandPage extends Component {
     const idParam = this.props.match.params.id
     const hasProducts = (brand.categories && brand.categories !== [])
     let content = null
+    const cardsPerRow = 4
     if(currentTabIndex === 0) {
       if(hasProducts) {
         filterOptions[0] = {
@@ -78,7 +79,7 @@ class BrandPage extends Component {
         }
         content = (
           <div className='card-menu'>
-            {this.renderProductGrid(3)}
+            {this.renderProductGrid(cardsPerRow)}
           </div>
         )
       } else {
