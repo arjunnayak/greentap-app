@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 
 import NotFoundPage from './components/pages/not_found_page'
 
@@ -34,7 +34,9 @@ class GreentapRouter extends Component {
       <Router>
         <div>
           <Switch>
-            <Route exact path="/" component={RequireAuth(Overview)}/>
+            <Route exact path="/" render={() => (
+              <Redirect to="/marketplace"/>
+            )}/>
 
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
@@ -57,7 +59,7 @@ class GreentapRouter extends Component {
             <Route exact path="/marketplace" component={RequireAuth(MarketplaceHome)}/> */}
             <Route path="/marketplace/product/:id" component={ProductPage}/>
             <Route path="/marketplace/brand/:id" component={BrandPage}/>
-            <Route exact path="/marketplace" component={MarketplaceHome}/>
+            <Route path="/marketplace" component={MarketplaceHome}/>
 
             <Route component={NotFoundPage} />
           </Switch>
