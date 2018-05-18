@@ -150,6 +150,10 @@
     padding-right: 8.5%;
 }
 
+.mhome .card-menu .card > .image {
+    background: white;
+}
+
 .mt-30 {
     margin-top: 30px;
 }
