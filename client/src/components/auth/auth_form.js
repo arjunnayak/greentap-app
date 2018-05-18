@@ -15,7 +15,8 @@ const AuthForm = (props) => {
           <Menu inverted secondary size='large'>
             <Menu.Item className='greentap'>GreenTap</Menu.Item>
             <Menu.Item id="loginButton" position='right'>
-              <Button as={Link} to='/login' inverted >Login</Button>
+              { props.showRegisterButton ?  <Button as={Link} to='/register' inverted >Sign Up</Button>
+                : <Button as={Link} to='/login' inverted >Login</Button> }
             </Menu.Item>
           </Menu>
         </Container>
