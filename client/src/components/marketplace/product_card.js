@@ -8,7 +8,7 @@ const ProductCard = (props) => {
   const product = props.product
   return (
     <Card raised onClick={props.onCardClick}>
-      <Image size='large' src={(!product.image || product.image === '') ? DefaultImage : product.image } />`
+      <Image src={(!product.image || product.image === '') ? DefaultImage : product.image } />`
       <Card.Content>
         <Card.Header>
           {product.name}
