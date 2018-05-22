@@ -65,7 +65,7 @@ class Register extends Component {
       .then(() => {
         if (this.props.authenticated) {
           if (this.props.user.business_type === 'seller') {
-            this.props.history.push('/dashboard')
+            this.props.history.push('/complete')
           } else {
             this.props.history.push('/marketplace')
           }

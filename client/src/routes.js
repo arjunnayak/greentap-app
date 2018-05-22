@@ -5,6 +5,7 @@ import NotFoundPage from './components/pages/not_found_page'
 
 // Import authentication related pages
 import Register from './components/auth/register'
+import RegisterComplete from './components/auth/register_complete'
 import Login from './components/auth/login'
 import Logout from './components/auth/logout'
 import ForgotPassword from './components/auth/forgot_password'
@@ -39,6 +40,7 @@ class GreentapRouter extends Component {
             )}/>
 
             <Route path="/register" component={Register} />
+            <Route path="/complete" component={RegisterComplete} />
             <Route path="/login" component={Login} />
             <Route path="/logout" component={Logout} />
 
