@@ -14,7 +14,7 @@
     "redux-form": "^6.8.0",
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.14",
-    "semantic-ui-react": "^0.76.0"
+    "semantic-ui-react": "^0.80.0"
   },
   "devDependencies": {
     "jest": "^21.2.1",
