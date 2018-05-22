@@ -33,6 +33,7 @@
     background-color: transparent;
     border: 2px solid white;
     min-width: 20vw !important;
+    max-width: 250px !important;
     color: rgba(255, 255, 255, 0.87);
     font-size: 1.28571429rem;
 }
