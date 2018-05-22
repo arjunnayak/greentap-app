@@ -198,29 +198,22 @@ class MarketplaceHome extends Component {
     )
   }
 
-  renderProductGrid(numColumns=3, products) {
+  renderProductGrid(cardsPerRow=3, products) {
     if(products && products !== []) {
-      const productRows = []
-      console.log(`rendering ${products.length} products`)
-      for (let i = 0; i < products.length; i += numColumns) {
-        productRows.push(products.slice(i, i + numColumns))
-      }
-      const groupRowsToRender = productRows.map((row, index) => {
-        const productRowsToRender = row.map(product => {
-          return (<ProductCard key={product.id} product={product}
+      const productCards = products.map((product) => {
+        return (
+          <ProductCard key={product.id} product={product}
             onCardClick={() => {
               this.props.presetProductDetail(product)
               this.props.history.push(`/marketplace/product/${product.id}`)
-            }}/>)
-        })
-
-        return (
-          <Card.Group key={index} itemsPerRow={numColumns}>
-            {productRowsToRender}
-          </Card.Group>
+            }}/>
         )
       })
-      return groupRowsToRender
+      return (
+        <Card.Group stackable itemsPerRow={cardsPerRow}>
+          {productCards}
+        </Card.Group>
+      )
     } else {
       return null
     }

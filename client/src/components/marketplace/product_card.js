@@ -4,11 +4,10 @@ import Image from 'semantic-ui-react/dist/commonjs/elements/Image'
 import Card from 'semantic-ui-react/dist/commonjs/views/Card'
 import DefaultImage from '../template/sample_flower.png'
 
-const ProductCard = (props) => {
-  const product = props.product
+const ProductCard = ({ product, onCardClick }) => {
   return (
-    <Card raised onClick={props.onCardClick}>
-      <Image src={(!product.image || product.image === '') ? DefaultImage : product.image } />`
+    <Card className='product-card' raised onClick={onCardClick} >
+      <Image src={product.image} style={{height:'250px', objectFit: 'contain'}}></Image>
       <Card.Content>
         <Card.Header>
           {product.name}

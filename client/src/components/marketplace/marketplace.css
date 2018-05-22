@@ -150,6 +150,10 @@
     padding-right: 8.5%;
 }
 
+.mhome .card-menu .product-card {
+    min-height: '100px'
+}
+
 .mhome .card-menu .card > .image {
     background: white;
 }

@@ -138,7 +138,7 @@ class BrandPage extends Component {
     this.props.addFilter(FILTER_NAME, data)
   }
 
-  renderProductGrid(numColumns=3) {
+  renderProductGrid(cardsPerRow=3) {
     let { categories, products } = this.props.brand
     products = this.props.filters.length > 0 ? this.filterProducts(products) : products
     if(products == null || !products.length > 0){
@@ -156,37 +156,25 @@ class BrandPage extends Component {
     const categoriesToRender = categories.map(category => {
       
       let productsInCategory = productsMappedToCategories[category] || []
-      const productRows = []
-      for (let i = 0; i < productsInCategory.length; i += numColumns) {
-        productRows.push(productsInCategory.slice(i, i + numColumns))
-      }
-      
-      const groupRowsToRender = productRows.map((row, index) => {
-
-        // returns array of product cards
-        const productRowsToRender = row.map(product => {
-          return (<ProductCard key={product.id} product={product}
+      const productCards = productsInCategory.map((product) => {
+        return (
+          <ProductCard key={product.id} product={product}
             onCardClick={() => {
               this.props.presetProductDetail(product)
               this.props.history.push(`/marketplace/product/${product.id}`)
-            } }/>)
-        })
-
-        // returns array of product groups
-        return (
-          <Card.Group key={index} itemsPerRow={numColumns}>
-            {productRowsToRender}
-          </Card.Group>
+            }}/>
         )
       })
 
       // returns array of categories
       return (
-        groupRowsToRender.length > 0 ? (
+        productCards.length > 0 ? (
           <Grid stackable>
             <Grid.Column>
               <h2>{getCategoryHeader(category)}</h2>
-              {groupRowsToRender}
+              <Card.Group stackable itemsPerRow={cardsPerRow}>
+                {productCards}
+              </Card.Group>
             </Grid.Column>
           </Grid>
         ) : null
