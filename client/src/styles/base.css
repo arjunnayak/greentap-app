@@ -2,7 +2,8 @@ body * {
   font-family: 'Avenir'; 
 }
 
-.header {
+/* Elements not covered by above rule */
+.header, .ui.accordion .title:not(.ui) {
   font-family: 'Avenir' !important;
 }
 
