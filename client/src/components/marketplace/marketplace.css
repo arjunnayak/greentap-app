@@ -119,6 +119,12 @@
     margin: 2em auto !important;
 }
 
+@media only screen and (max-width: 767px) {
+    #brand-tabs {
+        width: 50%;
+    }
+}
+
 #brand-tabs .item {
     background-color: white;
     border: solid 1.25px #273238;
@@ -203,10 +209,15 @@
 .brand-bg-image {
     height: 50%;
     background-size: cover;
+    min-height: 30vh;
+}
+
+
+.brand-bg-image .grid {
+    min-height: 30vh;
 }
 
 .brand-image-and-name {
-    width: 600px;
     height: 100%;
     padding: 20px;
     margin:auto;
@@ -223,5 +234,5 @@
 
 
 .brand-image-and-name .brand-logo {
-    width: 250px;
+    width: 300px;
 }
