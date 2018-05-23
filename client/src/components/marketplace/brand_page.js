@@ -100,13 +100,13 @@ class BrandPage extends Component {
         ) : (
           <div className='mhome' style={{backgroundColor:'#f4f7f9'}}>
             <Container fluid style={{ marginTop: '5vh' }}>
-              <div className='brand-bg-image' style={{backgroundImage: "url(" + backgroundLogo + ")"}}>
+              <div className='brand-bg-image' style={{backgroundImage: `url(${backgroundLogo})`}}>
                 <Grid stackable>
                   <Grid.Column textAlign='center' verticalAlign='middle' width={16}>
-                      <div className='brand-image-and-name'>
-                        <Image verticalAlign='middle' circular src={brand.image} className='brand-logo' />
-                        <h1>{brand.name}</h1>
-                      </div>
+                    <div className='brand-image-and-name'>
+                      <Image verticalAlign='middle' circular src={brand.image} className='brand-logo' />
+                      <h1>{brand.name}</h1>
+                    </div>
                   </Grid.Column>
                 </Grid>
               </div>
