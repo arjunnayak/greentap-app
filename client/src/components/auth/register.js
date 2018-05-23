@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { registerUser } from '../../actions/authActions'
 import AuthForm from './auth_form'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button'
@@ -9,13 +9,16 @@ import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header'
 import Step from 'semantic-ui-react/dist/commonjs/elements/Step'
 
-const RegisterField = ({type, input, label, options, onSelectChange, 
+const RegisterField = ({type, input, label, options, onSelectChange,
   meta: { touched, error, warning }}) => {
   if(type === 'text' || type === 'password') {
     return ( 
       <Form.Field>
         <label>{label}</label>
         <Form.Input type={type} {...input} />
+        {touched &&
+          ((error && <span style={{color:'red'}}>{error}</span>) ||
+            (warning && <span>{warning}</span>))}
       </Form.Field>
     )
   } else if(type === 'select') {
@@ -42,7 +45,33 @@ class Register extends Component {
     this.renderSteps = this.renderSteps.bind(this)
   }
 
-  handleFormSubmit(formProps) {
+  throwSubmissionError(fieldName, message='Required') {
+    throw new SubmissionError({
+      [fieldName]: message
+    })
+  }
+
+  handleIntermediateSubmit(formProps) {
+    const currentStep = this.state.currentStep;
+    if(currentStep === 0) {
+      if(!formProps.email) this.throwSubmissionError('email')
+      else if(!formProps.password) this.throwSubmissionError('password')
+      else if(!formProps.confirmPassword) this.throwSubmissionError('confirmPassword')
+      else if(formProps.password !== formProps.confirmPassword) this.throwSubmissionError('confirmPassword', 'Passwords don\'t match')
+      else this.setState({ currentStep: 1 })
+    } else if(currentStep === 1) {
+      if(!formProps.firstName) this.throwSubmissionError('firstName')
+      else if(!formProps.lastName) this.throwSubmissionError('lastName')
+      else if(!formProps.phone) this.throwSubmissionError('phone')
+      else if(!formProps.businessName) this.throwSubmissionError('businessName')
+      else if(!formProps.address) this.throwSubmissionError('address')
+      else if(!formProps.city) this.throwSubmissionError('city')
+      else if(!formProps.zip) this.throwSubmissionError('zip')
+      else this.setState({ currentStep: 2 })
+    }
+  }
+
+  handleFormSubmit(formProps) {    
     const additionalLicenses = []
     const additionalLicenseRegex = /additionalLicense([a-zA-Z]+)-(\d+)/
     Object.entries(formProps).forEach(([key, value]) => {
@@ -73,30 +102,32 @@ class Register extends Component {
       })
   }
 
-  renderAlert() {
-    if (this.props.errorMessage) {
-      return (
+  renderError(localError) {
+    let err = null
+    if(this.props.errorMessage || localError) {
+      err = (
         <div className='auth-form-error'>
-          <span>Error: {this.props.errorMessage}</span>
+          <span>Error: {this.props.errorMessage || localError}</span>
         </div>
       )
     }
+    return err
   }
 
   render() {
-    const { handleSubmit, businessTypeValue } = this.props
+    const { handleSubmit, businessTypeValue, error } = this.props
     const currentStep = this.state.currentStep
     let currentForm = null,
       buttons = null
     if(currentStep === 0) {
       currentForm = (
         <div>
-          <Field name='email' label='Email' key='name' component={RegisterField} type='text' />
+          <Field name='email' label='Email' key='name' component={RegisterField} required type='text' />
           <Field name='password' label='Password' key='password' component={RegisterField} type='password' />
           <Field name='confirmPassword' label='Confirm Password' key='confirmPassword' component={RegisterField} type='password' />
         </div>
       )
-      buttons = ( <Button key='next' primary onClick={() => { this.setState({currentStep: 1}) }}>Next</Button> )
+      buttons = ( <Button key='next' primary onClick={handleSubmit(this.handleIntermediateSubmit.bind(this))}>Next</Button> )
     } else if(currentStep === 1) {
       // formHeader = 'Account Owner Information'
       currentForm = (
@@ -129,7 +160,7 @@ class Register extends Component {
       )
       buttons = [
         <Button key='back' onClick={() => { this.setState({currentStep: 0}) }}>Back</Button>,
-        <Button key='next' primary onClick={() => { this.setState({currentStep: 2}) }}>Next</Button>
+        <Button key='next' primary onClick={handleSubmit(this.handleIntermediateSubmit.bind(this))}>Next</Button>
       ]
     } else if(currentStep === 2)  {
       const additionalLicenseForms = []
@@ -176,7 +207,7 @@ class Register extends Component {
       <AuthForm restrictWidth={currentStep === 0 ? true : false}>
         <Header inverted size='huge'>Sign Up</Header>
         {this.renderSteps()}
-        {this.renderAlert()}
+        {this.renderError(error)}
         <Form size='large' style={ currentStep === 1 || currentStep === 2 ? { marginBottom:'150px' } : null}>
           <Segment className='register'>
             { currentForm }
@@ -196,19 +227,17 @@ class Register extends Component {
   renderSteps() {
     return (
       <Step.Group size='tiny' ordered>
-        <Step active={ this.state.currentStep === 0 } completed={ this.state.currentStep > 0 } 
-          onClick={() => { this.setState({currentStep: 0})} }>
+        <Step active={ this.state.currentStep === 0 } completed={ this.state.currentStep > 0 } >
           <Step.Content>
             <Step.Title>Account</Step.Title>
           </Step.Content>
         </Step>
-        <Step active={ this.state.currentStep === 1 } completed={ this.state.currentStep > 1 } 
-          onClick={() => { this.setState({currentStep: 1})} }>
+        <Step active={ this.state.currentStep === 1 } completed={ this.state.currentStep > 1 } >
           <Step.Content>
             <Step.Title>Business Profile</Step.Title>
           </Step.Content>
         </Step>
-        <Step active={ this.state.currentStep === 2 } onClick={() => { this.setState({currentStep: 2})} }>
+        <Step active={ this.state.currentStep === 2 } >
           <Step.Content>
             <Step.Title>License</Step.Title>
           </Step.Content>
