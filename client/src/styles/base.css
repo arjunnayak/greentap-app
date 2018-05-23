@@ -1,5 +1,9 @@
 body * {
-  font-family: 'Catamaran', sans-serif; 
+  font-family: 'Avenir'; 
+}
+
+.header {
+  font-family: 'Avenir' !important;
 }
 
 p.copyright > span {
