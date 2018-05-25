@@ -113,6 +113,7 @@ exports.register = (req, res, next) => {
     })
 }
 
+// Not in use
 const insertAdditionalLicenses = (businessId = null, additionalLicenses = null) => {
   return new Promise((resolve, reject) => {
     if(businessId === null || additionalLicenses === null || additionalLicenses.length === 0) {
