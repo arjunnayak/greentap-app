@@ -37,7 +37,6 @@ app.use(compression())
 
 // Enable CORS from client-side
 app.use((req, res, next) => {
-  console.log('client base url', config.client_base_url)
   if(nodeEnv === 'development' || req.headers.origin === config.client_base_url 
     || req.headers.origin === 'http://greentap-client.s3-website.us-west-1.amazonaws.com' 
     || req.headers.origin === 'http://d2erjhz90r74y6.cloudfront.net') {
