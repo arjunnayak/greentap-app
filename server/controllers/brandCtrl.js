@@ -94,6 +94,7 @@ exports.setBusinessImage = (req, res, next) => {
   } else if(!brandName || brandName === null) {
     return res.status(400).json({ error: 'Business id invalid' })
   }
+  // brand image needs to be square for circular display on brand detail page
   optimizeAndStoreImageInS3(image, 1000, null)
     .then(imageLink => {
       console.log('created image', imageLink);
@@ -105,6 +106,7 @@ exports.setBusinessImage = (req, res, next) => {
         console.log('updated business', business);
         return res.status(200).json(business)
       }).catch(error => {
+        console.error('setBusinessImage db update error:', error);
         return res.status(404).json({ error: 'Business id not found'})
       })
     })
