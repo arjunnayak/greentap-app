@@ -77,12 +77,9 @@ exports.getProduct = (req, res, next) => {
 
 exports.addProduct = (req, res, next) => {
   if(!req.body.product) return res.status(400).json({ error: 'Must provide product information.' })
-  const category = req.body.product.category
-  const name = req.body.product.name
-  const desc = req.body.product.desc
-  const image = req.body.product.image
   const business_id = req.body.business_id
-  const subCategory = req.body.product.subCategory
+  const { category, name, desc, image } = req.body.product
+  let { subCategory, pricings } = req.body.product
   let strain_type, thc_level, cbd_level = null
 
   if (!business_id) {
@@ -93,18 +90,19 @@ exports.addProduct = (req, res, next) => {
     return res.status(400).json({ error: 'Must provide a description.' })
   } else if(!category || category == "") {
     return res.status(400).json({ error: 'Must provide a category.' })
+  } else if(req.user.business.id != business_id) {
+    return res.status(401).end()
   } else if(category === 'flower' || category === 'concentrate') {
     strain_type = req.body.product.strain_type
     thc_level = req.body.product.thc_level
     cbd_level = req.body.product.cbd_level
     if(!strain_type) return res.status(400).json({ error: 'Must provide a strain type.' })
-  } else if(!subCategory){
-    return res.status(400).json({ error: 'Must provide a sub category.' })
-  }  if(req.user.business.id != business_id) {
-    return res.status(401).end()
   }
+  if(!pricings) pricings = null
+  if(!subCategory) subCategory = null
 
   let width = 600 
+  let productResp = null
   optimizeAndStoreImageInS3(image, width, null)
     .then(imageLink => {
       const product_id = uuid()
@@ -153,11 +151,17 @@ exports.addProduct = (req, res, next) => {
         }
         return t.batch(addProductTransactions)
       }).then(data => {
-        let product = data[0]
-        let specificProduct = data[1]
-        return res.status(201).json({ product })
+        productResp = data[0]
+        // let productDetail = data[1]
+        return insertProductPricings(data[0].id, pricings)
+      }).then(pricings => {
+        console.log('insertProductPricings result', pricings);
+        return res.status(201).json({ product: productResp })
       }).catch(errors => {
-        console.log(errors)
+        console.error(errors)
+        if(errors !== null && typeof errors === 'object' && errors.hasOwnProperty(status)) {
+          return res.status(errors.status).json({ error: errors.errorMsg })
+        }
         console.error(`add product transaction errors adding product to database ${errors}`)
         return res.status(500).json({ error: "Error adding product" })
       })
@@ -166,6 +170,40 @@ exports.addProduct = (req, res, next) => {
       console.error(`error uploading product image ${error}`)
       return res.status(500).json({ error: 'Error uploading image.' })      
     })
+}
+
+// Rejects when productId is not provided
+// Resolves with null when there are no pricings to add
+// Resolves with null when pricing data is added
+const insertProductPricings = (productId = null, pricings = null) => {
+  return new Promise((resolve, reject) => {
+    if(productId === null) {
+      return reject({ status: 400, errorMsg: 'Product id not provided for product pricings.' })
+    } else if(pricings === null || pricings.length === 0) { 
+      return resolve(null)
+    }
+    db.tx(t => {
+      const pricingTransactions = pricings.map((pricing, index) => {
+        const { unitCount, unitCountType, unitPrice } = pricing
+        if(!unitCount) reject({ status: 400, errorMsg: `Pricing ${index+1} needs a state` })
+        else if(!unitCountType) reject({ status: 400, errorMsg: `Pricing ${index+1} needs a license number` })
+        else if(!unitPrice) reject({ status: 400, errorMsg: `Pricing ${index+1} needs a license type` })
+
+        return t.none({
+          name: `create-product-pricing-${index}`,
+          text: `INSERT INTO public.product_pricing(product_id, unit_price, unit_count, unit_count_type) 
+            VALUES($1, $2, $3, $4);`,
+          values: [productId, unitPrice, unitCount, unitCountType]
+        })
+      })
+      return t.batch(pricingTransactions)
+    }).then(data => {
+      return resolve(null)
+    }).catch(errors => {
+      console.error('insertProductPricings failed', errors)
+      return reject({ status: 500, errorMsg: 'There was an error creating your product\'s pricings.' })
+    }) 
+  })
 }
 
 exports.updateProduct = (req, res, next) => {
