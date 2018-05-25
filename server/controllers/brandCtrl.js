@@ -110,4 +110,8 @@ exports.setBusinessImage = (req, res, next) => {
         return res.status(404).json({ error: 'Business id not found'})
       })
     })
+    .catch(error => {
+      console.log('setBusinessImage sharp image optimize error', error);
+      return res.status(500).json({ error: 'Image could not be processed' })
+    })
 }
