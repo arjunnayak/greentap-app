@@ -38,11 +38,14 @@ class Register extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentStep: 0,
       numAdditonalLicenses: 1
     }
     this.handleSelectChange = this.handleSelectChange.bind(this)
     this.renderSteps = this.renderSteps.bind(this)
+  }
+
+  componentWillMount() {
+    this.props.history.push('/register?step=1')
   }
 
   throwSubmissionError(fieldName, message='Required') {
@@ -52,14 +55,16 @@ class Register extends Component {
   }
 
   handleIntermediateSubmit(formProps) {
-    const currentStep = this.state.currentStep;
-    if(currentStep === 0) {
+    // const currentStep = this.state.currentStep;
+    const queryParams = new URLSearchParams(this.props.location.search)
+    const currentStep = parseInt(queryParams.get('step'), 10)
+    if(currentStep === 1) {
       if(!formProps.email) this.throwSubmissionError('email')
       else if(!formProps.password) this.throwSubmissionError('password')
       else if(!formProps.confirmPassword) this.throwSubmissionError('confirmPassword')
       else if(formProps.password !== formProps.confirmPassword) this.throwSubmissionError('confirmPassword', 'Passwords don\'t match')
-      else this.setState({ currentStep: 1 })
-    } else if(currentStep === 1) {
+      else this.props.history.push('/register?step=2')
+    } else if(currentStep === 2) {
       if(!formProps.firstName) this.throwSubmissionError('firstName')
       else if(!formProps.lastName) this.throwSubmissionError('lastName')
       else if(!formProps.phone) this.throwSubmissionError('phone')
@@ -67,7 +72,7 @@ class Register extends Component {
       else if(!formProps.address) this.throwSubmissionError('address')
       else if(!formProps.city) this.throwSubmissionError('city')
       else if(!formProps.zip) this.throwSubmissionError('zip')
-      else this.setState({ currentStep: 2 })
+      else this.props.history.push('/register?step=3')
     }
   }
 
@@ -116,10 +121,12 @@ class Register extends Component {
 
   render() {
     const { handleSubmit, businessTypeValue, error } = this.props
-    const currentStep = this.state.currentStep
+    const queryParams = new URLSearchParams(this.props.location.search)
+    const currentStep = parseInt(queryParams.get('step'), 10)
+
     let currentForm = null,
       buttons = null
-    if(currentStep === 0) {
+    if(currentStep === 1) {
       currentForm = (
         <div>
           <Field name='email' label='Email' key='name' component={RegisterField} required type='text' />
@@ -128,7 +135,7 @@ class Register extends Component {
         </div>
       )
       buttons = ( <Button key='next' primary onClick={handleSubmit(this.handleIntermediateSubmit.bind(this))}>Next</Button> )
-    } else if(currentStep === 1) {
+    } else if(currentStep === 2) {
       // formHeader = 'Account Owner Information'
       currentForm = (
         <div>
@@ -159,10 +166,10 @@ class Register extends Component {
         </div>
       )
       buttons = [
-        <Button key='back' onClick={() => { this.setState({currentStep: 0}) }}>Back</Button>,
+        <Button key='back' onClick={() => { this.props.history.push('/register?step=1') }}>Back</Button>,
         <Button key='next' primary onClick={handleSubmit(this.handleIntermediateSubmit.bind(this))}>Next</Button>
       ]
-    } else if(currentStep === 2)  {
+    } else if(currentStep === 3)  {
       const additionalLicenseForms = []
       for(var i = 0; i < this.state.numAdditonalLicenses; i++) {
         additionalLicenseForms[i] = (
@@ -195,7 +202,7 @@ class Register extends Component {
         </div>
       )
       buttons = [
-        <Button key='back' onClick={() => { this.setState({currentStep: 1}) }}>Back</Button>,
+        <Button key='back' onClick={() => {this.props.history.push('/register?step=2') }}>Back</Button>,
         <Button key='submit' 
           loading={this.props.isRequesting}
           onClick={handleSubmit(this.handleFormSubmit.bind(this))} 
@@ -204,11 +211,11 @@ class Register extends Component {
       ]
     }
     return (
-      <AuthForm restrictWidth={currentStep === 0 ? true : false}>
+      <AuthForm restrictWidth={currentStep === 1 ? true : false}>
         <Header inverted size='huge'>Sign Up</Header>
         {this.renderSteps()}
         {this.renderError(error)}
-        <Form size='large' style={ currentStep === 1 || currentStep === 2 ? { marginBottom:'150px' } : null}>
+        <Form size='large' style={ currentStep === 2 || currentStep === 3 ? { marginBottom:'150px' } : null}>
           <Segment className='register'>
             { currentForm }
             <br />
@@ -225,19 +232,21 @@ class Register extends Component {
   }
 
   renderSteps() {
+    const queryParams = new URLSearchParams(this.props.location.search)
+    const currentStep = parseInt(queryParams.get('step'), 10)
     return (
       <Step.Group size='tiny' ordered>
-        <Step active={ this.state.currentStep === 0 } completed={ this.state.currentStep > 0 } >
+        <Step active={ currentStep === 1 } completed={ currentStep > 1 } >
           <Step.Content>
             <Step.Title>Account</Step.Title>
           </Step.Content>
         </Step>
-        <Step active={ this.state.currentStep === 1 } completed={ this.state.currentStep > 1 } >
+        <Step active={ currentStep === 2 } completed={ currentStep > 2 } >
           <Step.Content>
             <Step.Title>Business Profile</Step.Title>
           </Step.Content>
         </Step>
-        <Step active={ this.state.currentStep === 2 } >
+        <Step active={ currentStep === 3 } >
           <Step.Content>
             <Step.Title>License</Step.Title>
           </Step.Content>
