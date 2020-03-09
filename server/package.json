@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "server": "npm run server:development",
-    "server:development": "pm2 startOrRestart ecosystem.config.js --watch --attach",
+    "server:development": "nodemon server.js",
     "server:production": "pm2 startOrRestart ecosystem.config.js --env production",
     "test": "pm2 stop greentap-api; NODE_ENV=test; mocha test --exit --delay",
     "lint": "eslint ."
@@ -14,7 +14,7 @@
   "author": "Arjun Nayak",
   "dependencies": {
     "aws-sdk": "^2.149.0",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^4.0.1",
     "body-parser": "1.4.3",
     "compression": "^1.7.1",
     "connect-redis": "^3.3.2",
@@ -28,7 +28,9 @@
     "passport-local": "1.0.0",
     "pg": "^7.3.0",
     "pg-promise": "^6.5.3",
-    "sharp": "^0.18.4",
+    "pm2": "^4.2.3",
+    "redis": "^3.0.2",
+    "sharp": "^0.25.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {

@@ -1,0 +1,37 @@
+version: "3"
+services:
+  postgresdb:
+    build:
+      context: ..
+      dockerfile: docker/PostgresDockerfile
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - postgresdb
+      - redisdb
+    ports:
+      - "3001:3001"
+      - "9229:9229"
+  redisdb:
+    image: redis
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+  seed_api:
+    depends_on:
+      - app
+    build:
+      context: ..
+      dockerfile: docker/PythonSeedDockerfile
+    command: python /tmp/all-products-live-vendors.py
+    environment:
+      API_HOST: "http://app:3001/api"
+      CSV_FILE: "/tmp/all_products.csv"

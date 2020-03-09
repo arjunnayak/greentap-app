@@ -8,6 +8,10 @@ const sharp = require('sharp')
 
 exports.sendEmail = (recipientEmail, subject, textToSend) => {
   return new Promise((resolve, reject) => {
+    if (config.email.enabled !== true) {
+      console.log('Skipping sending email')
+      return resolve()
+    }
     nodemailer.createTestAccount((err, account) => {
       let transporter = nodemailer.createTransport({
         host: 'mail.hover.com',
@@ -18,17 +22,17 @@ exports.sendEmail = (recipientEmail, subject, textToSend) => {
           pass: config.email.pass
         }
       })
-  
+
       let mailOptions = {
-        from: '"GreenTap" <team@greentap.io>',
+        from: 'GreenTap <teamgreentap@gmail.com>',
         to: recipientEmail,
         subject: subject,
         text: textToSend
       }
-  
+
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.log('sendMail error',error);
+          console.log('sendMail error', error)
           reject('Unable to send email.')
           return
         }
@@ -38,21 +42,21 @@ exports.sendEmail = (recipientEmail, subject, textToSend) => {
   })
 }
 
-exports.genRandomToken = (size) => {
+exports.genRandomToken = size => {
   return randomBytes(size).toString('hex')
 }
 
 const BUCKET_NAME = config.images_bucket_name
 
-exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
-  if(width === null && height === null) {
+exports.optimizeAndStoreImageInS3 = (image, width = null, height = null) => {
+  if (width === null && height === null) {
     let err = 'ERROR optimizeAndStoreImageInS3: both width and height parameters are null'
     throw new Error(err)
     reject(err)
   }
   return new Promise((resolve, reject) => {
     //if no image was supplied, return an empty link
-    if(image.data == '' || !image.data) {
+    if (image.data == '' || !image.data) {
       resolve('')
       return
     }
@@ -61,9 +65,10 @@ exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
     //convert base64 string to buffer to input to sharp constructor
     imageData = Buffer.from(imageData, 'base64')
     sharp(imageData)
-      .resize(width, height)
-      .withoutEnlargement()
-      .min()
+      .resize(width, height, {
+        fit: 'outside',
+        withoutEnlargement: true
+      })
       .toBuffer()
       .then(outputBuffer => {
         const s3 = new aws.S3({
@@ -77,7 +82,7 @@ exports.optimizeAndStoreImageInS3 = (image, width=null, height=null) => {
         }
         s3.upload(uploadObject, (error, data) => {
           if (error) {
-            console.error(`There was an error uploading ${data.Key}: ${error.message}`)
+            console.error(`There was an error uploading data ${data}: ${error.message}`)
             reject(error.message)
             return
           }

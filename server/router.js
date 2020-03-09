@@ -2,6 +2,7 @@ const AuthenticationController = require('./controllers/authenticationCtrl')
 const ProductController = require('./controllers/productCtrl')
 const MarketplaceController = require('./controllers/marketplaceCtrl')
 const BrandController = require('./controllers/brandCtrl')
+const SystemController = require("./controllers/systemCtrl")
 const express = require('express')
 const config = require('./app_config')
 
@@ -20,7 +21,8 @@ module.exports = (app, passport) => {
     authRoutes = express.Router(),
     productRoutes = express.Router(),
     marketplaceRoutes = express.Router(),
-    brandRoutes = express.Router();
+    brandRoutes = express.Router(),
+    systemRoutes = express.Router()
 
   // Auth Routes
   authRoutes.post('/register', AuthenticationController.register)
@@ -40,7 +42,7 @@ module.exports = (app, passport) => {
           console.log("passport.authenticate local-login req.login loginError", loginError)
           return res.status(404).json({ error: 'Incorrect login credentials' })
         }
-        console.log('req.login success user:',user)
+        console.log('req.login success user:', user)
         return res.status(200).json({ user })
       })
     })(req, res, next)
@@ -73,11 +75,14 @@ module.exports = (app, passport) => {
   brandRoutes.get('/:id', BrandController.getBrand)
   brandRoutes.post('/_setImage', BrandController.setBusinessImage)
 
+  systemRoutes.get('/health', SystemController.healthCheck)
+
   // Tie them together
   apiRoutes.use('/auth', authRoutes)
   apiRoutes.use('/products', productRoutes)
   apiRoutes.use('/marketplace', marketplaceRoutes)
   apiRoutes.use('/brands', brandRoutes)
+  apiRoutes.use("/system", systemRoutes)
 
   // Group sub routes together for API
   app.use('/api', apiRoutes)

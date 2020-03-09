@@ -1,0 +1,6 @@
+FROM python:2.7.17-alpine3.11
+
+COPY ./data/all_products.csv /tmp/all_products.csv
+COPY ./data/all-products-live-vendors.py /tmp/
+
+RUN  pip install requests slugify
