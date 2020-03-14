@@ -81,6 +81,8 @@ def construct_image_data(image_url):
         return None
     # print filetype
     filedata = 'data:{0};base64,{1}'.format(filetype, base64)
+    if filedata == 'data:image/jpg;base64,':
+        raise RuntimeError("FAILED TO GET IMAGE")
     return {
         'filename': filename,
         'data': filedata,
@@ -138,18 +140,18 @@ def check_api_health():
     while counter < attempts:
         try:
             r = requests.get(API_HOST + '/system/health')
-            if 200 <= r.status_code < 300:
+            if r and 200 <= r.status_code < 300:
                 print "Health check successful"
-                break
-            else:
-                print "Health check failed: " + str(r.status_code) + \
-                    ", retrying in " + str(sleep) + " seconds"
+                return
+            print "Health check failed: " + str(r.status_code) + \
+                ", retrying in " + str(sleep) + " seconds"
         except requests.exceptions.ConnectionError:
             print "Health check failed: could not connect, retrying in " + \
                 str(sleep) + " seconds"
 
         time.sleep(sleep)
         counter += 1
+    raise RuntimeError("Failed to reach API")
 
 
 file_path = os.environ['CSV_FILE'] if 'CSV_FILE' in os.environ else '/Users/arjunnayak/workspace/greentap-app/server/data/all_products.csv'
