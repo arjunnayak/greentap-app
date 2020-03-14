@@ -25,13 +25,14 @@ services:
       - 6379
     ports:
       - "6379:6379"
-  seed_api:
-    depends_on:
-      - app
-    build:
-      context: ..
-      dockerfile: docker/PythonSeedDockerfile
-    command: python /tmp/all-products-live-vendors.py
-    environment:
-      API_HOST: "http://app:3001/api"
-      CSV_FILE: "/tmp/all_products.csv"
+  # seed_api:
+  #   depends_on:
+  #     - app
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/PythonSeedDockerfile
+  #   command: python /tmp/all-products-live-vendors.py
+  #   # command: tail -f /dev/null
+  #   environment:
+  #     API_HOST: "http://app:3001/api"
+  #     CSV_FILE: "/tmp/all_products.csv"
