@@ -11,8 +11,8 @@ exports.getBrands = (req, res, next) => {
     text: 'SELECT * FROM public.business;',
     values: []
   }).then(brands => {
-      return res.status(200).json({ brands });
-    })
+    return res.status(200).json({ brands });
+  })
     .catch(error => {
       console.log(error);
       return res.status(500).json({ error: "Error retrieving brands" })
@@ -26,10 +26,10 @@ exports.getBrand = (req, res, next) => {
   if (!id) {
     return res.status(400).json({ error: 'Must provide brand id.' })
   }
-  
+
   let businessResult = {}
   let categoriesToSearch = []
-  const uniqueTransactionIdentifier = uuid().substring(0, 10) 
+  const uniqueTransactionIdentifier = uuid().substring(0, 10)
   db.task(t => {
     return t.one({
       name: `get-business-${id}`,
@@ -49,7 +49,7 @@ exports.getBrand = (req, res, next) => {
       let productsMappedToCategories = {}
       products.forEach(p => {
         // get list of product ids per category
-        if(!productsMappedToCategories[p.category]) {
+        if (!productsMappedToCategories[p.category]) {
           productsMappedToCategories[p.category] = [p.id]
         } else {
           productsMappedToCategories[p.category].push(p.id)
@@ -70,12 +70,12 @@ exports.getBrand = (req, res, next) => {
         // flatten product detail with product
         product = Object.assign(product, productDetail)
       })
-      return res.status(200).json({business: businessResult})
+      return res.status(200).json({ business: businessResult })
     }).catch(error => {
-      if(error instanceof QueryResultError && error.received === 0) {
+      if (error instanceof QueryResultError && error.received === 0) {
         console.log('404 error', error)
         return res.status(404).end()
-      } else if(error.code === '22P02') {
+      } else if (error.code === '22P02') {
         // product id not in correct uuid format i.e. 123-456-789
         return res.status(404).end()
       }
@@ -88,10 +88,10 @@ exports.getBrand = (req, res, next) => {
 exports.setBusinessImage = (req, res, next) => {
   const brandName = req.body.name
   const image = req.body.image
-  console.log('setBusinessImage image:', image)
-  if(!image || image === null) {
+  console.log('setBusinessImage image:', image.substring(0, 25) + '...')
+  if (!image || image === null) {
     return res.status(400).json({ error: 'Image invalid' })
-  } else if(!brandName || brandName === null) {
+  } else if (!brandName || brandName === null) {
     return res.status(400).json({ error: 'Business id invalid' })
   }
   // brand image needs to be square for circular display on brand detail page
@@ -107,7 +107,7 @@ exports.setBusinessImage = (req, res, next) => {
         return res.status(200).json(business)
       }).catch(error => {
         console.error('setBusinessImage db update error:', error);
-        return res.status(404).json({ error: 'Business id not found'})
+        return res.status(404).json({ error: 'Business id not found' })
       })
     })
     .catch(error => {
