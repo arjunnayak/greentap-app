@@ -88,7 +88,7 @@ exports.getBrand = (req, res, next) => {
 exports.setBusinessImage = (req, res, next) => {
   const brandName = req.body.name
   const image = req.body.image
-  console.log('setBusinessImage image:', image.substring(0, 25) + '...')
+  // console.log('setBusinessImage image:', image)
   if (!image || image === null) {
     return res.status(400).json({ error: 'Image invalid' })
   } else if (!brandName || brandName === null) {
