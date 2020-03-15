@@ -9,6 +9,9 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    # example: postgres persistent volume for data
+    # volumes:
+    #   - ~/greentap-app/pgdata:/var/lib/postgresql/data
   app:
     build:
       context: ..
@@ -17,8 +20,7 @@ services:
       - postgresdb
       - redisdb
     ports:
-      - "3001:3001"
-      - "9229:9229"
+      - "80:3001"
   redisdb:
     image: redis
     expose:
