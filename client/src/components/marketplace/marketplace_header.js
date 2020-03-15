@@ -27,24 +27,24 @@ class MarketplaceHeader extends Component {
             <Menu.Item>
               <Dropdown placeholder='CATEGORIES' defaultValue={categoryOptions[0].value} onChange={this.handleCategoryChange} id='categories-dropdown' selection options={categoryOptions} />
             </Menu.Item>
-          ) : null 
+          ) : null
         }
-        <Responsive as={Menu.Item} minWidth={Responsive.onlyMobile.minWidth} >
+        {/* <Responsive as={Menu.Item} minWidth={Responsive.onlyMobile.minWidth} >
           <Input className='search' icon='search' id='search' placeholder='Search for strains, oil, producers...' />
-        </Responsive>
+        </Responsive> */}
         {this.renderRightMenuLinks(this.props.authenticated)}
       </Menu>
     )
   }
 
   handleCategoryChange(event, data) {
-    if(data.value !== this.props.category) {
+    if (data.value !== this.props.category) {
       this.props.changeCategory(data.value)
     }
   }
 
   handleLocationChange(event, data) {
-    if(data.value !== this.props.location) {
+    if (data.value !== this.props.location) {
       this.props.changeLocation(data.value)
     }
   }
@@ -52,21 +52,21 @@ class MarketplaceHeader extends Component {
   renderRightMenuLinks() {
     let rightButtons = null
     const showLocation = this.props.showLocation
-    if(this.props.authenticated) {
-      rightButtons = [ <Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item> ]
+    if (this.props.authenticated) {
+      rightButtons = [<Menu.Item key='Logout' as={Link} to='/logout'>Logout</Menu.Item>]
       // <Menu.Item key='Cart' as={Link} to='/cart' name='cart'><Icon name='cart' size='large'/></Menu.Item>
     } else {
       rightButtons = [<Menu.Item key='Login' as={Link} to='/login' name='login'>Login</Menu.Item>,
-        <Menu.Item key='Register' as={Link} to='/register' name='register'>Register</Menu.Item>]
+      <Menu.Item key='Register' as={Link} to='/register' name='register'>Register</Menu.Item>]
     }
     return (
       <Menu.Menu position='right' className='right-menu'>
-        { showLocation ? (
+        {showLocation ? (
           <Menu.Item>
-          <Dropdown placeholder='Set Location' defaultValue={locationOptions[0].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
-        </Menu.Item>
-        ) : null }
-        {rightButtons} 
+            <Dropdown placeholder='Set Location' defaultValue={locationOptions[0].value} onChange={this.handleLocationChange} id='location-dropdown' selection options={locationOptions} />
+          </Menu.Item>
+        ) : null}
+        {rightButtons}
       </Menu.Menu>
     )
   }
