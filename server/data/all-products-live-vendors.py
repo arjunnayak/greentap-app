@@ -82,7 +82,8 @@ def construct_image_data(image_url):
     # print filetype
     filedata = 'data:{0};base64,{1}'.format(filetype, base64)
     if filedata == 'data:image/jpg;base64,':
-        raise RuntimeError("FAILED TO GET IMAGE")
+        print "Failed to retrieve image"
+        return None
     return {
         'filename': filename,
         'data': filedata,
@@ -232,7 +233,7 @@ with open(file_path, 'rb') as csvfile:
                     'subCategory': product['sub_category'],
                     'strain_type': look_for_strain_type(description),
                     'desc': description,
-                    'image': image_data if image_data else None,
+                    'image': image_data if image_data else '',
                 }
             }
             if pricings:
