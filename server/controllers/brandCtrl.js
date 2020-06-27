@@ -97,7 +97,7 @@ exports.getBrand = (req, res, next) => {
   })
 }
 
-exports.setBusinessImage = (req, res, next) => {
+exports.setBusinessImage = async (req, res, next) => {
   const brandName = req.body.name
   const image = req.body.image
   if (!image || image === null) {
