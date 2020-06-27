@@ -1,19 +1,15 @@
-const crypto = require('crypto')
 const db = require('../config/db')
-const setUserInfo = require('../helpers').setUserInfo
-const createIdToken = require('../helpers').createIdToken
-const createAccessToken = require('../helpers').createAccessToken
 const sendEmail = require('../helpers').sendEmail
 const genRandomToken = require('../helpers').genRandomToken
 const config = require('../app_config')
 const uuid = require('uuid/v4')
 const bcrypt = require('bcrypt')
 const cookieName = require('../app_config').cookie_name
+const logger = require('../config/logger')('authentication')
 
-exports.register = (req, res, next) => {
-  const body = req.body
+exports.register = (req, res) => {
   const { email, firstName, lastName, password, confirmPassword, businessType, state, licenseState, 
-    licenseNumber, licenseType, businessName, phone, address, city, zip, description, additionalLicenses } = body
+    licenseNumber, licenseType, businessName, phone, address, city, zip, description, additionalLicenses } = req.body
   const businessId = uuid()
 
   if(!email) return res.status(400).json({ error: 'You must enter an email address.' })
@@ -44,7 +40,7 @@ exports.register = (req, res, next) => {
     })
   }
   
-  db.tx(t => {
+  db.tx(async t => {
     const userId = uuid()
     const hashedPassword = bcrypt.hashSync(password, 10)
 
@@ -81,36 +77,38 @@ exports.register = (req, res, next) => {
         }))
       })
     }
-    return t.batch(registerTransactions)
-  }).then(data => {
-      console.log('create user result data', data[0])
-      console.log('create user verification record data', data[1])
-      let user = data[0]
-      user.business = data[2]
-      const verificationRecord = data[1]
-      const emailText = `Hello ${user.first_name},
-
-      Thanks for signing up with GreenTap. Please take a moment to verify the email address associated with your GreenTap account by clicking the link below:
-      ${config.client_base_url}/verify-user?email=${verificationRecord.email}&token=${verificationRecord.token}
-
-      If you have not signed up for a GreenTap account, please ignore this email.`
-      
-      const subject = 'Please Verify Your Email Address'
-      sendEmail(verificationRecord.email, subject, emailText).then(() => {
-        console.log('successfully sent verification email')
-      }).catch(error => {
-        console.log('failed to send verification email')
-      })
-      return res.status(201).json({ user })
-    })
-    .catch(errors => {
-      // if error is thrown, the transaction will rollback
+    let data;
+    try {
+      data = await t.batch(registerTransactions)
+      logger.info('create user result data: %o', data[0])
+      logger.info('create user verification record data: %o', data[1])
+    } catch(errors) {
       if(errors.first && errors.first.code === "23505" && errors.first.constraint === "user_pkey1") {
         return res.status(409).json({ error: 'Email already in use.' })  
       }
-      console.error('register transaction .catch() errors', errors)
+      logger.error('register transaction errors %o', errors)
       return res.status(500).json({ error: 'There was an error creating your account.' })
-    })
+    }
+
+    let user = data[0]
+    user.business = data[2]    
+    const verificationRecord = data[1]
+    const emailText = `Hello ${user.first_name},
+
+    Thanks for signing up with GreenTap. Please take a moment to verify the email address associated with your GreenTap account by clicking the link below:
+    ${config.client_base_url}/verify-user?email=${verificationRecord.email}&token=${verificationRecord.token}
+
+    If you have not signed up for a GreenTap account, please ignore this email.`
+    const subject = 'Please Verify Your Email Address'
+    try {
+      await sendEmail(verificationRecord.email, subject, emailText)
+      logger.info('successfully sent verification email')
+    } catch(error) {
+      logger.info('failed to send verification email')
+    }
+
+    return res.status(201).json({ user })
+  })
 }
 
 // Not in use
@@ -138,13 +136,13 @@ const insertAdditionalLicenses = (businessId = null, additionalLicenses = null) 
     }).then(data => {
       resolve()
     }).catch(errors => {
-      console.error('insertAdditionalLicenses failed', errors)
+      logger.error('insertAdditionalLicenses failed %o', errors)
       reject({ status: 500, errorMsg: 'There was an error creating your additional licenses.' })
     }) 
   })
 }
 
-exports.logout = (req, res, next) => {
+exports.logout = (req, res) => {
   req.session.destroy(err => {
     if (!err) {
       res.clearCookie(cookieName, { path: '/' })
@@ -154,20 +152,19 @@ exports.logout = (req, res, next) => {
   })
 }
 
-exports.forgotPassword = (req, res, next) => {
+exports.forgotPassword = (req, res) => {
   const email = req.body.email
 
   if (!email) return res.status(400).json({ error: 'You must enter an email address.' })
 
-  const GET_USER = 'SELECT email FROM public.user WHERE email=$1;'
   db.task(t => {
     return t.one({
       name: 'get-user',
       text: 'SELECT email FROM public.user WHERE email=$1;',
       values: [email]
-    }).then(userEmail => {
+    }).then(() => {
       const token = genRandomToken(32)
-      console.log(`Creating password request for ${email} with token=${token}`)
+      logger.info(`Creating password request for ${email} with token ${token}`)
       return t.one({
         name: 'create-reset-password-request',
         text: `INSERT INTO public.reset_password_request(email, token, timestamp)
@@ -181,7 +178,7 @@ exports.forgotPassword = (req, res, next) => {
     sendEmail(resetRequest.email, subject, emailText).then(() => {
       return res.status(201).json({ email: resetRequest.email })
     }).catch(error => {
-      console.log('forgot password sendEmil error', error)
+      logger.error('forgot password sendEmail error %o', error)
       return res.status(500).json({ error })
     })
   }).catch(error => {
@@ -191,7 +188,7 @@ exports.forgotPassword = (req, res, next) => {
   })
 }
 
-exports.resetPassword = (req, res, next) => {
+exports.resetPassword = (req, res) => {
   const password = req.body.password
   const confirmPassword = req.body.confirmPassword
   const token = req.body.token
@@ -227,7 +224,7 @@ exports.resetPassword = (req, res, next) => {
     sendEmail(result.email, subject, emailText).then(() => {
       // do nothing
     }).catch(error => {
-      console.log('reset password request sendEmail error', error)
+      logger.error('reset password request sendEmail %o', error)
     })
     
     db.none({
@@ -237,7 +234,7 @@ exports.resetPassword = (req, res, next) => {
     }).then(()=> {
       return res.status(200).end()
     }).catch(error => {
-      console.log('set used to true failure', error)
+      logger.error('set used to true failure %o', error)
       return res.status(500).json({ error: error })
     })
   }).catch(error => {
@@ -245,12 +242,12 @@ exports.resetPassword = (req, res, next) => {
     if(error.received === 0) return res.status(400).json({ error: 'Invalid token.' })
     else if(error === ALREADY_USED_ERROR) return res.status(400).json({ error: 'This request to reset your password has already been used.' })
     else if(error === EXPIRED_ERROR) return res.status(400).json({ error: 'This request to reset your password has expired.' })
-    console.error('reset password fail', error)
+    logger.error('reset password fail %o', error)
     return res.status(500).json({ error })
   })
 }
 
-exports.verifyUser = (req, res, next) => {
+exports.verifyUser = (req, res) => {
   const email = req.query.email
   const token = req.query.token
 
@@ -281,7 +278,7 @@ exports.verifyUser = (req, res, next) => {
   })
 }
 
-exports.userInfo = (req, res, next) => {
+exports.userInfo = (req, res) => {
   if(req.isAuthenticated() && req.user) {
     return res.status(200).json(req.user)
   }

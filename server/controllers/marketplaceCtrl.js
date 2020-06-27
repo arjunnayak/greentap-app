@@ -2,15 +2,15 @@ const uuid = require('uuid/v4')
 const db = require('../config/db')
 const sendEmail = require('../helpers').sendEmail
 const CATEGORIES = require('../app_config').categories_list
+const logger = require('../config/logger')('marketplace')
 
-
-exports.getProducts = (req, res, next) => {
+exports.getProducts = (req, res) => {
   const category = req.query.category;
   const uniqueTransactionIdentifier = uuid().substring(0, 10)
   if (!category) return res.status(400).json({ error: 'Product category required.'})
   else if(!CATEGORIES.includes(category)) return res.status(400).json({ erro: 'Invalid product category.'})
-
-  console.log('retrieving marketplace products', category)
+  logger.info(`retrieving marketplace products for category: ${category}`)
+  logger.info('retrieving marketplace products for category:%o', { some: 'test' })
   db.task(async t => {
     try {
       const products = await t.any({
@@ -22,13 +22,13 @@ exports.getProducts = (req, res, next) => {
       })
       return res.status(200).json({ products })
     } catch(error) {
-      console.error('get marketplace products error 500', error);
-      return res.status(500).json({ error: "Error retrieving products" });
+      logger.error(error)
+      return res.status(500).json({ error: "Error retrieving products" })
     }
   })
 }
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = (req, res) => {
   const id = req.params.id;
 
   if (!id) return res.status(400).json({ error: 'Must provide product id.' });
@@ -42,7 +42,7 @@ exports.getProduct = (req, res, next) => {
         text: 'SELECT * FROM public.product WHERE id=$1;',
         values: [id]
       })
-      console.log(product)
+      logger.info(product)
       productResult = product
 
       const productData = await t.batch([t.one({
@@ -64,15 +64,15 @@ exports.getProduct = (req, res, next) => {
       if (productPricings && productPricings.length > 0) productResult.pricing = productPricings
       return res.status(200).json({ product: productResult})
     } catch (error) {
-      console.error('get products error 500', error);
+      logger.error(error);
       return res.status(500).json({ error: "Error retrieving products" });
     }
   })
 }
 
-exports.createInquiry = (req, res, next) => {
+exports.createInquiry = (req, res) => {
   const { productId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType } = req.body
-  console.log('unit price', unitPrice);
+  logger.info('unit price', unitPrice);
 
   if(!productId) return res.status(400).json({ error: 'Must provide the product id.' })
   else if(!buyerUserId) return res.status(400).json({ error: 'Must provide the buyer\'s user id.' })
@@ -88,9 +88,9 @@ exports.createInquiry = (req, res, next) => {
         VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
         values: [inquiryId, productId, buyerUserId, sellerBusinessId, unitPrice, unitCount, unitCountType]
       })  
-      console.log('created inquiry', createdInquiry)
+      logger.info(createdInquiry)
     } catch (error) {
-      console.error(`error on insert inquiry ${error}`)
+      logger.error(`error on insert inquiry ${error}`)
       return res.status(500).json({ error: "Error creating inquiry" })
     }
   
@@ -100,11 +100,11 @@ exports.createInquiry = (req, res, next) => {
         text: 'SELECT email from public.user where id=$1;',
         values: [createdInquiry.buyer_user_id]
       })
-      console.log('found email', email)
+      logger.info(`found email ${email}`)
       sendInquiryEmails(email, createdInquiry)
       return res.status(201).json({ inquiry: createdInquiry })
     } catch (error) {
-      console.error('send inquiry: error finding email for user id', createdInquiry.buyer_user_id, error)
+      logger.error(`send inquiry error finding email for user id ${createdInquiry.buyer_user_id}: ${error}`)
       // Return 201 since inquiry was still created, but still provide error
       return res.status(201).json({ inquiry: createdInquiry, error: "Error sending email." })
     }
@@ -137,10 +137,10 @@ function sendInquiryEmails(buyerEmail, inquiryData) {
       inquiryInfo.product = data[1]
       inquiryInfo.seller = data[2]
     } catch (error) {
-      console.error(`error on getting inquiry info ${errors}`)
+      logger.error(error)
     }
 
-    console.log('got inquiry info', inquiryInfo)
+    logger.info('got inquiry info', inquiryInfo)
     const productCategory =  inquiryInfo.product.category
     const productDetail = await t.one({
       name: 'get-product-detail-for-inquiry',
@@ -157,9 +157,9 @@ function sendInquiryEmails(buyerEmail, inquiryData) {
 
     try {    
       await sendEmail(buyerEmail, emailSubject, emailText)
-      console.log(`successfully sent inquiry email to ${buyerEmail}`)
+      logger.info(`successfully sent inquiry email to ${buyerEmail}`)
     } catch (error) {
-      console.error('failed to send inquiry email to ', buyerEmail, error)
+      logger.error(`failed to send inquiry email to ${buyerEmail} ${error}`)
     }
 
     // send information email to us
@@ -168,9 +168,9 @@ function sendInquiryEmails(buyerEmail, inquiryData) {
     const infoEmailText = `${JSON.stringify(inquiryInfo, null, 4)}`
     try {
       await sendEmail(teamEmail, infoEmailSubject, infoEmailText)
-      console.log(`successfully sent inquiry to team email: ${teamEmail}`)
+      logger.info(`successfully sent inquiry to team email: ${teamEmail}`)
     } catch (error) {
-      console.error('failed to send inquiry to team email: ', teamEmail, error)
+      logger.error(`failed to send inquiry to team email to ${teamEmail} ${error}`)
     }
   });
 }
