@@ -28,3 +28,12 @@ cd server && npm run server
 Visit UI at localhost:3000
 
 Make api calls to localhost:3001 (you'll need a session in the form of a Cookie parameter)
+
+## Docker
+
+### Postgres
+```
+docker build -f ./docker/PostgresDockerfile -t greentap-postgres .
+docker run -d -e POSTGRES_DB=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 greentap-postgres:latest
+psql -h localhost -p 5432 -W -U postgres postgres
+```
