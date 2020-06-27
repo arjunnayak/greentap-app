@@ -1,7 +1,10 @@
 require('dotenv').config()
 const express = require('express')
 const session = require('express-session')
-const logger = require('morgan')
+const winston = require('winston')
+const { transports, format } = winston
+const { combine, timestamp, colorize, printf } = format
+const expressWinston = require('express-winston')
 const router = require('./router')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -15,23 +18,35 @@ const config = require('./app_config')
 
 let app = express()
 const nodeEnv = config.node_env
+const logger = require('./config/logger')('server')
 
 if (nodeEnv !== 'production') {
   const db = require('./config/db')
-  console.log('testing db connection...')
-  //test db
-  db.connect()
-    .then(data => {
-      console.log('db connection successful')
-    })
-    .catch(error => {
-      console.log('db connection failed', error)
-      process.exit(1)
-    })
+  logger.info('testing db connection...')
+  async () => {
+    db.connect()
+      .then(() => {
+        logger.info('db connection successful')
+      })
+      .catch(error => {
+        logger.info('db connection failed', error)
+        process.exit(1)
+      })
+  }
 }
 
 // app.use(express.static(__dirname + '/public')) // set the static files location /public/img will be /img for users
-app.use(logger('dev'))
+// Logs every request
+app.use(expressWinston.logger({
+  transports: [
+    new transports.Console()
+  ],
+  format: combine(
+    timestamp(),
+    colorize(),
+    printf(info => `${info.timestamp} ${info.message} ${info.meta.res.statusCode} ${info.meta.responseTime}ms`)
+  )
+}));
 app.use(bodyParser.urlencoded({ extended: 'true' }))
 //allow 50mb body size for sending uploaded images in base64 to server
 app.use(bodyParser.json({ limit: '50mb' }))
@@ -89,10 +104,21 @@ app.use(passport.session())
 // Import routes into app
 router(app, passport)
 
+// express-winston errorLogger makes sense AFTER the router
+app.use(expressWinston.errorLogger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.json()
+  )
+}));
+
 // start app
 const port = config.port
 const server = app.listen(port)
-console.log('Your app is listening on ', port)
+logger.info('Your app is listening on ', port)
 
 // for testing
 module.exports = server

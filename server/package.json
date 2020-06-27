@@ -21,8 +21,8 @@
     "cookie-parser": "^1.4.3",
     "express": "4.13.3",
     "express-session": "^1.15.6",
+    "express-winston": "^4.0.3",
     "helmet": "^3.9.0",
-    "morgan": "1.9.1",
     "nodemailer": "^4.4.0",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
@@ -31,7 +31,8 @@
     "pm2": "^4.2.3",
     "redis": "^3.0.2",
     "sharp": "^0.25.1",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.0",
