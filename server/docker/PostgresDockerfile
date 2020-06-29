@@ -1,4 +1,4 @@
 FROM postgres:9.6-alpine
 EXPOSE 5432
 
-COPY ./data/dbschema.sql /docker-entrypoint-initdb.d/
+COPY ./data/db-insert-backup.sql /docker-entrypoint-initdb.d/
