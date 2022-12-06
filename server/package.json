@@ -19,7 +19,7 @@
     "compression": "^1.7.1",
     "connect-redis": "^3.3.2",
     "cookie-parser": "^1.4.3",
-    "express": "4.13.3",
+    "express": "4.17.3",
     "express-session": "^1.15.6",
     "express-winston": "^4.0.3",
     "helmet": "^3.9.0",
